@@ -38,6 +38,34 @@ const SignUp = () => {
       //   );
 
       dispatch(setProfile({ ...signUpDetails }));
+
+      // fetch("http://localhost:4000/userSignup", {
+      //   method: "POST",
+      //   body: JSON.stringify(signUpDetails),
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //   },
+      // })
+      //   .then((response) => {
+      //     if (response.status >= 200 && response.status < 300) {
+      //       return response;
+      //       console.log(response);
+      //       window.location.reload();
+      //     } else {
+      //       console.log("Somthing happened wrong");
+      //     }
+      //   })
+      //   .catch((err) => err);
+      console.log(JSON.stringify(signUpDetails));
+      const url = "http://localhost:4000/userSignup";
+      const requestOptions = {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(signUpDetails),
+      };
+      fetch(url, requestOptions)
+        .then((response) => console.log(response))
+        .catch((error) => console.log("Form submit error", error));
     }
   };
 
