@@ -13,7 +13,7 @@ const SignUp = () => {
   useEffect(() => {}, [signUpDetails]);
 
   const handleSignUp = () => {
-    if (signUpDetails.firstName == undefined) {
+    if (signUpDetails.firstName === undefined) {
       alert("Incorrect First Name");
     } else if (signUpDetails.lastName === undefined) {
       alert("Incorrect Last Name");
@@ -69,72 +69,73 @@ const SignUp = () => {
     }
   };
 
-  return (
-    <div className="form">
-      Login
-      {/* <Form> */}
-      <div>
-        <label>First Name</label>
-        <input
-          type="text"
-          onChange={(e) =>
-            setSignUpDetails({ ...signUpDetails, firstName: e.target.value })
-          }
-        />{" "}
-        <br />
-      </div>
-      <div>
-        <label>Last Name</label>
-        <input
-          type="text"
-          onChange={(e) =>
-            setSignUpDetails({ ...signUpDetails, lastName: e.target.value })
-          }
-        />{" "}
-        <br />
-      </div>
-      <div>
-        <label>Email</label>
-        <input
-          type="email"
-          onChange={(e) =>
-            setSignUpDetails({ ...signUpDetails, email: e.target.value })
-          }
-        />{" "}
-        <br />
-      </div>
-      <div>
-        <label>Username</label>
-        <input
-          type="text"
-          onChange={(e) =>
-            setSignUpDetails({ ...signUpDetails, userName: e.target.value })
-          }
-        />{" "}
-        <br />
-      </div>
-      <div>
-        <label>Password</label>
-        <input
-          type="password"
-          onChange={(e) =>
-            setSignUpDetails({ ...signUpDetails, password: e.target.value })
-          }
-        />{" "}
-        <br />
-      </div>
-      <div>
-        <label>Are You a Venue Owner?</label>
-        <select
-          onChange={(e) =>
-            setSignUpDetails({ ...signUpDetails, isOwner: e.target.value })
-          }
-        >
-          <option value={undefined}>Select your option</option>
-          <option value={true}>Yes</option>
-          <option value={false}>No</option>
-        </select>
-        {/* <label>
+  if (user.userName === null) {
+    return (
+      <div className="form">
+        Login
+        {/* <Form> */}
+        <div>
+          <label>First Name</label>
+          <input
+            type="text"
+            onChange={(e) =>
+              setSignUpDetails({ ...signUpDetails, firstName: e.target.value })
+            }
+          />{" "}
+          <br />
+        </div>
+        <div>
+          <label>Last Name</label>
+          <input
+            type="text"
+            onChange={(e) =>
+              setSignUpDetails({ ...signUpDetails, lastName: e.target.value })
+            }
+          />{" "}
+          <br />
+        </div>
+        <div>
+          <label>Email</label>
+          <input
+            type="email"
+            onChange={(e) =>
+              setSignUpDetails({ ...signUpDetails, email: e.target.value })
+            }
+          />{" "}
+          <br />
+        </div>
+        <div>
+          <label>Username</label>
+          <input
+            type="text"
+            onChange={(e) =>
+              setSignUpDetails({ ...signUpDetails, userName: e.target.value })
+            }
+          />{" "}
+          <br />
+        </div>
+        <div>
+          <label>Password</label>
+          <input
+            type="password"
+            onChange={(e) =>
+              setSignUpDetails({ ...signUpDetails, password: e.target.value })
+            }
+          />{" "}
+          <br />
+        </div>
+        <div>
+          <label>Are You a Venue Owner?</label>
+          <select
+            onChange={(e) =>
+              setSignUpDetails({ ...signUpDetails, isOwner: e.target.value })
+            }
+          >
+            <option value={undefined}>Select your option</option>
+            <option value={true}>Yes</option>
+            <option value={false}>No</option>
+          </select>
+          {/* <label>
           <input
             type="radio"
             value="Yes"
@@ -154,15 +155,17 @@ const SignUp = () => {
           />{" "}
           No
         </label> */}
-        <br />
+          <br />
+        </div>
+        <div>
+          <button onClick={() => handleSignUp()}>SignUp</button>
+        </div>
+        {/* </Form> */}
       </div>
-      <div>
-        <button>Login</button>
-        <button onClick={() => handleSignUp()}>SignUp</button>
-      </div>
-      {/* </Form> */}
-    </div>
-  );
+    );
+  } else {
+    return <h1>You are already Logged In</h1>;
+  }
 };
 
 export default SignUp;

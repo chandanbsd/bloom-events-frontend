@@ -13,9 +13,14 @@ const Navbar = () => {
         <span className="nav-item">Bloom Events Home</span>
       </Link>
 
-      <Link to="signup" className="nav-item">
-        Login/Signup/Logout
+      <Link to="login" className="nav-item">
+        Login
       </Link>
+
+      <Link to="signup" className="nav-item">
+        Signup
+      </Link>
+
       <Link to="Profile" className="nav-item">
         {user.firstName != undefined ? `Hello, ${user.firstName}` : "Profile"}
       </Link>

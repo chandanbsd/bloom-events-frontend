@@ -3,9 +3,9 @@ import { Routes, Route } from "react-router-dom";
 import Home from "./Home/Home";
 import Navbar from "./Navbar/Navbar";
 import Profile from "./Profile/Profile";
-
+import Login from "./Login/Login.jsx";
 import "./App.css";
-import SignUp from "./Login/SignUp";
+import SignUp from "./SignUp/SignUp";
 
 function App() {
   return (
@@ -14,6 +14,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="signup" element={<SignUp />} />
+        <Route path="login" element={<Login />} />
         <Route path="profile" element={<Profile />} />
       </Routes>
     </div>
