@@ -7,8 +7,6 @@ const Profile = () => {
   console.log(user);
   const dispatch = useDispatch();
 
-  const mockUser = ["Chandan", "Chandan", "Chandan", "Chandan", false];
-
   return (
     <div>
       Profile
