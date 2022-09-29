@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Form } from "react-router-dom";
-import "./login.css";
+import "./signup.css";
 import { setProfile } from "../redux/user";
 
 const SignUp = () => {
@@ -26,38 +25,9 @@ const SignUp = () => {
     } else if (signUpDetails.isOwner === undefined) {
       alert("Choose if you are a venue owner?");
     } else {
-      //   dispatch(
-      //     setProfile([
-      //       signUpDetails.firstName,
-      //       signUpDetails.lastName,
-      //       signUpDetails.email,
-      //       signUpDetails.userName,
-      //       signUpDetails.password,
-      //       signUpDetails.password,
-      //     ])
-      //   );
-
       dispatch(setProfile({ ...signUpDetails }));
-
-      // fetch("http://localhost:4000/userSignup", {
-      //   method: "POST",
-      //   body: JSON.stringify(signUpDetails),
-      //   headers: {
-      //     "Content-Type": "application/json",
-      //   },
-      // })
-      //   .then((response) => {
-      //     if (response.status >= 200 && response.status < 300) {
-      //       return response;
-      //       console.log(response);
-      //       window.location.reload();
-      //     } else {
-      //       console.log("Somthing happened wrong");
-      //     }
-      //   })
-      //   .catch((err) => err);
       console.log(JSON.stringify(signUpDetails));
-      const url = "http://localhost:4000/userSignup";
+      const url = "/register";
       const requestOptions = {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -72,8 +42,7 @@ const SignUp = () => {
   if (user.userName === null) {
     return (
       <div className="form">
-        Login
-        {/* <Form> */}
+        Signup
         <div>
           <label>First Name</label>
           <input
@@ -135,32 +104,11 @@ const SignUp = () => {
             <option value={true}>Yes</option>
             <option value={false}>No</option>
           </select>
-          {/* <label>
-          <input
-            type="radio"
-            value="Yes"
-            onChange={(e) =>
-              setSignUpDetails({ ...signUpDetails, isOwner: e.target.value })
-            }
-          />
-          Yes
-        </label>
-        <label>
-          <input
-            type="radio"
-            value="No"
-            onChange={(e) =>
-              setSignUpDetails({ ...signUpDetails, isOwner: e.target.value })
-            }
-          />{" "}
-          No
-        </label> */}
           <br />
         </div>
         <div>
           <button onClick={() => handleSignUp()}>SignUp</button>
         </div>
-        {/* </Form> */}
       </div>
     );
   } else {

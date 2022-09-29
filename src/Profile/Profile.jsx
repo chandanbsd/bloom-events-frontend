@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Form } from "react-router-dom";
 import "./profile.css";
 import { setProfile } from "../redux/user";
 
@@ -8,15 +7,6 @@ const Profile = () => {
   const user = useSelector((state) => state.user);
 
   const dispatch = useDispatch();
-
-  // const [signUpDetails, setSignUpDetails] = useState({
-  //   firstName: null,
-  //   lastName: null,
-  //   email: null,
-  //   userName: null,
-  //   password: null,
-  //   isOwner: null,
-  // });
 
   const [profileDetails, setProfileDetails] = useState({
     ...user,
@@ -26,7 +16,7 @@ const Profile = () => {
   }, [profileDetails]);
 
   const handleProfileUpdate = () => {
-    if (profileDetails.firstName == "") {
+    if (profileDetails.firstName === "") {
       alert("Incorrect First Name");
     } else if (profileDetails.lastName === "") {
       alert("Incorrect Last Name");
@@ -39,17 +29,6 @@ const Profile = () => {
     } else if (profileDetails.isOwner === "") {
       alert("Choose if you are a venue owner?");
     } else {
-      //   dispatch(
-      //     setProfile([
-      //       signUpDetails.firstName,
-      //       signUpDetails.lastName,
-      //       signUpDetails.email,
-      //       signUpDetails.userName,
-      //       signUpDetails.password,
-      //       signUpDetails.password,
-      //     ])
-      //   );
-
       dispatch(setProfile({ ...profileDetails }));
     }
   };
@@ -57,8 +36,12 @@ const Profile = () => {
     return (
       <div className="form">
         Edit Profile
-        {/* <Form> */}
         <div>
+          <div>
+            <label>Username</label>
+            {profileDetails.userName}
+            <br />
+          </div>
           <label>First Name</label>
           <input
             type="text"
@@ -95,17 +78,6 @@ const Profile = () => {
           <br />
         </div>
         <div>
-          <label>Username</label>
-          <input
-            type="text"
-            value={profileDetails.userName}
-            onChange={(e) =>
-              setProfileDetails({ ...profileDetails, userName: e.target.value })
-            }
-          />{" "}
-          <br />
-        </div>
-        <div>
           <label>Password</label>
           <input
             type="password"
@@ -128,32 +100,11 @@ const Profile = () => {
             <option value={true}>Yes</option>
             <option value={false}>No</option>
           </select>
-          {/* <label>
-        <input
-          type="radio"
-          value="Yes"
-          onChange={(e) =>
-            setSignUpDetails({ ...signUpDetails, isOwner: e.target.value })
-          }
-        />
-        Yes
-      </label>
-      <label>
-        <input
-          type="radio"
-          value="No"
-          onChange={(e) =>
-            setSignUpDetails({ ...signUpDetails, isOwner: e.target.value })
-          }
-        />{" "}
-        No
-      </label> */}
           <br />
         </div>
         <div>
           <button onClick={() => handleProfileUpdate()}>Update Details</button>
         </div>
-        {/* </Form> */}
       </div>
     );
   } else {

@@ -1,65 +1,70 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Form } from "react-router-dom";
-import "./login.css";
 import { setProfile } from "../redux/user";
+import "./login.css";
 
 const Login = () => {
   const user = useSelector((state) => state.user);
 
   const dispatch = useDispatch();
 
-  const [signUpDetails, setSignUpDetails] = useState({});
-  useEffect(() => {}, [signUpDetails]);
+  const [loginDetails, setloginDetails] = useState({});
+  useEffect(() => {}, [loginDetails]);
 
-  const handleSignUp = () => {
-    if (signUpDetails.userName === undefined) {
+  const handleLogin = () => {
+    if (loginDetails.userName === undefined) {
       alert("Incorrect Username");
-    } else if (signUpDetails.password === undefined) {
+    } else if (loginDetails.password === undefined) {
       alert("Incorrect Password");
-    } else if (signUpDetails.isOwner === undefined) {
-      alert("Choose if you are a venue owner?");
     } else {
-      dispatch(setProfile({ ...signUpDetails }));
-
-      console.log(JSON.stringify(signUpDetails));
-      const url = "http://localhost:4000/userSignup";
+      console.log(JSON.stringify(loginDetails));
+      const url = "/login";
       const requestOptions = {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(signUpDetails),
+        body: JSON.stringify(loginDetails),
       };
       fetch(url, requestOptions)
-        .then((response) => console.log(response))
+        .then((response) => response.json())
+        .then((res) => {
+          console.log(res.response);
+          dispatch(setProfile({ ...res.response }));
+        })
         .catch((error) => console.log("Form submit error", error));
     }
   };
-
-  return (
-    <div className="form">
-      Login
-      <div>
-        <label>Username</label>
-        <input
-          type="text"
-          onChange={(e) =>
-            setSignUpDetails({ ...signUpDetails, userName: e.target.value })
-          }
-        />{" "}
-        <br />
+  if (user.username == null) {
+    return (
+      <div className="form">
+        Login
+        <div>
+          <label>Username</label>
+          <input
+            type="text"
+            onChange={(e) =>
+              setloginDetails({ ...loginDetails, userName: e.target.value })
+            }
+          />{" "}
+          <br />
+        </div>
+        <div>
+          <label>Password</label>
+          <input
+            type="password"
+            onChange={(e) =>
+              setloginDetails({ ...loginDetails, password: e.target.value })
+            }
+          />{" "}
+          <br />
+        </div>
+        <div>
+          <button onClick={handleLogin}>Login</button>
+        </div>
       </div>
-      <div>
-        <label>Password</label>
-        <input
-          type="password"
-          onChange={(e) =>
-            setSignUpDetails({ ...signUpDetails, password: e.target.value })
-          }
-        />{" "}
-        <br />
-      </div>
-    </div>
-  );
+    );
+  } else {
+    return <h1>{user.firstName} is already logged In</h1>;
+  }
 };
 
 export default Login;

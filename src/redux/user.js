@@ -11,18 +11,8 @@ export const userSlice = createSlice({
   },
 
   reducers: {
-    // setProfile: (state, action) => {
-    //   action = action.payload;
-    //   // state = { ...update.payload };
-    //   state.firstName = action[0];
-    //   state.lastName = action[1];
-    //   state.email = action[2];
-    //   state.userName = action[3];
-    //   state.isOwner = action[4];
-    // },
     setProfile: (state, action) => {
       const actionObj = { ...action.payload };
-      // state = { ...update.payload };
       state.firstName = actionObj.firstName;
       state.lastName = actionObj.lastName;
       state.email = actionObj.email;
