@@ -2,8 +2,7 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { setProfile } from "../redux/user";
-
-import "./navbar.css";
+import "bootstrap/dist/css/bootstrap.min.css";
 
 const Navbar = () => {
   const user = useSelector((state) => state.user);
@@ -22,7 +21,7 @@ const Navbar = () => {
   };
 
   return (
-    <div className="navbar">
+    <nav className="navbar navbar-light bg-light">
       <Link to="/" className="nav-item">
         <span className="nav-item">Bloom Events Home</span>
       </Link>
@@ -31,21 +30,19 @@ const Navbar = () => {
           <Link to="login" className="nav-item">
             Login
           </Link>
-          <Link to="signup" className="nav-item">
-            Signup
-          </Link>{" "}
         </React.Fragment>
       ) : (
         <React.Fragment>
-          <span className="nav-item" onClick={handleLogout}>
+          <Link
+            to="../Profile"
+            className="nav-item"
+          >{`Hello, ${user.firstName}`}</Link>
+          <Link to="../Profile" onClick={handleLogout} className="nav-item">
             Logout
-          </span>
-          <Link to="Profile" className="nav-item">
-            {`Hello, ${user.firstName}`}
           </Link>
         </React.Fragment>
       )}
-    </div>
+    </nav>
   );
 };
 

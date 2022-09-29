@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import "./profile.css";
 import { setProfile } from "../redux/user";
+import { Link } from "react-router-dom";
 
 const Profile = () => {
   const user = useSelector((state) => state.user);
@@ -35,75 +36,35 @@ const Profile = () => {
   if (profileDetails.firstName !== null) {
     return (
       <div className="form">
-        Edit Profile
+        <h1>
+          {" "}
+          Hello, {profileDetails.firstName} {profileDetails.lastName}
+        </h1>
+
         <div>
-          <div>
-            <label>Username</label>
-            {profileDetails.userName}
-            <br />
-          </div>
-          <label>First Name</label>
-          <input
-            type="text"
-            value={profileDetails.firstName}
-            onChange={(e) =>
-              setProfileDetails({
-                ...profileDetails,
-                firstName: e.target.value,
-              })
-            }
-          />{" "}
+          <label>Username: {profileDetails.userName}</label>
+        </div>
+        <div>
+          <label>First Name: {profileDetails.firstName}</label>
+        </div>
+
+        <div>
+          <label>Last Name: {profileDetails.lastName}</label>
           <br />
         </div>
         <div>
-          <label>Last Name</label>
-          <input
-            type="text"
-            value={profileDetails.lastName}
-            onChange={(e) =>
-              setProfileDetails({ ...profileDetails, lastName: e.target.value })
-            }
-          />{" "}
+          <label>Email: {profileDetails.email}</label>
           <br />
         </div>
         <div>
-          <label>Email</label>
-          <input
-            type="email"
-            value={profileDetails.email}
-            onChange={(e) =>
-              setProfileDetails({ ...profileDetails, email: e.target.value })
-            }
-          />{" "}
-          <br />
+          <label>
+            Are You a Venue Owner?: {profileDetails.isOwner ? "Yes" : "No"}
+          </label>
         </div>
         <div>
-          <label>Password</label>
-          <input
-            type="password"
-            value={profileDetails.password}
-            onChange={(e) =>
-              setProfileDetails({ ...profileDetails, password: e.target.value })
-            }
-          />{" "}
-          <br />
-        </div>
-        <div>
-          <label>Are You a Venue Owner?</label>
-          <select
-            value={profileDetails.isOwner}
-            onChange={(e) =>
-              setProfileDetails({ ...profileDetails, isOwner: e.target.value })
-            }
-          >
-            <option value={undefined}>Select your option</option>
-            <option value={true}>Yes</option>
-            <option value={false}>No</option>
-          </select>
-          <br />
-        </div>
-        <div>
-          <button onClick={() => handleProfileUpdate()}>Update Details</button>
+          <Link to="edit-profile" className="nav-item">
+            Update Details
+          </Link>
         </div>
       </div>
     );

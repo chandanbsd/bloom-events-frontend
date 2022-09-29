@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import "./signup.css";
 import { setProfile } from "../redux/user";
 
 const SignUp = () => {
@@ -41,61 +40,68 @@ const SignUp = () => {
 
   if (user.userName === null) {
     return (
-      <div className="form">
-        Signup
-        <div>
+      <div className="mx-auto" style={{ width: "500px" }}>
+        <h1>Signup</h1>
+
+        <div className="form-group">
           <label>First Name</label>
           <input
             type="text"
+            className="form-control"
             onChange={(e) =>
               setSignUpDetails({ ...signUpDetails, firstName: e.target.value })
             }
           />{" "}
           <br />
         </div>
-        <div>
+        <div className="form-group">
           <label>Last Name</label>
           <input
             type="text"
+            className="form-control"
             onChange={(e) =>
               setSignUpDetails({ ...signUpDetails, lastName: e.target.value })
             }
           />{" "}
           <br />
         </div>
-        <div>
+        <div className="form-group">
           <label>Email</label>
           <input
             type="email"
+            className="form-control"
             onChange={(e) =>
               setSignUpDetails({ ...signUpDetails, email: e.target.value })
             }
           />{" "}
           <br />
         </div>
-        <div>
+        <div className="form-group">
           <label>Username</label>
           <input
             type="text"
+            className="form-control"
             onChange={(e) =>
               setSignUpDetails({ ...signUpDetails, userName: e.target.value })
             }
           />{" "}
           <br />
         </div>
-        <div>
+        <div className="form-group">
           <label>Password</label>
           <input
             type="password"
+            className="form-control"
             onChange={(e) =>
               setSignUpDetails({ ...signUpDetails, password: e.target.value })
             }
           />{" "}
           <br />
         </div>
-        <div>
+        <div className="form-group">
           <label>Are You a Venue Owner?</label>
           <select
+            className="form-control"
             onChange={(e) =>
               setSignUpDetails({ ...signUpDetails, isOwner: e.target.value })
             }
@@ -107,7 +113,9 @@ const SignUp = () => {
           <br />
         </div>
         <div>
-          <button onClick={() => handleSignUp()}>SignUp</button>
+          <button onClick={() => handleSignUp()} className="btn btn-success">
+            SignUp
+          </button>
         </div>
       </div>
     );

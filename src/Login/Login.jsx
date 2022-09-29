@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 import { setProfile } from "../redux/user";
-import "./login.css";
 
 const Login = () => {
   const user = useSelector((state) => state.user);
@@ -35,30 +35,37 @@ const Login = () => {
   };
   if (user.username == null) {
     return (
-      <div className="form">
-        Login
-        <div>
-          <label>Username</label>
+      <div className="mx-auto" style={{ width: "500px" }}>
+        <h1>Login</h1>
+        <div className="form-group">
+          <label>Username: </label>
           <input
             type="text"
+            className="form-control"
             onChange={(e) =>
               setloginDetails({ ...loginDetails, userName: e.target.value })
             }
-          />{" "}
+          />
           <br />
         </div>
-        <div>
-          <label>Password</label>
+        <div className="form-group">
+          <label>Password: </label>
           <input
             type="password"
+            className="form-control"
             onChange={(e) =>
               setloginDetails({ ...loginDetails, password: e.target.value })
             }
-          />{" "}
+          />
           <br />
         </div>
-        <div>
-          <button onClick={handleLogin}>Login</button>
+        <div className="form-group" style={{ width: "500px" }}>
+          <button onClick={handleLogin} className="btn btn-success">
+            Login
+          </button>
+          <Link to="signup" className="btn btn-primary">
+            Signup
+          </Link>{" "}
         </div>
       </div>
     );
