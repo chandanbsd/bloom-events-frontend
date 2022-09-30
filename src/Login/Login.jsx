@@ -17,7 +17,6 @@ const Login = () => {
     } else if (loginDetails.password === undefined) {
       alert("Incorrect Password");
     } else {
-      console.log(JSON.stringify(loginDetails));
       const url = "/login";
       const requestOptions = {
         method: "POST",
@@ -27,8 +26,9 @@ const Login = () => {
       fetch(url, requestOptions)
         .then((response) => response.json())
         .then((res) => {
-          console.log(res.response);
-          dispatch(setProfile({ ...res.response }));
+          console.log(res.body);
+          dispatch(setProfile({ ...res.body }));
+          console.log(user);
         })
         .catch((error) => console.log("Form submit error", error));
     }

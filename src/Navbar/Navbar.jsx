@@ -33,6 +33,15 @@ const Navbar = () => {
         </React.Fragment>
       ) : (
         <React.Fragment>
+          <div className="dropdown">
+            <button className="btn btn-success dropdown-toggle">
+              Hello, {user.firstName}
+            </button>
+            <div className="dropdown-menu">
+              <div className="dropdown-item">Profile Page</div>
+              <div className="dropdown-item">Logout</div>
+            </div>
+          </div>
           <Link
             to="../Profile"
             className="nav-item"

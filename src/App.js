@@ -8,6 +8,9 @@ import "./App.css";
 import SignUp from "./SignUp/SignUp";
 import EditProfile from "./EditProfile/EditProfile";
 import "bootstrap/dist/css/bootstrap.min.css";
+import "bootstrap";
+
+import "bootstrap/dist/js/bootstrap.bundle.min.js";
 
 function App() {
   return (
