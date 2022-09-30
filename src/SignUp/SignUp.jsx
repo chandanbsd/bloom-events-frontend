@@ -1,12 +1,14 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
+import ReCAPTCHA from "react-google-recaptcha";
 import { useDispatch, useSelector } from "react-redux";
 import { setProfile } from "../redux/user";
 
 const SignUp = () => {
   const user = useSelector((state) => state.user);
+  const [captchaStatus, setCaptchaStatus] = useState(false);
 
   const dispatch = useDispatch();
-
+  const recaptchaRef = useRef();
   const [signUpDetails, setSignUpDetails] = useState({});
   useEffect(() => {}, [signUpDetails]);
 
@@ -21,6 +23,8 @@ const SignUp = () => {
       alert("Incorrect Username");
     } else if (signUpDetails.password === undefined) {
       alert("Incorrect Password");
+    } else if (captchaStatus == false) {
+      alert("Captcha Failed, Please try again");
     } else if (signUpDetails.isOwner === undefined) {
       alert("Choose if you are a venue owner?");
     } else {
@@ -36,6 +40,11 @@ const SignUp = () => {
         .then((response) => console.log(response))
         .catch((error) => console.log("Form submit error", error));
     }
+  };
+
+  const onCaptchaChange = () => {
+    const recaptchaValue = recaptchaRef.current.getValue();
+    setCaptchaStatus(recaptchaValue);
   };
 
   if (user.userName === null) {
@@ -111,6 +120,13 @@ const SignUp = () => {
             <option value={false}>No</option>
           </select>
           <br />
+        </div>
+        <div>
+          <ReCAPTCHA
+            ref={recaptchaRef}
+            sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
+            onChange={onCaptchaChange}
+          />
         </div>
         <div>
           <button onClick={() => handleSignUp()} className="btn btn-success">

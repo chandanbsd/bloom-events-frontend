@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import "./profile.css";
 import { setProfile } from "../redux/user";
 import { Link } from "react-router-dom";
 
@@ -35,34 +34,32 @@ const Profile = () => {
   };
   if (profileDetails.firstName !== null) {
     return (
-      <div className="form">
-        <h1>
-          {" "}
-          Hello, {profileDetails.firstName} {profileDetails.lastName}
-        </h1>
-
+      <div className="mx-auto" style={{ width: "500px" }}>
+        <h1>Profile Details</h1>
+        <br />
+        <br />
+        <ul className="list-group">
+          <li className="list-group-item">
+            <b>Username:</b> {profileDetails.userName}
+          </li>
+          <li className="list-group-item">
+            <b>First Name:</b> {profileDetails.firstName}
+          </li>
+          <li className="list-group-item">
+            <b>Last Name:</b> {profileDetails.lastName}
+          </li>
+          <li className="list-group-item">
+            <b>Email:</b> {profileDetails.email}
+          </li>
+          <li className="list-group-item">
+            <b>Are You a Venue Owner?: </b>
+            {profileDetails.email}
+          </li>
+        </ul>
+        <br />
+        <br />
         <div>
-          <label>Username: {profileDetails.userName}</label>
-        </div>
-        <div>
-          <label>First Name: {profileDetails.firstName}</label>
-        </div>
-
-        <div>
-          <label>Last Name: {profileDetails.lastName}</label>
-          <br />
-        </div>
-        <div>
-          <label>Email: {profileDetails.email}</label>
-          <br />
-        </div>
-        <div>
-          <label>
-            Are You a Venue Owner?: {profileDetails.isOwner ? "Yes" : "No"}
-          </label>
-        </div>
-        <div>
-          <Link to="edit-profile" className="nav-item">
+          <Link to="edit-profile" className="btn btn-danger">
             Update Details
           </Link>
         </div>

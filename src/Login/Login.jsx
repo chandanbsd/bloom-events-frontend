@@ -1,21 +1,24 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Navigate, Link } from "react-router-dom";
 import { setProfile } from "../redux/user";
+import ReCAPTCHA from "react-google-recaptcha";
 
 const Login = () => {
   const user = useSelector((state) => state.user);
-
+  const [captchaStatus, setCaptchaStatus] = useState(false);
   const dispatch = useDispatch();
 
   const [loginDetails, setloginDetails] = useState({});
   useEffect(() => {}, [loginDetails]);
-
+  const recaptchaRef = React.createRef();
   const handleLogin = () => {
     if (loginDetails.userName === undefined) {
       alert("Incorrect Username");
     } else if (loginDetails.password === undefined) {
       alert("Incorrect Password");
+    } else if (captchaStatus == false) {
+      alert("Captcha Failed, Please try again");
     } else {
       const url = "/login";
       const requestOptions = {
@@ -32,6 +35,11 @@ const Login = () => {
         })
         .catch((error) => console.log("Form submit error", error));
     }
+  };
+
+  const onCaptchaChange = () => {
+    const recaptchaValue = recaptchaRef.current.getValue();
+    setCaptchaStatus(recaptchaValue);
   };
   if (user.username == null) {
     return (
@@ -58,6 +66,13 @@ const Login = () => {
             }
           />
           <br />
+        </div>
+        <div>
+          <ReCAPTCHA
+            ref={recaptchaRef}
+            sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
+            onChange={onCaptchaChange}
+          />
         </div>
         <div className="form-group" style={{ width: "500px" }}>
           <button onClick={handleLogin} className="btn btn-success">
