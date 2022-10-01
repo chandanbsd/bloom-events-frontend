@@ -6,6 +6,7 @@ import { persistor, store } from "./redux/store";
 import App from "./App";
 
 import { PersistGate } from "redux-persist/integration/react";
+import { Auth0Provider } from "@auth0/auth0-react";
 
 import "./index.css";
 
@@ -13,11 +14,17 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <Provider store={store}>
-      <BrowserRouter>
-        <PersistGate loading={null} persistor={persistor}>
-          <App />
-        </PersistGate>
-      </BrowserRouter>
+      <Auth0Provider
+        domain="***REMOVED***"
+        clientId="***REMOVED***"
+        redirectUri={window.location.origin}
+      >
+        <BrowserRouter>
+          <PersistGate loading={null} persistor={persistor}>
+            <App />
+          </PersistGate>
+        </BrowserRouter>
+      </Auth0Provider>
     </Provider>
   </React.StrictMode>
 );

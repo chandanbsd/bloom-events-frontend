@@ -20,7 +20,7 @@ const Login = () => {
     } else if (captchaStatus == false) {
       alert("Captcha Failed, Please try again");
     } else {
-      const url = "/login";
+      const url = "http://localhost:5000/login";
       const requestOptions = {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -29,9 +29,10 @@ const Login = () => {
       fetch(url, requestOptions)
         .then((response) => response.json())
         .then((res) => {
-          console.log(res.body);
-          dispatch(setProfile({ ...res.body }));
-          console.log(user);
+          console.log(res);
+          dispatch(setProfile({ ...res }));
+          // console.log(res);
+          // dispatch(setProfile({ ...res }));
         })
         .catch((error) => console.log("Form submit error", error));
     }
