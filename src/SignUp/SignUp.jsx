@@ -30,7 +30,7 @@ const SignUp = () => {
     } else {
       dispatch(setProfile({ ...signUpDetails }));
       console.log(JSON.stringify(signUpDetails));
-      const url = "/register";
+      const url = "http://localhost:5000/register";
       const requestOptions = {
         method: "POST",
         headers: { "Content-Type": "application/json" },
