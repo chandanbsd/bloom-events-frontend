@@ -25,7 +25,7 @@ const EditProfile = () => {
     } else {
       dispatch(setProfile({ ...profileDetails }));
       console.log(JSON.stringify(profileDetails));
-      const url = "/update";
+      const url = "/edit";
       const requestOptions = {
         method: "POST",
         headers: { "Content-Type": "application/json" },

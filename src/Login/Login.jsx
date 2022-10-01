@@ -31,7 +31,8 @@ const Login = () => {
         .then((res) => {
           console.log(res.body);
           dispatch(setProfile({ ...res.body }));
-          console.log(user);
+          // console.log(res);
+          // dispatch(setProfile({ ...res }));
         })
         .catch((error) => console.log("Form submit error", error));
     }
