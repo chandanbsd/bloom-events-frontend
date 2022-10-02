@@ -53,7 +53,7 @@ const Profile = () => {
           </li>
           <li className="list-group-item">
             <b>Are You a Venue Owner?: </b>
-            {profileDetails.email}
+            {profileDetails.isOwner}
           </li>
         </ul>
         <br />

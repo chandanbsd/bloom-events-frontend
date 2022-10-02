@@ -8,7 +8,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 
 const Navbar = () => {
   const userFromStore = useSelector((state) => state.user);
-  const { logout, user } = useAuth0();
+  const { logout, user, isAuthenticated } = useAuth0();
 
   const dispatch = useDispatch();
   const handleLogout = () => {
@@ -24,24 +24,30 @@ const Navbar = () => {
     );
   };
 
+  const handleSpecialLogout = () => {
+    dispatch(
+      setProfile({
+        firstName: null,
+        lastName: null,
+        email: null,
+        userName: null,
+        password: null,
+        isOwner: null,
+      })
+    );
+    logout({ returnTo: window.location.origin });
+  };
+
   return (
     <nav className="navbar flex-column flex-sm-row navbar-light bg-light ">
       <Link to="/" className="nav-item">
         <span className="nav-item fs-3">Bloom Events Home</span>
       </Link>
-      {userFromStore.userName === null && user?.firstName !== null ? (
+      {userFromStore.userName === null ? (
         <React.Fragment>
           <Link to="login" className="nav-item fs-3">
             Login
           </Link>
-          <button
-            onClick={() => {
-              logout({ returnTo: window.location.origin });
-              console.log(user);
-            }}
-          >
-            Log Out
-          </button>
         </React.Fragment>
       ) : (
         <React.Fragment>
@@ -54,7 +60,7 @@ const Navbar = () => {
               <Link to="../Profile" className="dropdown-item">
                 Profile
               </Link>
-              {user === null ? (
+              {isAuthenticated === false ? (
                 <Link
                   to="../Profile"
                   onClick={handleLogout}
@@ -63,11 +69,7 @@ const Navbar = () => {
                   Logout
                 </Link>
               ) : (
-                <button
-                  onClick={() => logout({ returnTo: window.location.origin })}
-                >
-                  Log Out
-                </button>
+                <button onClick={handleSpecialLogout}>Log Out</button>
               )}
             </Dropdown.Menu>
           </Dropdown>
