@@ -66,7 +66,8 @@ const Login = () => {
       fetch(url, requestOptions)
         .then((response) => response.json())
         .then((res) => {
-          dispatch(setProfile({ ...res }));
+          console.log("From Backend:", res);
+          dispatch(setProfile({ ...res.body }));
         })
         .catch((error) => console.log("Form submit error", error));
     }
