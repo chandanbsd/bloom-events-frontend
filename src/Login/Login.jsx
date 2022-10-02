@@ -19,8 +19,6 @@ const Login = () => {
   );
 
   useEffect(() => {
-    // console.log(localStorage.getItem("specialLoginDetails"));
-
     if (
       userFromStore.firstName === null &&
       user !== undefined &&
@@ -49,9 +47,8 @@ const Login = () => {
         }),
       };
       fetch(url, requestOptions)
-        .then((response) => {
-          console.log(response);
-          return response.json();
+        .then((res) => {
+          return res.json();
         })
         .then((res) => {
           if (res.status === "FAIL") {
@@ -66,9 +63,6 @@ const Login = () => {
           dispatch(setProfile({ ...res.body }));
         })
         .catch((error) => console.log("Form submit error", error));
-      //
-
-      // localStorage.clear("specialLoginDetails");
     }
   }, [user, specialLoginDetails]);
   const recaptchaRef = React.createRef();
@@ -91,8 +85,9 @@ const Login = () => {
       fetch(url, requestOptions)
         .then((response) => response.json())
         .then((res) => {
-          console.log("From Backend:", res);
-          dispatch(setProfile({ ...res.body }));
+          if (res.status === "FAIL")
+            alert("Login Failed: Check Username and Password");
+          else dispatch(setProfile({ ...res.body }));
         })
         .catch((error) => console.log("Form submit error", error));
     }
