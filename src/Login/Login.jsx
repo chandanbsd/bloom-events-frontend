@@ -12,19 +12,21 @@ const Login = () => {
 
   const [loginDetails, setloginDetails] = useState({});
 
-  const { loginWithRedirect, user, isAuthenticated, isLoading } = useAuth0();
+  const { loginWithRedirect, user, isAuthenticated, isLoading, logout } =
+    useAuth0();
   const [specialLoginDetails, setSpecialLoginDetails] = useState(
     JSON.parse(localStorage.getItem("specialLoginDetails"))
   );
 
   useEffect(() => {
-    console.log(localStorage.getItem("specialLoginDetails"));
+    // console.log(localStorage.getItem("specialLoginDetails"));
+
     if (
       userFromStore.firstName === null &&
       user !== undefined &&
       specialLoginDetails !== null
     ) {
-      console.log({
+      console.log("From Frontend", {
         firstName: user.given_name,
         lastName: user.family_name,
         email: user.email,
@@ -32,16 +34,39 @@ const Login = () => {
         userName: specialLoginDetails.userName,
         isOwner: specialLoginDetails.isOwner,
       });
-      dispatch(
-        setProfile({
+      //
+      const url = "http://localhost:5000/speciallogin";
+      const requestOptions = {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
           firstName: user.given_name,
           lastName: user.family_name,
           email: user.email,
           password: null,
           userName: specialLoginDetails.userName,
           isOwner: specialLoginDetails.isOwner,
+        }),
+      };
+      fetch(url, requestOptions)
+        .then((response) => {
+          console.log(response);
+          return response.json();
         })
-      );
+        .then((res) => {
+          if (res.status === "FAIL") {
+            alert("Reenter Username");
+            logout();
+          }
+          return res;
+        })
+        .then((res) => {
+          console.log("From Backend:", res);
+
+          dispatch(setProfile({ ...res.body }));
+        })
+        .catch((error) => console.log("Form submit error", error));
+      //
 
       // localStorage.clear("specialLoginDetails");
     }
