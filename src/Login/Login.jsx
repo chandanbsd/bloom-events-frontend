@@ -13,10 +13,39 @@ const Login = () => {
   const [loginDetails, setloginDetails] = useState({});
 
   const { loginWithRedirect, user, isAuthenticated, isLoading } = useAuth0();
-  const [speciaLoginUsername, setSpeciaLoginUsername] = useState(null);
+  const [specialLoginDetails, setSpecialLoginDetails] = useState(
+    JSON.parse(localStorage.getItem("specialLoginDetails"))
+  );
+
   useEffect(() => {
-    console.log(user);
-  }, [user]);
+    console.log(localStorage.getItem("specialLoginDetails"));
+    if (
+      userFromStore.firstName === null &&
+      user !== undefined &&
+      specialLoginDetails !== null
+    ) {
+      console.log({
+        firstName: user.given_name,
+        lastName: user.family_name,
+        email: user.email,
+        password: null,
+        userName: specialLoginDetails.userName,
+        isOwner: specialLoginDetails.isOwner,
+      });
+      dispatch(
+        setProfile({
+          firstName: user.given_name,
+          lastName: user.family_name,
+          email: user.email,
+          password: null,
+          userName: specialLoginDetails.userName,
+          isOwner: specialLoginDetails.isOwner,
+        })
+      );
+
+      // localStorage.clear("specialLoginDetails");
+    }
+  }, [user, specialLoginDetails]);
   const recaptchaRef = React.createRef();
   const navigate = useNavigate();
 
@@ -37,7 +66,6 @@ const Login = () => {
       fetch(url, requestOptions)
         .then((response) => response.json())
         .then((res) => {
-          console.log(res);
           dispatch(setProfile({ ...res }));
         })
         .catch((error) => console.log("Form submit error", error));
@@ -46,24 +74,20 @@ const Login = () => {
 
   const handleSpecialLogin = () => {
     if (
-      speciaLoginUsername === null ||
-      speciaLoginUsername === "" ||
-      speciaLoginUsername === undefined
+      specialLoginDetails === null ||
+      specialLoginDetails === "" ||
+      specialLoginDetails === undefined
     ) {
       alert("Please enter the Username");
     } else {
-      loginWithRedirect();
-      console.log(user);
-      console.log(speciaLoginUsername);
-      dispatch(
-        setProfile({
-          firstName: user.given_name,
-          lastName: user.family_name,
-          email: user.email,
-          password: null,
-          userName: speciaLoginUsername,
-        })
+      localStorage.setItem(
+        "specialLoginDetails",
+        JSON.stringify(specialLoginDetails)
       );
+
+      console.log("saved to local storage");
+
+      loginWithRedirect();
     }
   };
 
@@ -74,7 +98,9 @@ const Login = () => {
   if (userFromStore.username == null) {
     return (
       <div className="mx-auto" style={{ width: "500px" }}>
-        <h1>Login</h1>
+        <h1 className="text-center">Login Page</h1>
+        <br />
+        <br />
         <div className="form-group">
           <label>Username: </label>
           <input
@@ -97,37 +123,80 @@ const Login = () => {
           />
           <br />
         </div>
-        <div>
+        <div className="d-flex justify-content-around">
           <ReCAPTCHA
             ref={recaptchaRef}
             sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
             onChange={onCaptchaChange}
           />
         </div>
-        <div className="form-group" style={{ width: "500px" }}>
+        <br />
+        <div
+          style={{ width: "500px" }}
+          className="form-group d-flex justify-content-around"
+        >
           <button onClick={handleLogin} className="btn btn-success">
-            Login
+            Login with Email
           </button>
           <Link to="signup" className="btn btn-primary">
-            Signup
+            Signup with Email
           </Link>{" "}
         </div>
-        <hr></hr>
-        <div className="form-group" style={{ width: "500px" }}>
-          <div className="form-group">
-            <label>Username: </label>
-            <input
-              type="text"
-              className="form-control"
-              onChange={(e) => setSpeciaLoginUsername(e.target.value)}
-            />
-            <br />
-          </div>
+        <br />
+        <br />
+        <hr
+          style={{
+            size: "20px",
+            height: "12px",
+            background: "blue",
+          }}
+        />
+        <br />
+        <br />
+
+        <div className="form-group">
+          <label>Username: </label>
+          <input
+            type="text"
+            className="form-control"
+            onChange={(e) =>
+              setSpecialLoginDetails({
+                ...specialLoginDetails,
+                userName: e.target.value,
+              })
+            }
+          />
+          <br />
+        </div>
+
+        <div className="form-group">
+          <label>Are You a Venue Owner?</label>
+          <select
+            className="form-control"
+            onChange={(e) => {
+              setSpecialLoginDetails({
+                ...specialLoginDetails,
+                isOwner: e.target.value,
+              });
+            }}
+          >
+            <option value={undefined} disabled>
+              Select your option
+            </option>
+            <option value={true} defaultValue>
+              Yes
+            </option>
+            <option value={false}>No</option>
+          </select>
+          <br />
+        </div>
+
+        <div className=" form-group d-flex justify-content-around">
           <button
             onClick={() => handleSpecialLogin()}
             className="btn btn-success"
           >
-            Login With OAuth
+            Login/Signup With OAuth
           </button>
         </div>
       </div>
