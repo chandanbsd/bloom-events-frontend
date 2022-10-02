@@ -12,19 +12,32 @@ const EditProfile = () => {
   useEffect(() => {}, [profileDetails]);
 
   const handleSignUp = () => {
-    if (profileDetails.firstName === undefined) {
+    if (
+      profileDetails.firstName === undefined ||
+      profileDetails.firstName === ""
+    ) {
       alert("Incorrect First Name");
-    } else if (profileDetails.lastName === undefined) {
+    } else if (
+      profileDetails.lastName === undefined ||
+      profileDetails.lastName === ""
+    ) {
       alert("Incorrect Last Name");
-    } else if (profileDetails.email === undefined) {
+    } else if (
+      profileDetails.email === undefined ||
+      profileDetails.email === ""
+    ) {
       alert("Incorrect Email");
-    } else if (profileDetails.password === undefined) {
+    } else if (
+      profileDetails.password === undefined ||
+      profileDetails.password === ""
+    ) {
       alert("Incorrect Password");
-    } else if (profileDetails.isOwner === undefined) {
+    } else if (
+      profileDetails.isOwner === undefined ||
+      profileDetails.isOwner === ""
+    ) {
       alert("Choose if you are a venue owner?");
     } else {
-      dispatch(setProfile({ ...profileDetails }));
-      console.log(JSON.stringify(profileDetails));
       const url = "http://localhost:5000/edit";
       const requestOptions = {
         method: "POST",
@@ -32,8 +45,12 @@ const EditProfile = () => {
         body: JSON.stringify(profileDetails),
       };
       fetch(url, requestOptions)
-        .then((response) => console.log(response))
         .then((response) => response.json())
+        .then((res) => {
+          console.log("From backend", res.status, res.body);
+          if (res.status === "OK") dispatch(setProfile({ ...res.body }));
+          else alert("Error");
+        })
         .catch((error) => console.log("Form submit error", error));
     }
   };
