@@ -2,7 +2,8 @@ import React, { useState, useEffect, useRef } from "react";
 import ReCAPTCHA from "react-google-recaptcha";
 import { useDispatch, useSelector } from "react-redux";
 import { setProfile } from "../redux/user";
-
+import baseURL from "../constants/constants";
+import { useNavigate } from "react-router-dom";
 const SignUp = () => {
   const user = useSelector((state) => state.user);
   const [captchaStatus, setCaptchaStatus] = useState(false);
@@ -10,6 +11,7 @@ const SignUp = () => {
   const dispatch = useDispatch();
   const recaptchaRef = useRef();
   const [signUpDetails, setSignUpDetails] = useState({});
+  const navigate = useNavigate();
   useEffect(() => {}, [signUpDetails]);
 
   const handleSignUp = () => {
@@ -28,16 +30,23 @@ const SignUp = () => {
     } else if (signUpDetails.isOwner === undefined) {
       alert("Choose if you are a venue owner?");
     } else {
-      dispatch(setProfile({ ...signUpDetails }));
       console.log(JSON.stringify(signUpDetails));
-      const url = "http://localhost:5000/register";
+      const url = `${baseURL}/register`;
       const requestOptions = {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(signUpDetails),
       };
       fetch(url, requestOptions)
-        .then((response) => console.log(response))
+        .then((res) => res.json())
+        .then((res) => {
+          if (res.status === "OK") {
+            dispatch(setProfile({ ...signUpDetails }));
+            navigate("/");
+          } else {
+            alert("Update Failed");
+          }
+        })
         .catch((error) => console.log("Form submit error", error));
     }
   };

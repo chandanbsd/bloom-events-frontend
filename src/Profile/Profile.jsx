@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setProfile } from "../redux/user";
 import { Link } from "react-router-dom";
-
 const Profile = () => {
   const user = useSelector((state) => state.user);
 
@@ -11,10 +10,6 @@ const Profile = () => {
   const [profileDetails, setProfileDetails] = useState({
     ...user,
   });
-
-  useEffect(() => {
-    console.log(profileDetails);
-  }, [profileDetails]);
 
   const handleProfileUpdate = () => {
     if (profileDetails.firstName === "") {
