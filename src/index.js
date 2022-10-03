@@ -17,7 +17,7 @@ root.render(
       <Auth0Provider
         domain="***REMOVED***"
         clientId="***REMOVED***"
-        redirectUri={window.location.origin}
+        redirectUri={"http://localhost:3000/login"}
       >
         <BrowserRouter>
           <PersistGate loading={null} persistor={persistor}>
