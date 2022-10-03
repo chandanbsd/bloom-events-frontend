@@ -17,7 +17,7 @@ root.render(
       <Auth0Provider
         domain="dev--fppkdna.us.auth0.com"
         clientId="mYyC6nZzWW74Bx6IjPMbCnJsYHY0JWdt"
-        redirectUri={window.location.origin}
+        redirectUri={"http://localhost:3000/login"}
       >
         <BrowserRouter>
           <PersistGate loading={null} persistor={persistor}>
