@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-
+import baseURL from "../constants/constants";
 const PasswordReset = () => {
   const [password, setPassword] = useState(null);
   const [confirmPassword, setConfirmPassword] = useState(null);
@@ -12,7 +12,7 @@ const PasswordReset = () => {
   }, []);
 
   const passwordReset = () => {
-    const url = "http://localhost:5000/password_reset";
+    const url = `${baseURL}/password_reset`;
     const requestOptions = {
       method: "POST",
       headers: { "Content-Type": "application/json" },
