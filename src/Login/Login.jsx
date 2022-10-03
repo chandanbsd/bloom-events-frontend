@@ -4,6 +4,7 @@ import { Navigate, Link, useNavigate } from "react-router-dom";
 import { setProfile } from "../redux/user";
 import ReCAPTCHA from "react-google-recaptcha";
 import { useAuth0 } from "@auth0/auth0-react";
+import baseURL from "../constants/constants";
 
 const Login = () => {
   const userFromStore = useSelector((state) => state.user);
@@ -26,16 +27,7 @@ const Login = () => {
       user !== undefined &&
       specialLoginDetails !== null
     ) {
-      console.log("From Frontend", {
-        firstName: user.given_name,
-        lastName: user.family_name,
-        email: user.email,
-        password: null,
-        userName: specialLoginDetails.userName,
-        isOwner: specialLoginDetails.isOwner,
-      });
-      //
-      const url = "http://localhost:5000/speciallogin";
+      const url = `${baseURL}/speciallogin`;
       const requestOptions = {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -54,15 +46,25 @@ const Login = () => {
         })
         .then((res) => {
           if (res.status === "FAIL") {
-            alert("Reenter Username");
-            logout();
+            alert("Reenter Username, try 0Auth again");
+            dispatch(
+              setProfile({
+                firstName: null,
+                lastName: null,
+                email: null,
+                password: null,
+                userName: null,
+                isOwner: null,
+              })
+            );
+            logout({ returnTo: window.location.origin });
           }
           return res;
         })
         .then((res) => {
           console.log("From Backend:", res);
-
           dispatch(setProfile({ ...res.body }));
+          navigate("/");
         })
         .catch((error) => console.log("Form submit error", error));
     }
@@ -78,7 +80,8 @@ const Login = () => {
     } else if (captchaStatus === false) {
       alert("Captcha Failed, Please try again");
     } else {
-      const url = "http://localhost:5000/login";
+      const url = `${baseURL}/login`;
+      console.log(url);
       const requestOptions = {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -89,7 +92,10 @@ const Login = () => {
         .then((res) => {
           if (res.status === "FAIL")
             alert("Login Failed: Check Username and Password");
-          else dispatch(setProfile({ ...res.body }));
+          else {
+            dispatch(setProfile({ ...res.body }));
+            navigate("/");
+          }
         })
         .catch((error) => console.log("Form submit error", error));
     }
@@ -101,7 +107,7 @@ const Login = () => {
       passwordResetEmail !== undefined &&
       passwordResetEmail !== ""
     ) {
-      const url = "http://localhost:5000/reset_mail";
+      const url = `${baseURL}/reset_mail`;
       const requestOptions = {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -111,7 +117,10 @@ const Login = () => {
         .then((response) => response.json())
         .then((res) => {
           if (res.status === "FAIL") alert("Email Failed");
-          else alert("Email Sent Successfully");
+          else {
+            alert("Email Sent Successfully");
+            navigate("/");
+          }
         })
         .catch((error) => console.log("Form submit error", error));
     }
@@ -181,7 +190,7 @@ const Login = () => {
           className="form-group d-flex justify-content-around"
         >
           <button onClick={handleLogin} className="btn btn-success">
-            Login with Email
+            Login
           </button>
           <Link to="signup" className="btn btn-primary">
             Signup with Email

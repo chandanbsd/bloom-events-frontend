@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setProfile } from "../redux/user";
+import baseURL from "../constants/constants";
+import { useNavigate } from "react-router-dom";
 
 const EditProfile = () => {
   const user = useSelector((state) => state.user);
@@ -9,6 +11,7 @@ const EditProfile = () => {
   const [profileDetails, setProfileDetails] = useState({
     ...user,
   });
+  const navigate = useNavigate();
   useEffect(() => {}, [profileDetails]);
 
   const handleSignUp = () => {
@@ -38,7 +41,7 @@ const EditProfile = () => {
     ) {
       alert("Choose if you are a venue owner?");
     } else {
-      const url = "http://localhost:5000/edit";
+      const url = `${baseURL}/edit`;
       const requestOptions = {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -48,8 +51,11 @@ const EditProfile = () => {
         .then((response) => response.json())
         .then((res) => {
           console.log("From backend", res.status, res.body);
-          if (res.status === "OK") dispatch(setProfile({ ...res.body }));
-          else alert("Error");
+          if (res.status === "OK") {
+            alert("Profile Update Sucessfull");
+            dispatch(setProfile({ ...res.body }));
+            navigate("/");
+          } else alert("Error Updating Profile. Try Again");
         })
         .catch((error) => console.log("Form submit error", error));
     }
@@ -98,6 +104,7 @@ const EditProfile = () => {
           <input
             type="email"
             className="form-control"
+            pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
             onChange={(e) =>
               setProfileDetails({ ...profileDetails, email: e.target.value })
             }
