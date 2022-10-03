@@ -18,6 +18,8 @@ const Login = () => {
     JSON.parse(localStorage.getItem("specialLoginDetails"))
   );
 
+  const [passwordResetEmail, setPasswordResetEmail] = useState(null);
+
   useEffect(() => {
     if (
       userFromStore.firstName === null &&
@@ -88,6 +90,28 @@ const Login = () => {
           if (res.status === "FAIL")
             alert("Login Failed: Check Username and Password");
           else dispatch(setProfile({ ...res.body }));
+        })
+        .catch((error) => console.log("Form submit error", error));
+    }
+  };
+
+  const sendPasswordResetEmail = () => {
+    if (
+      passwordResetEmail !== null &&
+      passwordResetEmail !== undefined &&
+      passwordResetEmail !== ""
+    ) {
+      const url = "http://localhost:5000/reset_mail";
+      const requestOptions = {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: passwordResetEmail }),
+      };
+      fetch(url, requestOptions)
+        .then((response) => response.json())
+        .then((res) => {
+          if (res.status === "FAIL") alert("Email Failed");
+          else alert("Email Sent Successfully");
         })
         .catch((error) => console.log("Form submit error", error));
     }
@@ -213,11 +237,36 @@ const Login = () => {
         </div>
 
         <div className=" form-group d-flex justify-content-around">
-          <button
-            onClick={() => handleSpecialLogin()}
-            className="btn btn-success"
-          >
+          <button onClick={() => handleSpecialLogin()} className="btn btn-info">
             Login/Signup With OAuth
+          </button>
+        </div>
+        <br />
+        <br />
+        <hr
+          style={{
+            size: "20px",
+            height: "12px",
+            background: "blue",
+          }}
+        />
+        <br />
+        <br />
+        <div className="form-group">
+          <label>Email: </label>
+          <input
+            type="email"
+            className="form-control"
+            onChange={(e) => setPasswordResetEmail(e.target.value)}
+          />
+          <br />
+        </div>
+        <div className=" form-group d-flex justify-content-around">
+          <button
+            onClick={() => sendPasswordResetEmail()}
+            className="btn btn-danger"
+          >
+            Reset Password
           </button>
         </div>
       </div>
