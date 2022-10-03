@@ -13,6 +13,7 @@ import "bootstrap";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import { useAuth0 } from "@auth0/auth0-react";
 import { useEffect } from "react";
+import PasswordReset from "./PasswordReset/PasswordReset";
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
         <Route path="login" element={<Login />} />
         <Route path="profile" element={<Profile />} />
         <Route path="profile/edit-profile" element={<EditProfile />} />
+        <Route path="login/password-reset/:token" element={<PasswordReset />} />
       </Routes>
     </div>
   );
