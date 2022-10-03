@@ -11,6 +11,7 @@ const Profile = () => {
   const [profileDetails, setProfileDetails] = useState({
     ...user,
   });
+
   useEffect(() => {
     console.log(profileDetails);
   }, [profileDetails]);
