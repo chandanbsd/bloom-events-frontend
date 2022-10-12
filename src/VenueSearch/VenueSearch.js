@@ -48,7 +48,7 @@ const mock = [
   },
 ];
 
-const Search = () => {
+const VenueSearch = () => {
   const [searchKeyword, setSearchKeyword] = useState("");
   const [eventList, setEventList] = useState([]);
   const [filteredEventList, setFilteredEventList] = useState([]);
@@ -249,4 +249,4 @@ const Search = () => {
   );
 };
 
-export default Search;
+export default VenueSearch;
