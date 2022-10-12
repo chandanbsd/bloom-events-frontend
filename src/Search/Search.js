@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { clearEvent, setEvent } from "../redux/event";
-
+import Dropdown from "react-bootstrap/Dropdown";
+import DropdownButton from "react-bootstrap/DropdownButton";
 const mock = [
   {
     venueAvailability: {
@@ -21,6 +22,8 @@ const mock = [
     venueOwner: "chandanbsd",
     venueDescription: "The best sports venue in town",
     categoryType: 0,
+    venueCity: "Indianapolis",
+    venueState: "Indiana",
   },
   {
     venueAvailability: {
@@ -35,11 +38,13 @@ const mock = [
     venueHrCost: 400,
     venueId: "0",
     venueLocation: "5A N kinserPike , Bloomington, 47404",
-    venueName: "SRSC",
+    venueName: "Nashville Arts Center",
     venueOpen: "true",
     venueOwner: "chandanbsd",
     venueDescription: "The best sports venue in town",
     categoryType: 1,
+    venueCity: "Nashville",
+    venueState: "Tennessee",
   },
 ];
 
@@ -47,6 +52,7 @@ const Search = () => {
   const [searchKeyword, setSearchKeyword] = useState("");
   const [eventList, setEventList] = useState([]);
   const [filteredEventList, setFilteredEventList] = useState([]);
+  const locations = ["Bloomington", "Indianapolis", "Greenwood"];
 
   const eventFromStore = useSelector((state) => state.event);
   const dispatch = useDispatch();
@@ -63,34 +69,96 @@ const Search = () => {
     }
   };
 
+  const handleCityFilter = (e) => {
+    if (e === "Any") setFilteredEventList([...eventList]);
+    else {
+      setFilteredEventList(eventList.filter((ele) => ele.venueCity === e));
+    }
+  };
+
+  const handleStateFilter = (e) => {
+    if (e === "Any") setFilteredEventList([...eventList]);
+    else {
+      setFilteredEventList(eventList.filter((ele) => ele.venueState === e));
+    }
+  };
+
   window.onload = async () => {
     await dispatch(setEvent([...mock]));
     await setEventList(JSON.parse(JSON.stringify(eventFromStore.eventList)));
+    await setFilteredEventList(
+      JSON.parse(JSON.stringify(eventFromStore.eventList))
+    );
   };
 
   return (
     <div>
       <h1 className="mx-auto text-center">Search Event Venues</h1>
-      <div className="form-group mx-auto mt-5" style={{ width: "500px" }}>
-        <input
-          type="search"
-          className="form-control"
-          style={{ display: "inline-block", width: "70%" }}
-          onChange={(e) => {
-            setSearchKeyword(e.target.value);
-          }}
-        />
-        <button className="btn btn-primary" onClick={processSearch}>
-          Search
-        </button>
-        <button
+      <div
+        className="form-group mx-auto mt-5"
+        style={{
+          width: "900px",
+          display: "flex",
+          justifyContent: "space-between",
+        }}
+      >
+        <div style={{ width: "50%", display: "flex" }}>
+          <input
+            type="search"
+            className="form-control"
+            style={{ display: "inline-block" }}
+            onChange={(e) => {
+              setSearchKeyword(e.target.value);
+            }}
+          />
+          <button
+            className="btn btn-primary"
+            onClick={processSearch}
+            style={{ display: "inline-block" }}
+          >
+            Search
+          </button>
+        </div>
+        {/* <button
           className="btn btn-primary"
           onClick={() => {
             dispatch(clearEvent());
           }}
         >
           Clear
-        </button>
+        </button> */}
+        <Dropdown>
+          <DropdownButton
+            variant="success"
+            id="dropdown-basic"
+            onSelect={(e) => {
+              handleCityFilter(e);
+            }}
+            title="Select City"
+          >
+            <Dropdown.Item eventKey={"Any"}>Any</Dropdown.Item>
+            <Dropdown.Item eventKey={"Bloomington"}>Bloomington</Dropdown.Item>
+            <Dropdown.Item eventKey={"Indianapolis"}>
+              Indianapolis
+            </Dropdown.Item>
+            <Dropdown.Item eventKey={"Greenwood"}>Greenwood</Dropdown.Item>
+          </DropdownButton>
+        </Dropdown>
+        <Dropdown>
+          <DropdownButton
+            variant="success"
+            id="dropdown-basic"
+            onSelect={(e) => {
+              handleStateFilter(e);
+            }}
+            title="Select State"
+          >
+            <Dropdown.Item eventKey={"Any"}>Any</Dropdown.Item>
+            <Dropdown.Item eventKey={"Indiana"}>Indiana</Dropdown.Item>
+            <Dropdown.Item eventKey={"Tennessee"}>Tennessee</Dropdown.Item>
+            <Dropdown.Item eventKey={"Texas"}>Texas</Dropdown.Item>
+          </DropdownButton>
+        </Dropdown>
       </div>
 
       <div className="mx-auto mt-5" style={{ width: "50%" }}>
