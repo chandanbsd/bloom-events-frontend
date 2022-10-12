@@ -21,7 +21,7 @@ const mock = [
     venueOpen: "true",
     venueOwner: "chandanbsd",
     venueDescription: "The best sports venue in town",
-    categoryType: 0,
+    categoryType: "Sports",
     venueCity: "Indianapolis",
     venueState: "Indiana",
   },
@@ -42,7 +42,7 @@ const mock = [
     venueOpen: "true",
     venueOwner: "chandanbsd",
     venueDescription: "The best sports venue in town",
-    categoryType: 1,
+    categoryType: "Music",
     venueCity: "Nashville",
     venueState: "Tennessee",
   },
@@ -53,6 +53,7 @@ const Search = () => {
   const [eventList, setEventList] = useState([]);
   const [filteredEventList, setFilteredEventList] = useState([]);
   const locations = ["Bloomington", "Indianapolis", "Greenwood"];
+  const categories = ["Sport", "Music"];
 
   const eventFromStore = useSelector((state) => state.event);
   const dispatch = useDispatch();
@@ -80,6 +81,13 @@ const Search = () => {
     if (e === "Any") setFilteredEventList([...eventList]);
     else {
       setFilteredEventList(eventList.filter((ele) => ele.venueState === e));
+    }
+  };
+
+  const handleCategoryFilter = (e) => {
+    if (e === "Any") setFilteredEventList([...eventList]);
+    else {
+      setFilteredEventList(eventList.filter((ele) => ele.categoryType === e));
     }
   };
 
@@ -157,6 +165,21 @@ const Search = () => {
             <Dropdown.Item eventKey={"Indiana"}>Indiana</Dropdown.Item>
             <Dropdown.Item eventKey={"Tennessee"}>Tennessee</Dropdown.Item>
             <Dropdown.Item eventKey={"Texas"}>Texas</Dropdown.Item>
+          </DropdownButton>
+        </Dropdown>
+
+        <Dropdown>
+          <DropdownButton
+            variant="success"
+            id="dropdown-basic"
+            onSelect={(e) => {
+              handleCategoryFilter(e);
+            }}
+            title="Select Category"
+          >
+            <Dropdown.Item eventKey={"Any"}>Any</Dropdown.Item>
+            <Dropdown.Item eventKey={"Music"}>Music</Dropdown.Item>
+            <Dropdown.Item eventKey={"Sports"}>Sports</Dropdown.Item>
           </DropdownButton>
         </Dropdown>
       </div>
