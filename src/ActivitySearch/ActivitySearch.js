@@ -4,62 +4,94 @@ import { clearEvent, setEvent } from "../redux/event";
 import Dropdown from "react-bootstrap/Dropdown";
 import DropdownButton from "react-bootstrap/DropdownButton";
 import { usCities, usStates } from "../constants/usaCityStates";
-import venueListMock from "../Mocks/venueListMock";
+import activityListMock from "../Mocks/activityListMock";
+import { setActivity } from "../redux/activity";
 
-const VenueSearch = () => {
+const ActivitySearch = () => {
   const [searchKeyword, setSearchKeyword] = useState("");
-  const [eventList, setEventList] = useState([]);
-  const [filteredEventList, setFilteredEventList] = useState([]);
-  const locations = ["Bloomington", "Indianapolis", "Greenwood"];
-  const categories = ["Sport", "Music"];
+  const [activityList, setActivityList] = useState([]);
+  const [filteredActivityList, setFilteredActivityList] = useState([]);
 
-  const eventFromStore = useSelector((state) => state.event);
+  const activityFromStore = useSelector((state) => state.activity);
   const dispatch = useDispatch();
 
   const processSearch = async () => {
     if (searchKeyword === "" || searchKeyword === undefined)
-      setFilteredEventList([...eventList]);
+      setFilteredActivityList([...activityList]);
     else {
-      setFilteredEventList(
-        eventList.filter((ele) =>
-          ele.venueName.toLowerCase().startsWith(searchKeyword.toLowerCase())
+      setFilteredActivityList(
+        activityList.filter((ele) =>
+          ele.activityName.toLowerCase().startsWith(searchKeyword.toLowerCase())
         )
       );
     }
   };
 
   const handleCityFilter = (e) => {
-    if (e === "Any") setFilteredEventList([...eventList]);
+    if (e === "Any") setFilteredActivityList([...activityList]);
     else {
-      setFilteredEventList(eventList.filter((ele) => ele.venueCity === e));
+      setFilteredActivityList(
+        activityList.filter((ele) => ele.activityCity === e)
+      );
     }
   };
 
   const handleStateFilter = (e) => {
-    if (e === "Any") setFilteredEventList([...eventList]);
+    if (e === "Any") setFilteredActivityList([...activityList]);
     else {
-      setFilteredEventList(eventList.filter((ele) => ele.venueState === e));
+      setFilteredActivityList(
+        activityList.filter((ele) => ele.activityState === e)
+      );
     }
   };
 
   const handleCategoryFilter = (e) => {
-    if (e === "Any") setFilteredEventList([...eventList]);
+    if (e === "Any") setFilteredActivityList([...activityList]);
     else {
-      setFilteredEventList(eventList.filter((ele) => ele.categoryType === e));
+      setFilteredActivityList(
+        activityList.filter((ele) => ele.categoryType === e)
+      );
+    }
+  };
+
+  const handleAgeRangeFilter = (e) => {
+    if (e === "Any") setFilteredActivityList([...activityList]);
+    else if (e === "A18") {
+      setFilteredActivityList(
+        activityList.filter(
+          (ele) =>
+            ele.activityAgeRange === "A18" || ele.activityAgeRange === "A65"
+        )
+      );
+    } else {
+      setFilteredActivityList(
+        activityList.filter((ele) => ele.activityAgeRange === "A65")
+      );
+    }
+  };
+
+  const handleCostFilter = (e) => {
+    if (e === "Any") setFilteredActivityList([...activityList]);
+    else {
+      setFilteredActivityList(
+        activityList.filter((ele) => ele.activityCost === e)
+      );
     }
   };
 
   window.onload = async () => {
-    await dispatch(setEvent([...venueListMock]));
-    await setEventList(JSON.parse(JSON.stringify(eventFromStore.eventList)));
-    await setFilteredEventList(
-      JSON.parse(JSON.stringify(eventFromStore.eventList))
+    await dispatch(setActivity([...activityListMock]));
+    await setActivityList(
+      JSON.parse(JSON.stringify(activityFromStore.activityList))
+    );
+    await setFilteredActivityList(
+      JSON.parse(JSON.stringify(activityFromStore.activityList))
     );
   };
 
   return (
     <div>
-      <h1 className="mx-auto text-center">Search Event Venues</h1>
+      <h1 className="mx-auto text-center">Search Activities</h1>
       <div>
         <div style={{ display: "flex", width: "50%" }} className="mx-auto pt-5">
           <input
@@ -78,14 +110,7 @@ const VenueSearch = () => {
             Search
           </button>
         </div>
-        {/* <button
-          className="btn btn-primary"
-          onClick={() => {
-            dispatch(clearEvent());
-          }}
-        >
-          Clear
-        </button> */}
+
         <div
           className="form-group mx-auto mt-5"
           style={{
@@ -131,6 +156,9 @@ const VenueSearch = () => {
                     {ele}
                   </Dropdown.Item>
                 ))}
+                {/* <Dropdown.Item eventKey={"Indiana"}>Indiana</Dropdown.Item>
+            <Dropdown.Item eventKey={"Tennessee"}>Tennessee</Dropdown.Item>
+            <Dropdown.Item eventKey={"Texas"}>Texas</Dropdown.Item> */}
               </Dropdown.Menu>
             </DropdownButton>
           </Dropdown>
@@ -149,20 +177,59 @@ const VenueSearch = () => {
               <Dropdown.Item eventKey={"Sports"}>Sports</Dropdown.Item>
             </DropdownButton>
           </Dropdown>
+
+          <Dropdown>
+            <DropdownButton
+              variant="success"
+              id="dropdown-basic"
+              onSelect={(e) => {
+                handleAgeRangeFilter(e);
+              }}
+              title="Select Age Range"
+            >
+              <Dropdown.Item eventKey={"Any"}>Any</Dropdown.Item>
+              <Dropdown.Item eventKey={"A65"}>Above 65</Dropdown.Item>
+              <Dropdown.Item eventKey={"A18"}>Above 18</Dropdown.Item>
+              <Dropdown.Item eventKey={"B18"}>Below 18</Dropdown.Item>
+            </DropdownButton>
+          </Dropdown>
+
+          <Dropdown>
+            <DropdownButton
+              variant="success"
+              id="dropdown-basic"
+              onSelect={(e) => {
+                handleCostFilter(e);
+              }}
+              title="Select Cost"
+            >
+              <Dropdown.Item eventKey={"Any"}>Any</Dropdown.Item>
+              <Dropdown.Item eventKey={"Free"}>Free</Dropdown.Item>
+              <Dropdown.Item eventKey={"Paid"}>Paid</Dropdown.Item>
+            </DropdownButton>
+          </Dropdown>
         </div>
       </div>
 
       <div className="mx-auto mt-5" style={{ width: "50%" }}>
-        {filteredEventList.map((val, index) => {
+        {filteredActivityList.map((val, index) => {
           return (
             <div className="card mb-2 p-3" key={index}>
               <div className="card-body d-flex justify-content-around">
                 <div>
-                  <h5 className="card-title">Name: {val.venueName}</h5>
+                  <h5 className="card-title">Name: {val.activityName}</h5>
                   <p className="card-text">
-                    Description: {val.venueDescription}
+                    Description: {val.activityDescription}
                   </p>
-                  <p>Address: {val.venueLocation}</p>
+                  <p>Address: {val.activityLocation}</p>
+                  <p>
+                    Age Range:{" "}
+                    {val.activityAgeRange === "A65"
+                      ? "Above 65"
+                      : val.activityAgeRange === "A18"
+                      ? "Above 18"
+                      : "Below 18"}
+                  </p>
                   <img className="card-img-top" alt="Card Image" />
                 </div>
                 <div className="align-self-center">
@@ -174,32 +241,8 @@ const VenueSearch = () => {
                           <th>Time</th>
                         </tr>
                         <tr>
-                          <td>Monday</td>
-                          <td>{`${val.venueAvailability.mon[0]} - ${val.venueAvailability.mon[1]}`}</td>
-                        </tr>
-                        <tr>
-                          <td>Tuesday</td>
-                          <td>{`${val.venueAvailability.tue[0]} - ${val.venueAvailability.tue[1]}`}</td>
-                        </tr>
-                        <tr>
-                          <td>Wednesday</td>
-                          <td>{`${val.venueAvailability.wed[0]} - ${val.venueAvailability.wed[1]}`}</td>
-                        </tr>
-                        <tr>
-                          <td>Thursday</td>
-                          <td>{`${val.venueAvailability.thu[0]} - ${val.venueAvailability.thu[1]}`}</td>
-                        </tr>
-                        <tr>
-                          <td>Friday</td>
-                          <td>{`${val.venueAvailability.fri[0]} - ${val.venueAvailability.fri[1]}`}</td>
-                        </tr>
-                        <tr>
-                          <td>Saturday</td>
-                          <td>{`${val.venueAvailability.sat[0]} - ${val.venueAvailability.sat[1]}`}</td>
-                        </tr>
-                        <tr>
-                          <td>Sunday</td>
-                          <td>{`${val.venueAvailability.sun[0]} - ${val.venueAvailability.sun[1]}`}</td>
+                          <td>{`${val.activityAvailability[0]}`}</td>
+                          <td>{`${val.activityAvailability[1]} - ${val.activityAvailability[2]}`}</td>
                         </tr>
                       </tbody>
                     </table>
@@ -217,4 +260,4 @@ const VenueSearch = () => {
   );
 };
 
-export default VenueSearch;
+export default ActivitySearch;
