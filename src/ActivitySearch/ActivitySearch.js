@@ -5,23 +5,22 @@ import Dropdown from "react-bootstrap/Dropdown";
 import DropdownButton from "react-bootstrap/DropdownButton";
 import { usCities, usStates } from "../constants/usaCityStates";
 import activityListMock from "../Mocks/activityListMock";
+import { setActivity } from "../redux/activity";
 
 const ActivitySearch = () => {
   const [searchKeyword, setSearchKeyword] = useState("");
-  const [eventList, setEventList] = useState([]);
-  const [filteredEventList, setFilteredEventList] = useState([]);
-  const locations = ["Bloomington", "Indianapolis", "Greenwood"];
-  const categories = ["Sport", "Music"];
+  const [activityList, setActivityList] = useState([]);
+  const [filteredActivityList, setFilteredActivityList] = useState([]);
 
-  const eventFromStore = useSelector((state) => state.event);
+  const activityFromStore = useSelector((state) => state.activity);
   const dispatch = useDispatch();
 
   const processSearch = async () => {
     if (searchKeyword === "" || searchKeyword === undefined)
-      setFilteredEventList([...eventList]);
+      setFilteredActivityList([...activityList]);
     else {
-      setFilteredEventList(
-        eventList.filter((ele) =>
+      setFilteredActivityList(
+        activityList.filter((ele) =>
           ele.activityName.toLowerCase().startsWith(searchKeyword.toLowerCase())
         )
       );
@@ -29,54 +28,64 @@ const ActivitySearch = () => {
   };
 
   const handleCityFilter = (e) => {
-    if (e === "Any") setFilteredEventList([...eventList]);
+    if (e === "Any") setFilteredActivityList([...activityList]);
     else {
-      setFilteredEventList(eventList.filter((ele) => ele.activityCity === e));
+      setFilteredActivityList(
+        activityList.filter((ele) => ele.activityCity === e)
+      );
     }
   };
 
   const handleStateFilter = (e) => {
-    if (e === "Any") setFilteredEventList([...eventList]);
+    if (e === "Any") setFilteredActivityList([...activityList]);
     else {
-      setFilteredEventList(eventList.filter((ele) => ele.activityState === e));
+      setFilteredActivityList(
+        activityList.filter((ele) => ele.activityState === e)
+      );
     }
   };
 
   const handleCategoryFilter = (e) => {
-    if (e === "Any") setFilteredEventList([...eventList]);
+    if (e === "Any") setFilteredActivityList([...activityList]);
     else {
-      setFilteredEventList(eventList.filter((ele) => ele.categoryType === e));
+      setFilteredActivityList(
+        activityList.filter((ele) => ele.categoryType === e)
+      );
     }
   };
 
   const handleAgeRangeFilter = (e) => {
-    if (e === "Any") setFilteredEventList([...eventList]);
+    if (e === "Any") setFilteredActivityList([...activityList]);
     else if (e === "A18") {
-      setFilteredEventList(
-        eventList.filter(
+      setFilteredActivityList(
+        activityList.filter(
           (ele) =>
             ele.activityAgeRange === "A18" || ele.activityAgeRange === "A65"
         )
       );
     } else {
-      setFilteredEventList(
-        eventList.filter((ele) => ele.activityAgeRange === "A65")
+      setFilteredActivityList(
+        activityList.filter((ele) => ele.activityAgeRange === "A65")
       );
     }
   };
 
   const handleCostFilter = (e) => {
-    if (e === "Any") setFilteredEventList([...eventList]);
+    if (e === "Any") setFilteredActivityList([...activityList]);
     else {
-      setFilteredEventList(eventList.filter((ele) => ele.activityCost === e));
+      setFilteredActivityList(
+        activityList.filter((ele) => ele.activityCost === e)
+      );
     }
   };
 
   window.onload = async () => {
-    await dispatch(setEvent([...activityListMock]));
-    await setEventList(JSON.parse(JSON.stringify(eventFromStore.eventList)));
-    await setFilteredEventList(
-      JSON.parse(JSON.stringify(eventFromStore.eventList))
+    await dispatch(setActivity([...activityListMock]));
+    await setActivityList(
+      JSON.parse(JSON.stringify(activityFromStore.activityList))
+    );
+    await setFilteredActivityList(
+      JSON.parse(JSON.stringify(activityFromStore.activityList))
     );
   };
 
@@ -203,7 +212,7 @@ const ActivitySearch = () => {
       </div>
 
       <div className="mx-auto mt-5" style={{ width: "50%" }}>
-        {filteredEventList.map((val, index) => {
+        {filteredActivityList.map((val, index) => {
           return (
             <div className="card mb-2 p-3" key={index}>
               <div className="card-body d-flex justify-content-around">
