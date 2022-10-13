@@ -4,55 +4,7 @@ import { clearEvent, setEvent } from "../redux/event";
 import Dropdown from "react-bootstrap/Dropdown";
 import DropdownButton from "react-bootstrap/DropdownButton";
 import { usCities, usStates } from "../constants/usaCityStates";
-
-const mock = [
-  {
-    activityAvailability: ["Monday", "08AM", "07PM"],
-    activityHrCost: 400,
-    activityId: "0",
-    activityLocation: "5A N kinserPike , Bloomington, 47404",
-    activityName: "Bill Garett fielhouse",
-    activityOpen: "true",
-    activityOwner: "chandanbsd",
-    activityDescription: "The best sports activity in town",
-    categoryType: "Sports",
-    activityCity: "Indianapolis",
-    activityState: "Indiana",
-    activityAgeRange: "B18",
-    activityCost: "Free",
-  },
-  {
-    activityAvailability: ["Monday", "08AM", "07PM"],
-    activityHrCost: 400,
-    activityId: "0",
-    activityLocation: "5A N kinserPike , Bloomington, 47404",
-    activityName: "Nashville Arts Center",
-    activityOpen: "true",
-    activityOwner: "chandanbsd",
-    activityDescription: "The best sports activity in town",
-    categoryType: "Music",
-    activityCity: "Nashville",
-    activityState: "Tennessee",
-    activityAgeRange: "A18",
-    activityCost: "Paid",
-  },
-
-  {
-    activityAvailability: ["Monday", "08AM", "07PM"],
-    activityHrCost: 400,
-    activityId: "0",
-    activityLocation: "5A N kinserPike , Bloomington, 47404",
-    activityName: "Senior Golf",
-    activityOpen: "true",
-    activityOwner: "chandanbsd",
-    activityDescription: "The best sports activity in town",
-    categoryType: "Music",
-    activityCity: "Nashville",
-    activityState: "Tennessee",
-    activityAgeRange: "A65",
-    activityCost: "Free",
-  },
-];
+import activityListMock from "../Mocks/activityListMock";
 
 const ActivitySearch = () => {
   const [searchKeyword, setSearchKeyword] = useState("");
@@ -121,7 +73,7 @@ const ActivitySearch = () => {
   };
 
   window.onload = async () => {
-    await dispatch(setEvent([...mock]));
+    await dispatch(setEvent([...activityListMock]));
     await setEventList(JSON.parse(JSON.stringify(eventFromStore.eventList)));
     await setFilteredEventList(
       JSON.parse(JSON.stringify(eventFromStore.eventList))

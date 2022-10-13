@@ -28,8 +28,8 @@ function App() {
         <Route path="profile" element={<Profile />} />
         <Route path="profile/edit-profile" element={<EditProfile />} />
         <Route path="login/password-reset/:token" element={<PasswordReset />} />
-        <Route path="venuesearch" element={<VenueSearch />} />
-        <Route path="activitysearch" element={<ActivitySearch />} />
+        <Route path="venue-search" element={<VenueSearch />} />
+        <Route path="activity-search" element={<ActivitySearch />} />
       </Routes>
     </div>
   );
