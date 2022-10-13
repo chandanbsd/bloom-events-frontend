@@ -3,6 +3,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { clearEvent, setEvent } from "../redux/event";
 import Dropdown from "react-bootstrap/Dropdown";
 import DropdownButton from "react-bootstrap/DropdownButton";
+import { usCities, usStates } from "../constants/usaCityStates";
+
 const mock = [
   {
     venueAvailability: {
@@ -102,15 +104,8 @@ const VenueSearch = () => {
   return (
     <div>
       <h1 className="mx-auto text-center">Search Event Venues</h1>
-      <div
-        className="form-group mx-auto mt-5"
-        style={{
-          width: "900px",
-          display: "flex",
-          justifyContent: "space-between",
-        }}
-      >
-        <div style={{ width: "50%", display: "flex" }}>
+      <div>
+        <div style={{ display: "flex", width: "50%" }} className="mx-auto pt-5">
           <input
             type="search"
             className="form-control"
@@ -135,53 +130,70 @@ const VenueSearch = () => {
         >
           Clear
         </button> */}
-        <Dropdown>
-          <DropdownButton
-            variant="success"
-            id="dropdown-basic"
-            onSelect={(e) => {
-              handleCityFilter(e);
-            }}
-            title="Select City"
-          >
-            <Dropdown.Item eventKey={"Any"}>Any</Dropdown.Item>
-            <Dropdown.Item eventKey={"Bloomington"}>Bloomington</Dropdown.Item>
-            <Dropdown.Item eventKey={"Indianapolis"}>
-              Indianapolis
-            </Dropdown.Item>
-            <Dropdown.Item eventKey={"Greenwood"}>Greenwood</Dropdown.Item>
-          </DropdownButton>
-        </Dropdown>
-        <Dropdown>
-          <DropdownButton
-            variant="success"
-            id="dropdown-basic"
-            onSelect={(e) => {
-              handleStateFilter(e);
-            }}
-            title="Select State"
-          >
-            <Dropdown.Item eventKey={"Any"}>Any</Dropdown.Item>
-            <Dropdown.Item eventKey={"Indiana"}>Indiana</Dropdown.Item>
-            <Dropdown.Item eventKey={"Tennessee"}>Tennessee</Dropdown.Item>
-            <Dropdown.Item eventKey={"Texas"}>Texas</Dropdown.Item>
-          </DropdownButton>
-        </Dropdown>
+        <div
+          className="form-group mx-auto mt-5"
+          style={{
+            width: "900px",
+            display: "flex",
+            justifyContent: "space-between",
+          }}
+        >
+          <Dropdown>
+            <DropdownButton
+              variant="success"
+              id="dropdown-basic"
+              onSelect={(e) => {
+                handleCityFilter(e);
+              }}
+              title="Select City"
+            >
+              <Dropdown.Menu
+                style={{ maxHeight: "500px", overflowY: "scroll" }}
+              >
+                <Dropdown.Item eventKey={"Any"}>Any</Dropdown.Item>
+                {usCities.map((ele, index) => (
+                  <Dropdown.Item eventKey={ele} key={index}>
+                    {ele}
+                  </Dropdown.Item>
+                ))}
+              </Dropdown.Menu>
+            </DropdownButton>
+          </Dropdown>
+          <Dropdown>
+            <DropdownButton
+              variant="success"
+              id="dropdown-basic"
+              onSelect={(e) => {
+                handleStateFilter(e);
+              }}
+              title="Select State"
+            >
+              <Dropdown.Menu style={{ maxHeight: "500px", overflow: "scroll" }}>
+                <Dropdown.Item eventKey={"Any"}>Any</Dropdown.Item>
+                {usStates.map((ele, index) => (
+                  <Dropdown.Item eventKey={ele} key={index}>
+                    {ele}
+                  </Dropdown.Item>
+                ))}
+              </Dropdown.Menu>
+            </DropdownButton>
+          </Dropdown>
 
-        <Dropdown>
-          <DropdownButton
-            variant="success"
-            id="dropdown-basic"
-            onSelect={(e) => {
-              handleCategoryFilter(e);
-            }}
-            title="Select Category"
-          >
-            <Dropdown.Item eventKey={"Any"}>Any</Dropdown.Item>
-            <Dropdown.Item eventKey={"Music"}>Music</Dropdown.Item>
-            <Dropdown.Item eventKey={"Sports"}>Sports</Dropdown.Item>
-          </DropdownButton>
-        </Dropdown>
+          <Dropdown>
+            <DropdownButton
+              variant="success"
+              id="dropdown-basic"
+              onSelect={(e) => {
+                handleCategoryFilter(e);
+              }}
+              title="Select Category"
+            >
+              <Dropdown.Item eventKey={"Any"}>Any</Dropdown.Item>
+              <Dropdown.Item eventKey={"Music"}>Music</Dropdown.Item>
+              <Dropdown.Item eventKey={"Sports"}>Sports</Dropdown.Item>
+            </DropdownButton>
+          </Dropdown>
+        </div>
       </div>
 
       <div className="mx-auto mt-5" style={{ width: "50%" }}>
