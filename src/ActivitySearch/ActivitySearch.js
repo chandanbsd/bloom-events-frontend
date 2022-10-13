@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { clearEvent, setEvent } from "../redux/event";
 import Dropdown from "react-bootstrap/Dropdown";
 import DropdownButton from "react-bootstrap/DropdownButton";
-import { usaCityStates, usCities, usStates } from "../constants/usaCityStates";
+import { usCities, usStates } from "../constants/usaCityStates";
 
 const mock = [
   {
@@ -149,14 +149,7 @@ const ActivitySearch = () => {
             Search
           </button>
         </div>
-        {/* <button
-          className="btn btn-primary"
-          onClick={() => {
-            dispatch(clearEvent());
-          }}
-        >
-          Clear
-        </button> */}
+
         <div
           className="form-group mx-auto mt-5"
           style={{
@@ -183,12 +176,6 @@ const ActivitySearch = () => {
                     {ele}
                   </Dropdown.Item>
                 ))}
-                {/* <Dropdown.Item eventKey={"Bloomington"}>Bloomington</Dropdown.Item>)
-            <Dropdown.Item eventKey={"Bloomington"}>Bloomington</Dropdown.Item>
-            <Dropdown.Item eventKey={"Indianapolis"}>
-              Indianapolis
-            </Dropdown.Item>
-            <Dropdown.Item eventKey={"Greenwood"}>Greenwood</Dropdown.Item> */}
               </Dropdown.Menu>
             </DropdownButton>
           </Dropdown>
