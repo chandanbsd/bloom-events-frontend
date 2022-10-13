@@ -15,6 +15,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 import { useEffect } from "react";
 import PasswordReset from "./PasswordReset/PasswordReset";
 import VenueSearch from "./VenueSearch/VenueSearch";
+import ActivitySearch from "./ActivitySearch/ActivitySearch";
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
         <Route path="profile/edit-profile" element={<EditProfile />} />
         <Route path="login/password-reset/:token" element={<PasswordReset />} />
         <Route path="venuesearch" element={<VenueSearch />} />
+        <Route path="activitysearch" element={<ActivitySearch />} />
       </Routes>
     </div>
   );
