@@ -45,6 +45,12 @@ const Navbar = () => {
       <Link to="/" className="nav-item">
         <span className="nav-item fs-3">Bloom Events Home</span>
       </Link>
+      <Link to="venue-search" className="nav-item">
+        <span className="nav-item fs-3">Venue Search</span>
+      </Link>
+      <Link to="activity-search" className="nav-item">
+        <span className="nav-item fs-3">Activity Search</span>
+      </Link>
       {userFromStore.userName === null ? (
         <React.Fragment>
           <Link to="login" className="nav-item fs-3">

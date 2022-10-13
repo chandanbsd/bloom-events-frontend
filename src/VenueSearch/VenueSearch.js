@@ -4,51 +4,7 @@ import { clearEvent, setEvent } from "../redux/event";
 import Dropdown from "react-bootstrap/Dropdown";
 import DropdownButton from "react-bootstrap/DropdownButton";
 import { usCities, usStates } from "../constants/usaCityStates";
-
-const mock = [
-  {
-    venueAvailability: {
-      mon: ["08AM", "07PM"],
-      tue: ["09AM", "07PM"],
-      wed: ["08AM", "07PM"],
-      thu: ["08AM", "07PM"],
-      fri: ["08AM", "07PM"],
-      sat: ["08AM", "07PM"],
-      sun: ["08AM", "07PM"],
-    },
-    venueHrCost: 400,
-    venueId: "0",
-    venueLocation: "5A N kinserPike , Bloomington, 47404",
-    venueName: "Bill Garett fielhouse",
-    venueOpen: "true",
-    venueOwner: "chandanbsd",
-    venueDescription: "The best sports venue in town",
-    categoryType: "Sports",
-    venueCity: "Indianapolis",
-    venueState: "Indiana",
-  },
-  {
-    venueAvailability: {
-      mon: ["08AM", "07PM"],
-      tue: ["08AM", "07PM"],
-      wed: ["08AM", "07PM"],
-      thu: ["08AM", "07PM"],
-      fri: ["08AM", "07PM"],
-      sat: ["08AM", "07PM"],
-      sun: ["08AM", "07PM"],
-    },
-    venueHrCost: 400,
-    venueId: "0",
-    venueLocation: "5A N kinserPike , Bloomington, 47404",
-    venueName: "Nashville Arts Center",
-    venueOpen: "true",
-    venueOwner: "chandanbsd",
-    venueDescription: "The best sports venue in town",
-    categoryType: "Music",
-    venueCity: "Nashville",
-    venueState: "Tennessee",
-  },
-];
+import venueListMock from "../Mocks/venueListMock";
 
 const VenueSearch = () => {
   const [searchKeyword, setSearchKeyword] = useState("");
@@ -94,7 +50,7 @@ const VenueSearch = () => {
   };
 
   window.onload = async () => {
-    await dispatch(setEvent([...mock]));
+    await dispatch(setEvent([...venueListMock]));
     await setEventList(JSON.parse(JSON.stringify(eventFromStore.eventList)));
     await setFilteredEventList(
       JSON.parse(JSON.stringify(eventFromStore.eventList))
