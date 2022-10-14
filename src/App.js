@@ -16,6 +16,7 @@ import { useEffect } from "react";
 import PasswordReset from "./PasswordReset/PasswordReset";
 import VenueSearch from "./VenueSearch/VenueSearch";
 import ActivitySearch from "./ActivitySearch/ActivitySearch";
+import ParticipantSearch from "./ParticipantSearch/ParticipantSearch";
 
 function App() {
   return (
@@ -30,6 +31,7 @@ function App() {
         <Route path="login/password-reset/:token" element={<PasswordReset />} />
         <Route path="venue-search" element={<VenueSearch />} />
         <Route path="activity-search" element={<ActivitySearch />} />
+        <Route path="participant-search" element={<ParticipantSearch />} />
       </Routes>
     </div>
   );
