@@ -197,6 +197,7 @@ const ParticipantSearch = () => {
               <Dropdown.Item eventKey={"Any"}>Any</Dropdown.Item>
               <Dropdown.Item eventKey={"Music"}>Music</Dropdown.Item>
               <Dropdown.Item eventKey={"Sports"}>Sports</Dropdown.Item>
+              <Dropdown.Item eventKey={"Comedy"}>Comedy</Dropdown.Item>
             </DropdownButton>
           </Dropdown>
 
