@@ -3,6 +3,7 @@ import { backendApi } from "./backendApi";
 import userReducer from "./user";
 import eventReducer from "./event";
 import activityReducer from "./activity";
+import participantReducer from "./participant";
 import storage from "redux-persist/lib/storage";
 import { persistReducer, persistStore } from "redux-persist";
 import thunk from "redux-thunk";
@@ -16,13 +17,17 @@ const appReducer = combineReducers({
   user: userReducer,
   event: eventReducer,
   activity: activityReducer,
+  participant: participantReducer
 });
 
 const rootReducer = (state, action) => {
   if (action.type === "event/clearEvent") {
     storage.removeItem("persist:root");
     state = {};
-  } else if (action.type === "event/clearEvent") {
+  } else if (action.type === "activity/clearActivity") {
+    storage.removeItem("persist:root");
+    state = {};
+  } else if (action.type === "participant/clearParticipant") {
     storage.removeItem("persist:root");
     state = {};
   }

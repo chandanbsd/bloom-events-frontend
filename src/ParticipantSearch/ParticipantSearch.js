@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Dropdown from "react-bootstrap/Dropdown";
 import DropdownButton from "react-bootstrap/DropdownButton";
 import { usCities, usStates } from "../constants/usaCityStates";
-import { setActivity } from "../redux/activity";
+import { setParticipant, clearParticipant } from "../redux/participant";
 import participantListMock from "../Mocks/userListMock";
 
 const ParticipantSearch = () => {
@@ -11,7 +11,7 @@ const ParticipantSearch = () => {
   const [participantList, setParticipantList] = useState([]);
   const [filteredParticipantList, setFilteredParticipantList] = useState([]);
 
-  const activityFromStore = useSelector((state) => state.activity);
+  const participantFromStore = useSelector((state) => state.participant);
   const dispatch = useDispatch();
 
   const processSearch = async () => {
@@ -20,7 +20,7 @@ const ParticipantSearch = () => {
     else {
       setFilteredParticipantList(
         participantList.filter((ele) =>
-          ele.activityName.toLowerCase().startsWith(searchKeyword.toLowerCase())
+          ele.userName.toLowerCase().startsWith(searchKeyword.toLowerCase()) || ele.firstName.toLowerCase().startsWith(searchKeyword.toLowerCase()) || ele.lastName.toLowerCase().startsWith(searchKeyword.toLowerCase())
         )
       );
     }
@@ -97,12 +97,12 @@ const ParticipantSearch = () => {
   };
 
   window.onload = async () => {
-    await dispatch(setActivity([...participantListMock]));
+    await dispatch(setParticipant([...participantListMock]));
     await setParticipantList(
-      JSON.parse(JSON.stringify(activityFromStore.activityList))
+      JSON.parse(JSON.stringify(participantFromStore.participantList))
     );
     await setFilteredParticipantList(
-      JSON.parse(JSON.stringify(activityFromStore.activityList))
+      JSON.parse(JSON.stringify(participantFromStore.participantList))
     );
   };
 
@@ -126,6 +126,14 @@ const ParticipantSearch = () => {
           >
             Search
           </button>
+               <button
+          className="btn btn-primary"
+          onClick={() => {
+            dispatch(clearParticipant());
+          }}
+        >
+          Clear
+        </button> 
         </div>
 
         <div
