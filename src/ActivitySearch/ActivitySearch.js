@@ -88,41 +88,41 @@ const ActivitySearch = () => {
     }
   };
 
-  // useEffect(() => {
-  //   const url = `${baseURL}/ra`;
-  //   const requestOptions = {
-  //     method: "GET",
-  //     headers: { "Content-Type": "application/json" },
-  //   };
-  //   fetch(url, requestOptions)
-  //     .then((response) => response.json())
+  useEffect(() => {
+    const url = `${baseURL}/ra`;
+    const requestOptions = {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    };
+    fetch(url, requestOptions)
+      .then((response) => response.json())
 
-  //     .then((res) => {
-  //       if (res.status === "OK") {
-  //         console.log(res);
+      .then((res) => {
+        if (res.status === "OK") {
+          console.log(res);
 
-  //         dispatch(setActivity([...res.body]));
-  //         setActivityList(
-  //           JSON.parse(JSON.stringify(activityFromStore.activityList))
-  //         );
-  //         setFilteredActivityList(
-  //           JSON.parse(JSON.stringify(activityFromStore.activityList))
-  //         );
-  //       } else alert("Unable to fetch event venues");
-  //     })
-  //     .catch((error) => console.log("Form submit error", error));
-  // }, []);
+          dispatch(setActivity([...res.body]));
+          setActivityList(
+            JSON.parse(JSON.stringify(activityFromStore.activityList))
+          );
+          setFilteredActivityList(
+            JSON.parse(JSON.stringify(activityFromStore.activityList))
+          );
+        } else alert("Unable to fetch event venues");
+      })
+      .catch((error) => console.log("Form submit error", error));
+  }, []);
 
-  window.onload = async () => {
-    console.log([...activityListMock]);
-    await dispatch(setActivity([...activityListMock]));
-    await setActivityList(
-      JSON.parse(JSON.stringify(activityFromStore.activityList))
-    );
-    await setFilteredActivityList(
-      JSON.parse(JSON.stringify(activityFromStore.activityList))
-    );
-  };
+  // window.onload = async () => {
+  //   console.log([...activityListMock]);
+  //   await dispatch(setActivity([...activityListMock]));
+  //   await setActivityList(
+  //     JSON.parse(JSON.stringify(activityFromStore.activityList))
+  //   );
+  //   await setFilteredActivityList(
+  //     JSON.parse(JSON.stringify(activityFromStore.activityList))
+  //   );
+  // };
 
   return (
     <div>
@@ -279,6 +279,12 @@ const ActivitySearch = () => {
                       ? "Above 18"
                       : "Below 18"}
                   </p>
+
+                  <p className="card-text">Category: {val.activityCategory}</p>
+
+                  <p className="card-text">City: {val.activityCity}</p>
+
+                  <p className="card-text">State: {val.activityState}</p>
 
                   <p className="card-text">Cost: {val.activityCost}</p>
                   {/* <img className="card-img-top" alt="Card Image" /> */}
