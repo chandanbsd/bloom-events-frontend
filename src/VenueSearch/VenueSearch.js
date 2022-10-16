@@ -6,6 +6,8 @@ import DropdownButton from "react-bootstrap/DropdownButton";
 import { usCities, usStates } from "../constants/usaCityStates";
 // import venueListMock from "../Mocks/venueListMock";
 import baseURL from "../constants/constants";
+import activityListMock from "../Mocks/activityListMock";
+import venueListMock from "../Mocks/venueListMock";
 
 const VenueSearch = () => {
   const [searchKeyword, setSearchKeyword] = useState("");
@@ -46,7 +48,7 @@ const VenueSearch = () => {
   const handleCategoryFilter = (e) => {
     if (e === "Any") setFilteredEventList([...eventList]);
     else {
-      setFilteredEventList(eventList.filter((ele) => ele.categoryType === e));
+      setFilteredEventList(eventList.filter((ele) => ele.venueCategory === e));
     }
   };
 
@@ -76,6 +78,15 @@ const VenueSearch = () => {
       })
       .catch((error) => console.log("Form submit error", error));
   }, []);
+
+  // window.onload = async () => {
+  //   console.log([...venueListMock]);
+  //   await dispatch(setEvent([...venueListMock]));
+  //   await setEventList(JSON.parse(JSON.stringify(eventFromStore.eventList)));
+  //   await setFilteredEventList(
+  //     JSON.parse(JSON.stringify(eventFromStore.eventList))
+  //   );
+  // };
 
   return (
     <div>
@@ -183,8 +194,14 @@ const VenueSearch = () => {
                   <p className="card-text">
                     Description: {val.venueDescription}
                   </p>
-                  <p>Address: {val.venueLocation}</p>
-                  <img className="card-img-top" alt="Card Image" />
+                  <p className="card-text">Address: {val.venueAddress}</p>
+                  <p className="card-text">Owner: {val.venueOwner}</p>
+                  <p className="card-text">Cost/hr: ${val.venueHrCost}</p>
+                  <p className="card-text">Category: {val.venueCategory}</p>
+                  <p className="card-text">City: {val.venueCity}</p>
+                  <p className="card-text">State: {val.venueState}</p>
+
+                  {/* <img className="card-img-top" alt="Card Image" /> */}
                 </div>
                 <div className="align-self-center">
                   <div>
