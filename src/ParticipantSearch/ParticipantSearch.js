@@ -102,7 +102,7 @@ const ParticipantSearch = () => {
   };
 
   useEffect(() => {
-    const url = `${baseURL}/ra`;
+    const url = `${baseURL}/ru`;
     const requestOptions = {
       method: "GET",
       headers: { "Content-Type": "application/json" },
@@ -113,11 +113,11 @@ const ParticipantSearch = () => {
       .then((res) => {
         console.log(res);
         if (res.status === "OK") {
-          res.body.forEach((val) => {
-            val.venueAvailability = JSON.parse(
-              val.venueAvailability.replace(/'/g, '"')
-            );
-          });
+          // res.body.forEach((val) => {
+          //   val.venueAvailability = JSON.parse(
+          //     val.venueAvailability.replace(/'/g, '"')
+          //   );
+          // });
 
           dispatch(setParticipant([...res.body]));
           setParticipantList(
@@ -324,7 +324,7 @@ const ParticipantSearch = () => {
                       : "Below 18"}
                   </p>
                   <p>Gender: {val.gender === "Male" ? "Male" : "Female"}</p>
-                  <p>Available: {val.isAvailable === true ? "Yes" : "No"}</p>
+                  <p>Available: {val.isAvailable === "Yes" ? "Yes" : "No"}</p>
                   <p>City: {val.city}</p>
 
                   <p>State: {val.state}</p>
