@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Dropdown from "react-bootstrap/Dropdown";
 import DropdownButton from "react-bootstrap/DropdownButton";
 import { usCities, usStates } from "../constants/usaCityStates";
 import { setParticipant, clearParticipant } from "../redux/participant";
 import participantListMock from "../Mocks/userListMock";
+import baseURL from "../constants/constants";
 
 const ParticipantSearch = () => {
   const [searchKeyword, setSearchKeyword] = useState("");
@@ -19,8 +20,15 @@ const ParticipantSearch = () => {
       setFilteredParticipantList([...participantList]);
     else {
       setFilteredParticipantList(
-        participantList.filter((ele) =>
-          ele.userName.toLowerCase().startsWith(searchKeyword.toLowerCase()) || ele.firstName.toLowerCase().startsWith(searchKeyword.toLowerCase()) || ele.lastName.toLowerCase().startsWith(searchKeyword.toLowerCase())
+        participantList.filter(
+          (ele) =>
+            ele.userName
+              .toLowerCase()
+              .startsWith(searchKeyword.toLowerCase()) ||
+            ele.firstName
+              .toLowerCase()
+              .startsWith(searchKeyword.toLowerCase()) ||
+            ele.lastName.toLowerCase().startsWith(searchKeyword.toLowerCase())
         )
       );
     }
@@ -57,10 +65,7 @@ const ParticipantSearch = () => {
     if (e === "Any") setFilteredParticipantList([...participantList]);
     else if (e === "A18") {
       setFilteredParticipantList(
-        participantList.filter(
-          (ele) =>
-            ele.age === "A18" || ele.age === "A65"
-        )
+        participantList.filter((ele) => ele.age === "A18" || ele.age === "A65")
       );
     } else {
       setFilteredParticipantList(
@@ -96,15 +101,45 @@ const ParticipantSearch = () => {
     }
   };
 
-  window.onload = async () => {
-    await dispatch(setParticipant([...participantListMock]));
-    await setParticipantList(
-      JSON.parse(JSON.stringify(participantFromStore.participantList))
-    );
-    await setFilteredParticipantList(
-      JSON.parse(JSON.stringify(participantFromStore.participantList))
-    );
-  };
+  useEffect(() => {
+    const url = `${baseURL}/ra`;
+    const requestOptions = {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    };
+    fetch(url, requestOptions)
+      .then((response) => response.json())
+
+      .then((res) => {
+        console.log(res);
+        if (res.status === "OK") {
+          res.body.forEach((val) => {
+            val.venueAvailability = JSON.parse(
+              val.venueAvailability.replace(/'/g, '"')
+            );
+          });
+
+          dispatch(setParticipant([...res.body]));
+          setParticipantList(
+            JSON.parse(JSON.stringify(participantFromStore.participantList))
+          );
+          setFilteredParticipantList(
+            JSON.parse(JSON.stringify(participantFromStore.participantList))
+          );
+        } else alert("Unable to fetch event venues");
+      })
+      .catch((error) => console.log("Form submit error", error));
+  }, []);
+
+  // window.onload = async () => {
+  //   await dispatch(setParticipant([...participantListMock]));
+  //   await setParticipantList(
+  //     JSON.parse(JSON.stringify(participantFromStore.participantList))
+  //   );
+  //   await setFilteredParticipantList(
+  //     JSON.parse(JSON.stringify(participantFromStore.participantList))
+  //   );
+  // };
 
   return (
     <div>
@@ -126,14 +161,14 @@ const ParticipantSearch = () => {
           >
             Search
           </button>
-               <button
-          className="btn btn-primary"
-          onClick={() => {
-            dispatch(clearParticipant());
-          }}
-        >
-          Clear
-        </button> 
+          <button
+            className="btn btn-primary"
+            onClick={() => {
+              dispatch(clearParticipant());
+            }}
+          >
+            Clear
+          </button>
         </div>
 
         <div
@@ -243,9 +278,10 @@ const ParticipantSearch = () => {
             >
               <Dropdown.Item eventKey={"Any"}>Any</Dropdown.Item>
               <Dropdown.Item eventKey={"Beginner"}>Beginner</Dropdown.Item>
-              <Dropdown.Item eventKey={"Intermediate"}>Intermediate</Dropdown.Item>
+              <Dropdown.Item eventKey={"Intermediate"}>
+                Intermediate
+              </Dropdown.Item>
               <Dropdown.Item eventKey={"Advanced"}>Advanced</Dropdown.Item>
-
             </DropdownButton>
           </Dropdown>
 
@@ -261,7 +297,6 @@ const ParticipantSearch = () => {
               <Dropdown.Item eventKey={"Any"}>Any</Dropdown.Item>
               <Dropdown.Item eventKey={"Yes"}>Yes</Dropdown.Item>
               <Dropdown.Item eventKey={"No"}>No</Dropdown.Item>
-
             </DropdownButton>
           </Dropdown>
         </div>
@@ -271,15 +306,13 @@ const ParticipantSearch = () => {
         {filteredParticipantList.map((val, index) => {
           return (
             <div className="card mb-2 p-3" key={index}>
-              <div className="card-body d-flex justify-content-around" >
-                <div  style={{width: "60%"}}>
+              <div className="card-body d-flex justify-content-around">
+                <div style={{ width: "60%" }}>
                   <h5 className="card-title">Username: {val.userName}</h5>
                   <p className="card-text">
                     Full Name: {val.firstName} {val.lastName}
                   </p>
-                  <p className="card-text">
-                    Bio: {val.bio}
-                  </p>
+                  <p className="card-text">Bio: {val.bio}</p>
                   <p>Favorite Events: {val.categoryType}</p>
                   <p>Skill Level: {val.categoryLevel}</p>
                   <p>
@@ -290,29 +323,15 @@ const ParticipantSearch = () => {
                       ? "Above 18"
                       : "Below 18"}
                   </p>
-                  <p>
-                    Gender:{" "}
-                    {val.gender === "Male"
-                      ? "Male"
-                      :  "Female"}
-                  </p>
-                  <p>
-                    Available:{" "}
-                    {val.isAvailable === true
-                      ? "Yes"
-                      :  "No"}
-                  </p>
-                  <p>
-                    City: {val.city} 
-                  </p>
+                  <p>Gender: {val.gender === "Male" ? "Male" : "Female"}</p>
+                  <p>Available: {val.isAvailable === true ? "Yes" : "No"}</p>
+                  <p>City: {val.city}</p>
 
-                  <p>
-                    State: {val.state} 
-                  </p>
-                  </div>
-                  <div>
-                    <img className="card-img-top" alt="Card Image" />
-                  </div>
+                  <p>State: {val.state}</p>
+                </div>
+                <div>
+                  <img className="card-img-top" alt="Card Image" />
+                </div>
               </div>
             </div>
           );

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { clearEvent, setEvent } from "../redux/event";
 import Dropdown from "react-bootstrap/Dropdown";
@@ -6,7 +6,16 @@ import DropdownButton from "react-bootstrap/DropdownButton";
 import { usCities, usStates } from "../constants/usaCityStates";
 import activityListMock from "../Mocks/activityListMock";
 import { setActivity } from "../redux/activity";
+import baseURL from "../constants/constants";
 
+let dateObj = new Date();
+let today = [
+  dateObj.getUTCFullYear(),
+  dateObj.getUTCMonth() + 1,
+  dateObj.getUTCDate(),
+];
+
+console.log(today);
 const ActivitySearch = () => {
   const [searchKeyword, setSearchKeyword] = useState("");
   const [activityList, setActivityList] = useState([]);
@@ -49,7 +58,7 @@ const ActivitySearch = () => {
     if (e === "Any") setFilteredActivityList([...activityList]);
     else {
       setFilteredActivityList(
-        activityList.filter((ele) => ele.categoryType === e)
+        activityList.filter((ele) => ele.activityCategory === e)
       );
     }
   };
@@ -65,7 +74,7 @@ const ActivitySearch = () => {
       );
     } else {
       setFilteredActivityList(
-        activityList.filter((ele) => ele.activityAgeRange === "A65")
+        activityList.filter((ele) => ele.activityAgeRange === e)
       );
     }
   };
@@ -79,7 +88,33 @@ const ActivitySearch = () => {
     }
   };
 
+  // useEffect(() => {
+  //   const url = `${baseURL}/ra`;
+  //   const requestOptions = {
+  //     method: "GET",
+  //     headers: { "Content-Type": "application/json" },
+  //   };
+  //   fetch(url, requestOptions)
+  //     .then((response) => response.json())
+
+  //     .then((res) => {
+  //       if (res.status === "OK") {
+  //         console.log(res);
+
+  //         dispatch(setActivity([...res.body]));
+  //         setActivityList(
+  //           JSON.parse(JSON.stringify(activityFromStore.activityList))
+  //         );
+  //         setFilteredActivityList(
+  //           JSON.parse(JSON.stringify(activityFromStore.activityList))
+  //         );
+  //       } else alert("Unable to fetch event venues");
+  //     })
+  //     .catch((error) => console.log("Form submit error", error));
+  // }, []);
+
   window.onload = async () => {
+    console.log([...activityListMock]);
     await dispatch(setActivity([...activityListMock]));
     await setActivityList(
       JSON.parse(JSON.stringify(activityFromStore.activityList))
@@ -222,8 +257,21 @@ const ActivitySearch = () => {
                   <p className="card-text">
                     Description: {val.activityDescription}
                   </p>
-                  <p>Address: {val.activityLocation}</p>
-                  <p>
+                  <p className="card-text">
+                    Organizer: {val.activityOrganizer}
+                  </p>
+
+                  <p className="card-text">
+                    Venue Name: {val.activityVenueName}
+                  </p>
+
+                  <p className="card-text">
+                    Venue Address: {val.activityVenueAddress}
+                  </p>
+
+                  <p className="card-text">Location: {val.activityLocation}</p>
+
+                  <p className="card-text">
                     Age Range:{" "}
                     {val.activityAgeRange === "A65"
                       ? "Above 65"
@@ -231,27 +279,27 @@ const ActivitySearch = () => {
                       ? "Above 18"
                       : "Below 18"}
                   </p>
-                  <img className="card-img-top" alt="Card Image" />
+
+                  <p className="card-text">Cost: {val.activityCost}</p>
+                  {/* <img className="card-img-top" alt="Card Image" /> */}
                 </div>
                 <div className="align-self-center">
-                  <div>
-                    <table className="table">
-                      <tbody>
-                        <tr>
-                          <th>Day</th>
-                          <th>Time</th>
-                        </tr>
-                        <tr>
-                          <td>{`${val.activityAvailability[0]}`}</td>
-                          <td>{`${val.activityAvailability[1]} - ${val.activityAvailability[2]}`}</td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
+                  <p className="card-text align-self-center">
+                    <b>Date:</b> {val.activityDate.join("-")}
+                    <br />
+                    <br />
+                    <b>Time:</b>{" "}
+                    {`${val.activityTime[1]} - ${val.activityTime[2]}`}
+                  </p>
                 </div>
               </div>
               <div className="mx-auto">
-                <button className="btn btn-success">Reserve Time</button>
+                {new Date(val.activityDate.join("-")) <
+                new Date(today.join("-")) ? (
+                  "Closed"
+                ) : (
+                  <button className="btn btn-success">Register</button>
+                )}
               </div>
             </div>
           );

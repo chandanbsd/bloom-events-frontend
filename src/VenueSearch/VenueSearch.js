@@ -50,14 +50,6 @@ const VenueSearch = () => {
     }
   };
 
-  // window.onload = async () => {
-  //   await dispatch(setEvent([...venueListMock]));
-  //   await setEventList(JSON.parse(JSON.stringify(eventFromStore.eventList)));
-  //   await setFilteredEventList(
-  //     JSON.parse(JSON.stringify(eventFromStore.eventList))
-  //   );
-  // };
-
   useEffect(() => {
     const url = `${baseURL}/venuelist`;
     const requestOptions = {
