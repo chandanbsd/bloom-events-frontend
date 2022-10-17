@@ -1,6 +1,6 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { setProfile } from "../redux/user";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Dropdown from "react-bootstrap/Dropdown";
@@ -9,7 +9,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 const Navbar = () => {
   const userFromStore = useSelector((state) => state.user);
   const { logout, user, isAuthenticated } = useAuth0();
-
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const handleLogout = () => {
     dispatch(
@@ -22,6 +22,8 @@ const Navbar = () => {
         isOwner: null,
       })
     );
+
+    navigate("/");
   };
 
   const handleSpecialLogout = () => {
@@ -39,13 +41,25 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="navbar flex-column flex-sm-row navbar-light bg-light ">
-      <Link to="/" className="nav-item">
-        <span className="nav-item fs-3">Bloom Events Home</span>
+    <nav
+      className="navbar flex-column flex-sm-row navbar navbar-light"
+      style={{ backgroundColor: "#e3f2fd" }}
+    >
+      <Link to="/" className="nav-item navbar-brand">
+        <span>Bloom Events Home</span>
+      </Link>
+      <Link to="venue-search" className="nav-item navbar-brand">
+        <span>Venue Search</span>
+      </Link>
+      <Link to="activity-search" className="nav-item navbar-brand">
+        <span>Activity Search</span>
+      </Link>
+      <Link to="participant-search" className="nav-item navbar-brand">
+        <span>Participant Search</span>
       </Link>
       {userFromStore.userName === null ? (
         <React.Fragment>
-          <Link to="login" className="nav-item fs-3">
+          <Link to="login" className="nav-item navbar-brand">
             Login
           </Link>
         </React.Fragment>
@@ -61,15 +75,13 @@ const Navbar = () => {
                 Profile
               </Link>
               {isAuthenticated === false ? (
-                <Link
-                  to="../Profile"
-                  onClick={handleLogout}
-                  className="dropdown-item"
-                >
+                <Link to="/" onClick={handleLogout} className="dropdown-item">
                   Logout
                 </Link>
               ) : (
-                <button onClick={handleSpecialLogout}>Log Out</button>
+                <button onClick={handleSpecialLogout} className="dropdown-item">
+                  LogOut
+                </button>
               )}
             </Dropdown.Menu>
           </Dropdown>
