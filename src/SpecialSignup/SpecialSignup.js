@@ -5,65 +5,57 @@ import { setProfile } from "../redux/user";
 import baseURL from "../constants/constants";
 import { useNavigate } from "react-router-dom";
 import { usCities, usStates } from "../constants/usaCityStates";
+import { useAuth0 } from "@auth0/auth0-react";
 
-const SignUp = () => {
-  const user = useSelector((state) => state.user);
+const SpecialSignup = () => {
+  const userFromStore = useSelector((state) => state.user);
   const [captchaStatus, setCaptchaStatus] = useState(false);
+  const { loginWithRedirect, user, isAuthenticated, isLoading, logout } =
+    useAuth0();
 
   const dispatch = useDispatch();
   const recaptchaRef = useRef();
-  const [signUpDetails, setSignUpDetails] = useState({});
+  const [specialSignUpDetails, setSignUpDetails] = useState(
+    JSON.parse(localStorage.getItem("specialLoginDetails"))
+  );
   const navigate = useNavigate();
-  useEffect(() => {}, [signUpDetails]);
 
-  const handleSignUp = () => {
-    if (signUpDetails.firstName === undefined) {
-      alert("Incorrect First Name");
-    } else if (signUpDetails.lastName === undefined) {
-      alert("Incorrect Last Name");
-    } else if (signUpDetails.email === undefined) {
-      alert("Incorrect Email");
-    } else if (signUpDetails.userName === undefined) {
+  useEffect(() => {}, [specialSignUpDetails]);
+
+  const handleSpecialSignUp = () => {
+    if (specialSignUpDetails.userName === undefined) {
       alert("Incorrect Username");
-    } else if (signUpDetails.password === undefined) {
-      alert("Incorrect Password");
     } else if (captchaStatus === false) {
       alert("Captcha Failed, Please try again");
-    } else if (signUpDetails.isOwner === undefined) {
+    } else if (specialSignUpDetails.isOwner === undefined) {
       alert("Choose if you are a venue owner");
-    } else if (signUpDetails.gender === undefined) {
+    } else if (specialSignUpDetails.gender === undefined) {
       alert("Choose your gender");
-    } else if (signUpDetails.bio === undefined) {
+    } else if (specialSignUpDetails.bio === undefined) {
       alert("Please enter your bio");
-    } else if (signUpDetails.categoryType === undefined) {
+    } else if (specialSignUpDetails.categoryType === undefined) {
       alert("Choose your favorite category");
-    } else if (signUpDetails.categoryLevel === undefined) {
+    } else if (specialSignUpDetails.categoryLevel === undefined) {
       alert("Choose your interest level");
-    } else if (signUpDetails.isAvailable === undefined) {
+    } else if (specialSignUpDetails.isAvailable === undefined) {
       alert("Choose your availability");
-    } else if (signUpDetails.city === undefined) {
+    } else if (specialSignUpDetails.city === undefined) {
       alert("Choose your city");
-    } else if (signUpDetails.state === undefined) {
+    } else if (specialSignUpDetails.age === undefined) {
+      alert("Choose your age range");
+    } else if (specialSignUpDetails.state === undefined) {
       alert("Choose your state");
     } else {
-      console.log(JSON.stringify(signUpDetails));
-      const url = `${baseURL}/register`;
-      const requestOptions = {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(signUpDetails),
-      };
-      fetch(url, requestOptions)
-        .then((res) => res.json())
-        .then((res) => {
-          if (res.status === "OK") {
-            dispatch(setProfile({ ...signUpDetails }));
-            navigate("/");
-          } else {
-            alert("Update Failed");
-          }
-        })
-        .catch((error) => console.log("Form submit error", error));
+      console.log(JSON.stringify(specialSignUpDetails));
+      localStorage.removeItem("specialLoginDetails");
+      localStorage.setItem(
+        "specialLoginDetails",
+        JSON.stringify(specialSignUpDetails)
+      );
+
+      console.log("saved to local storage");
+
+      loginWithRedirect();
     }
   };
 
@@ -72,72 +64,35 @@ const SignUp = () => {
     setCaptchaStatus(recaptchaValue);
   };
 
-  if (user.userName === null) {
+  if (userFromStore.userName === null) {
     return (
       <div className="mx-auto" style={{ width: "500px" }}>
         <h1>Signup</h1>
 
-        <div className="form-group">
-          <label>First Name</label>
-          <input
-            type="text"
-            className="form-control"
-            onChange={(e) =>
-              setSignUpDetails({ ...signUpDetails, firstName: e.target.value })
-            }
-          />{" "}
-          <br />
-        </div>
-        <div className="form-group">
-          <label>Last Name</label>
-          <input
-            type="text"
-            className="form-control"
-            onChange={(e) =>
-              setSignUpDetails({ ...signUpDetails, lastName: e.target.value })
-            }
-          />{" "}
-          <br />
-        </div>
-        <div className="form-group">
-          <label>Email</label>
-          <input
-            type="email"
-            className="form-control"
-            onChange={(e) =>
-              setSignUpDetails({ ...signUpDetails, email: e.target.value })
-            }
-          />{" "}
-          <br />
-        </div>
         <div className="form-group">
           <label>Username</label>
           <input
             type="text"
             className="form-control"
             onChange={(e) =>
-              setSignUpDetails({ ...signUpDetails, userName: e.target.value })
+              setSignUpDetails({
+                ...specialSignUpDetails,
+                userName: e.target.value,
+              })
             }
           />{" "}
           <br />
         </div>
-        <div className="form-group">
-          <label>Password</label>
-          <input
-            type="password"
-            className="form-control"
-            onChange={(e) =>
-              setSignUpDetails({ ...signUpDetails, password: e.target.value })
-            }
-          />{" "}
-          <br />
-        </div>
+
         <div className="form-group">
           <label>Are You a Venue Owner?</label>
           <select
             className="form-control"
             onChange={(e) =>
-              setSignUpDetails({ ...signUpDetails, isOwner: e.target.value })
+              setSignUpDetails({
+                ...specialSignUpDetails,
+                isOwner: e.target.value,
+              })
             }
           >
             <option value={undefined} defaultValue>
@@ -154,7 +109,10 @@ const SignUp = () => {
           <select
             className="form-control"
             onChange={(e) =>
-              setSignUpDetails({ ...signUpDetails, gender: e.target.value })
+              setSignUpDetails({
+                ...specialSignUpDetails,
+                gender: e.target.value,
+              })
             }
           >
             <option value={undefined} defaultValue>
@@ -172,7 +130,7 @@ const SignUp = () => {
             type="text"
             className="form-control"
             onChange={(e) =>
-              setSignUpDetails({ ...signUpDetails, bio: e.target.value })
+              setSignUpDetails({ ...specialSignUpDetails, bio: e.target.value })
             }
           />{" "}
           <br />
@@ -184,7 +142,7 @@ const SignUp = () => {
             className="form-control"
             onChange={(e) =>
               setSignUpDetails({
-                ...signUpDetails,
+                ...specialSignUpDetails,
                 categoryType: e.target.value,
               })
             }
@@ -205,7 +163,7 @@ const SignUp = () => {
             className="form-control"
             onChange={(e) =>
               setSignUpDetails({
-                ...signUpDetails,
+                ...specialSignUpDetails,
                 categoryLevel: e.target.value,
               })
             }
@@ -226,7 +184,7 @@ const SignUp = () => {
             className="form-control"
             onChange={(e) =>
               setSignUpDetails({
-                ...signUpDetails,
+                ...specialSignUpDetails,
                 isAvailable: e.target.value,
               })
             }
@@ -246,7 +204,7 @@ const SignUp = () => {
             className="form-control"
             onChange={(e) =>
               setSignUpDetails({
-                ...signUpDetails,
+                ...specialSignUpDetails,
                 city: e.target.value,
               })
             }
@@ -269,7 +227,7 @@ const SignUp = () => {
             className="form-control"
             onChange={(e) =>
               setSignUpDetails({
-                ...signUpDetails,
+                ...specialSignUpDetails,
                 state: e.target.value,
               })
             }
@@ -292,7 +250,7 @@ const SignUp = () => {
             className="form-control"
             onChange={(e) =>
               setSignUpDetails({
-                ...signUpDetails,
+                ...specialSignUpDetails,
                 age: e.target.value,
               })
             }
@@ -315,9 +273,12 @@ const SignUp = () => {
             onChange={onCaptchaChange}
           />
         </div>
-        <div>
-          <button onClick={() => handleSignUp()} className="btn btn-success">
-            SignUp
+        <div className=" form-group d-flex justify-content-around">
+          <button
+            onClick={() => handleSpecialSignUp()}
+            className="btn btn-info"
+          >
+            Login/Signup With OAuth
           </button>
         </div>
       </div>
@@ -327,4 +288,4 @@ const SignUp = () => {
   }
 };
 
-export default SignUp;
+export default SpecialSignup;

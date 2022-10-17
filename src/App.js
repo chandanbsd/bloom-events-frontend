@@ -14,6 +14,11 @@ import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import { useAuth0 } from "@auth0/auth0-react";
 import { useEffect } from "react";
 import PasswordReset from "./PasswordReset/PasswordReset";
+import VenueSearch from "./VenueSearch/VenueSearch";
+import ActivitySearch from "./ActivitySearch/ActivitySearch";
+import ParticipantSearch from "./ParticipantSearch/ParticipantSearch";
+import SpecialLogin from "./SpecialLogin/SpecialLogin";
+import SpecialSignup from "./SpecialSignup/SpecialSignup";
 
 function App() {
   return (
@@ -26,6 +31,11 @@ function App() {
         <Route path="profile" element={<Profile />} />
         <Route path="profile/edit-profile" element={<EditProfile />} />
         <Route path="login/password-reset/:token" element={<PasswordReset />} />
+        <Route path="venue-search" element={<VenueSearch />} />
+        <Route path="activity-search" element={<ActivitySearch />} />
+        <Route path="participant-search" element={<ParticipantSearch />} />
+        <Route path="login/special-login" element={<SpecialLogin />} />
+        <Route path="login/special-signup" element={<SpecialSignup />} />
       </Routes>
     </div>
   );

@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setProfile } from "../redux/user";
 import { Link } from "react-router-dom";
-
 const Profile = () => {
   const user = useSelector((state) => state.user);
 
@@ -12,27 +11,6 @@ const Profile = () => {
     ...user,
   });
 
-  useEffect(() => {
-    console.log(profileDetails);
-  }, [profileDetails]);
-
-  const handleProfileUpdate = () => {
-    if (profileDetails.firstName === "") {
-      alert("Incorrect First Name");
-    } else if (profileDetails.lastName === "") {
-      alert("Incorrect Last Name");
-    } else if (profileDetails.email === "") {
-      alert("Incorrect Email");
-    } else if (profileDetails.userName === "") {
-      alert("Incorrect Username");
-    } else if (profileDetails.password === "") {
-      alert("Incorrect Password");
-    } else if (profileDetails.isOwner === "") {
-      alert("Choose if you are a venue owner?");
-    } else {
-      dispatch(setProfile({ ...profileDetails }));
-    }
-  };
   if (profileDetails.firstName !== null) {
     return (
       <div className="mx-auto" style={{ width: "500px" }}>
@@ -55,6 +33,34 @@ const Profile = () => {
           <li className="list-group-item">
             <b>Are You a Venue Owner?: </b>
             {profileDetails.isOwner}
+          </li>
+          <li className="list-group-item">
+            <b>Age Range: </b>
+            {profileDetails.age}
+          </li>
+          <li className="list-group-item">
+            <b>Gender: </b>
+            {profileDetails.gender}
+          </li>
+          <li className="list-group-item">
+            <b>Available for Events?: </b>
+            {profileDetails.isAvailable}
+          </li>
+          <li className="list-group-item">
+            <b>Favorite Category of Events: </b>
+            {profileDetails.categoryType}
+          </li>
+          <li className="list-group-item">
+            <b>Interest Level: </b>
+            {profileDetails.categoryLevel}
+          </li>
+          <li className="list-group-item">
+            <b>City: </b>
+            {profileDetails.city}
+          </li>
+          <li className="list-group-item">
+            <b>State: </b>
+            {profileDetails.state}
           </li>
         </ul>
         <br />
