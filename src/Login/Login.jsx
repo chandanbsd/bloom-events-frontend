@@ -23,50 +23,98 @@ const Login = () => {
 
   useEffect(() => {
     if (
-      userFromStore.firstName === null &&
       user !== undefined &&
-      specialLoginDetails !== null
+      localStorage.getItem("loginWithOAuth") === "true"
     ) {
+      console.log(user);
       const url = `${baseURL}/speciallogin`;
       const requestOptions = {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          firstName: user.given_name,
-          lastName: user.family_name,
           email: user.email,
-          password: null,
-          userName: specialLoginDetails.userName,
-          isOwner: specialLoginDetails.isOwner,
         }),
       };
+
       fetch(url, requestOptions)
         .then((res) => {
           return res.json();
         })
         .then((res) => {
           if (res.status === "FAIL") {
-            alert("Reenter Username, try 0Auth again");
-            dispatch(
-              setProfile({
-                firstName: null,
-                lastName: null,
-                email: null,
-                password: null,
-                userName: null,
-                isOwner: null,
-              })
-            );
-            logout({ returnTo: window.location.origin });
+            alert("Please Signup First");
+            localStorage.removeItem("loginWithOAuth");
+          } else {
+            dispatch(setProfile({ ...res.body }));
+            localStorage.removeItem("loginWithOAuth");
           }
-          return res;
-        })
-        .then((res) => {
-          console.log("From Backend:", res);
-          dispatch(setProfile({ ...res.body }));
-          navigate("/");
-        })
-        .catch((error) => console.log("Form submit error", error));
+        });
+    } else {
+      if (
+        userFromStore.firstName === null &&
+        user !== undefined &&
+        specialLoginDetails !== null
+      ) {
+        console.log(JSON.parse(localStorage.getItem("specialLoginDetails")));
+        const url = `${baseURL}/specialregister`;
+        const requestOptions = {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            firstName: user.given_name,
+            lastName: user.family_name,
+            email: user.email,
+            password: null,
+            userName: specialLoginDetails.userName,
+            isOwner: specialLoginDetails.isOwner,
+            age: specialLoginDetails.age,
+            gender: specialLoginDetails.gender,
+            isAvailable: specialLoginDetails.isAvailable,
+            bio: specialLoginDetails.bio,
+            categoryType: specialLoginDetails.categoryType,
+            categoryLevel: specialLoginDetails.categoryLevel,
+            city: specialLoginDetails.city,
+            state: specialLoginDetails.state,
+          }),
+        };
+        fetch(url, requestOptions)
+          .then((res) => {
+            return res.json();
+          })
+          .then((res) => {
+            if (res.status === "FAIL") {
+              console.log(specialLoginDetails);
+              alert("Reenter Username, try 0Auth again");
+              dispatch(
+                setProfile({
+                  firstName: null,
+                  lastName: null,
+                  email: null,
+                  userName: null,
+                  isOwner: null,
+                  age: null,
+                  gender: null,
+                  isAvailable: null,
+                  bio: null,
+                  categoryType: null,
+                  categoryLevel: null,
+                  city: null,
+                  state: null,
+                })
+              );
+              localStorage.removeItem("specialLoginDetails");
+              logout({ returnTo: window.location.origin });
+            }
+            return res;
+          })
+          .then((res) => {
+            console.log("From Backend:", res);
+            dispatch(setProfile({ ...res.body }));
+            localStorage.removeItem("specialLoginDetails");
+            navigate("/");
+          })
+          .catch((error) => console.log("Form submit error", error));
+      }
     }
   }, [user, specialLoginDetails]);
   const recaptchaRef = React.createRef();
@@ -126,25 +174,6 @@ const Login = () => {
     }
   };
 
-  const handleSpecialLogin = () => {
-    if (
-      specialLoginDetails === null ||
-      specialLoginDetails === "" ||
-      specialLoginDetails === undefined
-    ) {
-      alert("Please enter the Username");
-    } else {
-      localStorage.setItem(
-        "specialLoginDetails",
-        JSON.stringify(specialLoginDetails)
-      );
-
-      console.log("saved to local storage");
-
-      loginWithRedirect();
-    }
-  };
-
   const onCaptchaChange = () => {
     const recaptchaValue = recaptchaRef.current.getValue();
     setCaptchaStatus(recaptchaValue);
@@ -190,10 +219,30 @@ const Login = () => {
           className="form-group d-flex justify-content-around"
         >
           <button onClick={handleLogin} className="btn btn-success">
-            Login
+            Login with Email
           </button>
-          <Link to="signup" className="btn btn-primary">
-            Signup with Email
+        </div>
+        <hr
+          style={{
+            size: "20px",
+            height: "12px",
+            background: "blue",
+          }}
+        />
+        <br />
+        <br />
+        <div
+          style={{ width: "500px" }}
+          className="form-group d-flex justify-content-around"
+        >
+          <Link
+            to="special-login"
+            className="btn btn-primary"
+            onClick={() => {
+              localStorage.setItem("loginWithOAuth", JSON.stringify(true));
+            }}
+          >
+            Signin with OAuth
           </Link>{" "}
         </div>
         <br />
@@ -207,48 +256,16 @@ const Login = () => {
         />
         <br />
         <br />
-
-        <div className="form-group">
-          <label>Username: </label>
-          <input
-            type="text"
-            className="form-control"
-            onChange={(e) =>
-              setSpecialLoginDetails({
-                ...specialLoginDetails,
-                userName: e.target.value,
-              })
-            }
-          />
-          <br />
-        </div>
-
-        <div className="form-group">
-          <label>Are You a Venue Owner?</label>
-          <select
-            className="form-control"
-            onChange={(e) => {
-              setSpecialLoginDetails({
-                ...specialLoginDetails,
-                isOwner: e.target.value,
-              });
-            }}
-          >
-            <option value={undefined} disabled>
-              Select your option
-            </option>
-            <option value={true} defaultValue>
-              Yes
-            </option>
-            <option value={false}>No</option>
-          </select>
-          <br />
-        </div>
-
-        <div className=" form-group d-flex justify-content-around">
-          <button onClick={() => handleSpecialLogin()} className="btn btn-info">
-            Login/Signup With OAuth
-          </button>
+        <div
+          style={{ width: "500px" }}
+          className="form-group d-flex justify-content-around"
+        >
+          <Link to="signup" className="btn btn-primary">
+            Signup with Email
+          </Link>{" "}
+          <Link to="special-signup" className="btn btn-primary">
+            Signup with OAuth
+          </Link>{" "}
         </div>
         <br />
         <br />
@@ -259,8 +276,9 @@ const Login = () => {
             background: "blue",
           }}
         />
+
         <br />
-        <br />
+
         <div className="form-group">
           <label>Email: </label>
           <input
