@@ -41,6 +41,38 @@ const EditProfile = () => {
       profileDetails.isOwner === ""
     ) {
       alert("Choose if you are a venue owner?");
+    } else if (
+      profileDetails.gender === undefined ||
+      profileDetails.gender === ""
+    ) {
+      alert("Choose your gender");
+    } else if (profileDetails.bio === undefined || profileDetails.bio === "") {
+      alert("Please enter your bio");
+    } else if (
+      profileDetails.categoryType === undefined ||
+      profileDetails.categoryType === ""
+    ) {
+      alert("Choose your favorite category");
+    } else if (
+      profileDetails.categoryLevel === undefined ||
+      profileDetails.categoryLevel === ""
+    ) {
+      alert("Choose your interest level");
+    } else if (
+      profileDetails.isAvailable === undefined ||
+      profileDetails.isAvailable === ""
+    ) {
+      alert("Choose your availability");
+    } else if (
+      profileDetails.city === undefined ||
+      profileDetails.city === ""
+    ) {
+      alert("Choose your city");
+    } else if (
+      profileDetails.state === undefined ||
+      profileDetails.state === ""
+    ) {
+      alert("Choose your state");
     } else {
       const url = `${baseURL}/edit`;
       const requestOptions = {

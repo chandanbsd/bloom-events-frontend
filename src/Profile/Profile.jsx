@@ -11,23 +11,6 @@ const Profile = () => {
     ...user,
   });
 
-  const handleProfileUpdate = () => {
-    if (profileDetails.firstName === "") {
-      alert("Incorrect First Name");
-    } else if (profileDetails.lastName === "") {
-      alert("Incorrect Last Name");
-    } else if (profileDetails.email === "") {
-      alert("Incorrect Email");
-    } else if (profileDetails.userName === "") {
-      alert("Incorrect Username");
-    } else if (profileDetails.password === "") {
-      alert("Incorrect Password");
-    } else if (profileDetails.isOwner === "") {
-      alert("Choose if you are a venue owner?");
-    } else {
-      dispatch(setProfile({ ...profileDetails }));
-    }
-  };
   if (profileDetails.firstName !== null) {
     return (
       <div className="mx-auto" style={{ width: "500px" }}>
