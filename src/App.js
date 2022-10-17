@@ -17,6 +17,8 @@ import PasswordReset from "./PasswordReset/PasswordReset";
 import VenueSearch from "./VenueSearch/VenueSearch";
 import ActivitySearch from "./ActivitySearch/ActivitySearch";
 import ParticipantSearch from "./ParticipantSearch/ParticipantSearch";
+import SpecialLogin from "./SpecialLogin/SpecialLogin";
+import SpecialSignup from "./SpecialSignup/SpecialSignup";
 
 function App() {
   return (
@@ -32,6 +34,8 @@ function App() {
         <Route path="venue-search" element={<VenueSearch />} />
         <Route path="activity-search" element={<ActivitySearch />} />
         <Route path="participant-search" element={<ParticipantSearch />} />
+        <Route path="login/special-login" element={<SpecialLogin />} />
+        <Route path="login/special-signup" element={<SpecialSignup />} />
       </Routes>
     </div>
   );

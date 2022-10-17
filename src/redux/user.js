@@ -8,6 +8,14 @@ export const userSlice = createSlice({
     email: null,
     userName: null,
     isOwner: null,
+    age: null,
+    gender: null,
+    isAvailable: null,
+    bio: null,
+    categoryType: null,
+    categoryLevel: null,
+    city: null,
+    state: null,
   },
 
   reducers: {
@@ -18,6 +26,14 @@ export const userSlice = createSlice({
       state.email = actionObj.email;
       state.userName = actionObj.userName;
       state.isOwner = actionObj.isOwner;
+      state.age = actionObj.age;
+      state.gender = actionObj.gender;
+      state.isAvailable = actionObj.isAvailable;
+      state.bio = actionObj.bio;
+      state.categoryType = actionObj.categoryType;
+      state.categoryLevel = actionObj.categoryLevel;
+      state.city = actionObj.city;
+      state.state = actionObj.state;
     },
   },
 });
