@@ -4,6 +4,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { setProfile } from "../redux/user";
 import baseURL from "../constants/constants";
 import { useNavigate } from "react-router-dom";
+import { usCities, usStates } from "../constants/usaCityStates";
+import Dropdown from "react-bootstrap/Dropdown";
+import DropdownButton from "react-bootstrap/DropdownButton";
+
 const SignUp = () => {
   const user = useSelector((state) => state.user);
   const [captchaStatus, setCaptchaStatus] = useState(false);
@@ -25,10 +29,24 @@ const SignUp = () => {
       alert("Incorrect Username");
     } else if (signUpDetails.password === undefined) {
       alert("Incorrect Password");
-    } else if (captchaStatus == false) {
+    } else if (captchaStatus === false) {
       alert("Captcha Failed, Please try again");
     } else if (signUpDetails.isOwner === undefined) {
-      alert("Choose if you are a venue owner?");
+      alert("Choose if you are a venue owner");
+    } else if (signUpDetails.gender === undefined) {
+      alert("Choose your gender");
+    } else if (signUpDetails.bio === undefined) {
+      alert("Please enter your bio");
+    } else if (signUpDetails.categoryType === undefined) {
+      alert("Choose your favorite category");
+    } else if (signUpDetails.categoryLevel === undefined) {
+      alert("Choose your interest level");
+    } else if (signUpDetails.isAvailable === undefined) {
+      alert("Choose your availability");
+    } else if (signUpDetails.city === undefined) {
+      alert("Choose your city");
+    } else if (signUpDetails.state === undefined) {
+      alert("Choose your state");
     } else {
       console.log(JSON.stringify(signUpDetails));
       const url = `${baseURL}/register`;
@@ -124,12 +142,174 @@ const SignUp = () => {
               setSignUpDetails({ ...signUpDetails, isOwner: e.target.value })
             }
           >
-            <option value={undefined}>Select your option</option>
+            <option value={undefined} defaultValue>
+              Choose an option?
+            </option>
             <option value={true}>Yes</option>
             <option value={false}>No</option>
           </select>
           <br />
         </div>
+
+        <div className="form-group">
+          <label>Select Gender?</label>
+          <select
+            className="form-control"
+            onChange={(e) =>
+              setSignUpDetails({ ...signUpDetails, gender: e.target.value })
+            }
+          >
+            <option value={undefined} defaultValue>
+              Choose an option
+            </option>
+            <option value={"Male"}>Male</option>
+            <option value={"Female"}>Female</option>
+          </select>
+          <br />
+        </div>
+
+        <div className="form-group">
+          <label>Bio:</label>
+          <input
+            type="text"
+            className="form-control"
+            onChange={(e) =>
+              setSignUpDetails({ ...signUpDetails, bio: e.target.value })
+            }
+          />{" "}
+          <br />
+        </div>
+
+        <div className="form-group">
+          <label>Choose favorite category?</label>
+          <select
+            className="form-control"
+            onChange={(e) =>
+              setSignUpDetails({
+                ...signUpDetails,
+                categoryType: e.target.value,
+              })
+            }
+          >
+            <option value={undefined} defaultValue>
+              Choose an option
+            </option>
+            <option value={"Music"}>Music</option>
+            <option value={"Sports"}>Sports</option>
+            <option value={"Comedy"}>Comedy</option>
+          </select>
+          <br />
+        </div>
+
+        <div className="form-group">
+          <label>Choose Interest Level?</label>
+          <select
+            className="form-control"
+            onChange={(e) =>
+              setSignUpDetails({
+                ...signUpDetails,
+                categoryLevel: e.target.value,
+              })
+            }
+          >
+            <option value={undefined} defaultValue>
+              Choose an option
+            </option>
+            <option value={"Beginner"}>Beginner</option>
+            <option value={"Intermediate"}>Intermediate</option>
+            <option value={"Advanced"}>Advanced</option>
+          </select>
+          <br />
+        </div>
+
+        <div className="form-group">
+          <label>Available to join events?</label>
+          <select
+            className="form-control"
+            onChange={(e) =>
+              setSignUpDetails({
+                ...signUpDetails,
+                isAvailable: e.target.value,
+              })
+            }
+          >
+            <option value={undefined} defaultValue>
+              Choose an option
+            </option>
+            <option value={"Yes"}>Yes</option>
+            <option value={"No"}>No</option>
+          </select>
+          <br />
+        </div>
+
+        <div className="form-group">
+          <label>Select City?</label>
+          <select
+            className="form-control"
+            onChange={(e) =>
+              setSignUpDetails({
+                ...signUpDetails,
+                city: e.target.value,
+              })
+            }
+          >
+            <option value={undefined} defaultValue>
+              Choose an option
+            </option>
+            {usCities.map((ele, index) => (
+              <option value={ele} key={index}>
+                {ele}
+              </option>
+            ))}
+          </select>
+          <br />
+        </div>
+
+        <div className="form-group">
+          <label>Select State?</label>
+          <select
+            className="form-control"
+            onChange={(e) =>
+              setSignUpDetails({
+                ...signUpDetails,
+                state: e.target.value,
+              })
+            }
+          >
+            <option value={undefined} defaultValue>
+              Choose an option
+            </option>
+            {usStates.map((ele, index) => (
+              <option value={ele} key={index}>
+                {ele}
+              </option>
+            ))}
+          </select>
+          <br />
+        </div>
+
+        <div className="form-group">
+          <label>Select Age Range?</label>
+          <select
+            className="form-control"
+            onChange={(e) =>
+              setSignUpDetails({
+                ...signUpDetails,
+                age: e.target.value,
+              })
+            }
+          >
+            <option value={undefined} defaultValue>
+              Choose an option
+            </option>
+
+            <option value={"A65"}>Above 65</option>
+            <option value={"A18"}>Above 18</option>
+            <option value={"B18"}>Below 18</option>
+          </select>
+          <br />
+        </div>
+
         <div>
           <ReCAPTCHA
             ref={recaptchaRef}

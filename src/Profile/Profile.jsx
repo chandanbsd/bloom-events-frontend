@@ -51,6 +51,34 @@ const Profile = () => {
             <b>Are You a Venue Owner?: </b>
             {profileDetails.isOwner}
           </li>
+          <li className="list-group-item">
+            <b>Age Range: </b>
+            {profileDetails.age}
+          </li>
+          <li className="list-group-item">
+            <b>Gender: </b>
+            {profileDetails.gender}
+          </li>
+          <li className="list-group-item">
+            <b>Available for Events?: </b>
+            {profileDetails.isAvailable}
+          </li>
+          <li className="list-group-item">
+            <b>Favorite Category of Events: </b>
+            {profileDetails.categoryType}
+          </li>
+          <li className="list-group-item">
+            <b>Interest Level: </b>
+            {profileDetails.categoryLevel}
+          </li>
+          <li className="list-group-item">
+            <b>City: </b>
+            {profileDetails.city}
+          </li>
+          <li className="list-group-item">
+            <b>State: </b>
+            {profileDetails.state}
+          </li>
         </ul>
         <br />
         <br />
