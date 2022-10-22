@@ -17,7 +17,7 @@ root.render(
       <Auth0Provider
         domain="***REMOVED***"
         clientId="***REMOVED***"
-        redirectUri={"http://localhost:3000/login"}
+        redirectUri={"https://bloom-events.vercel.app/login"}
       >
         <BrowserRouter>
           <PersistGate loading={null} persistor={persistor}>
