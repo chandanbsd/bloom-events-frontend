@@ -47,6 +47,10 @@ const Profile = () => {
             {profileDetails.isAvailable}
           </li>
           <li className="list-group-item">
+            <b>Bio?: </b>
+            {profileDetails.bio}
+          </li>
+          <li className="list-group-item">
             <b>Favorite Category of Events: </b>
             {profileDetails.categoryType}
           </li>
