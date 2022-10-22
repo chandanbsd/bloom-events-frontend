@@ -13,7 +13,10 @@ const EditProfile = () => {
     ...user,
   });
   const navigate = useNavigate();
-  useEffect(() => {}, [profileDetails]);
+  useEffect(() => {
+    console.log("Profile Details");
+    console.log(profileDetails);
+  }, [profileDetails]);
 
   const handleSignUp = () => {
     if (
