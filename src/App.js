@@ -19,6 +19,7 @@ import ActivitySearch from "./ActivitySearch/ActivitySearch";
 import ParticipantSearch from "./ParticipantSearch/ParticipantSearch";
 import SpecialLogin from "./SpecialLogin/SpecialLogin";
 import SpecialSignup from "./SpecialSignup/SpecialSignup";
+import VenueDetails from "./VenueDetails/VenueDetails";
 
 function App() {
   return (
@@ -36,6 +37,7 @@ function App() {
         <Route path="participant-search" element={<ParticipantSearch />} />
         <Route path="login/special-login" element={<SpecialLogin />} />
         <Route path="login/special-signup" element={<SpecialSignup />} />
+        <Route path="venue-details/:token" element={<VenueDetails />} />
       </Routes>
     </div>
   );
