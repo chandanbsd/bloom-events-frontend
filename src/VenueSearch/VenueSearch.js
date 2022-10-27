@@ -8,6 +8,7 @@ import { usCities, usStates } from "../constants/usaCityStates";
 import baseURL from "../constants/constants";
 import activityListMock from "../Mocks/activityListMock";
 import venueListMock from "../Mocks/venueListMock";
+import { Link } from "react-router-dom";
 
 const VenueSearch = () => {
   const [searchKeyword, setSearchKeyword] = useState("");
@@ -245,7 +246,19 @@ const VenueSearch = () => {
                 </div>
               </div>
               <div className="mx-auto">
-                <button className="btn btn-success">Reserve Time</button>
+                <button className="btn btn-success">
+                  <Link
+                    to={{
+                      pathname: `venue-details/${val.venueId}`,
+                    }}
+                    style={{
+                      textDecoration: "none",
+                      color: "inherit",
+                    }}
+                  >
+                    Reserve Time
+                  </Link>
+                </button>
               </div>
             </div>
           );

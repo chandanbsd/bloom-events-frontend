@@ -38,9 +38,12 @@ function App() {
         <Route path="participant-search" element={<ParticipantSearch />} />
         <Route path="login/special-login" element={<SpecialLogin />} />
         <Route path="login/special-signup" element={<SpecialSignup />} />
-        <Route path="venue-details/:token" element={<VenueDetails />} />
         <Route
-          path="venue-details/:token/venue-booking"
+          path="/venue-search/venue-details/:token"
+          element={<VenueDetails />}
+        />
+        <Route
+          path="/venue-search/venue-details/:token/venue-booking"
           element={<VenueBooking />}
         />
       </Routes>
