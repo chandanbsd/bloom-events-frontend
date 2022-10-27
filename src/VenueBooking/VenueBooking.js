@@ -41,7 +41,7 @@ const VenueBooking = () => {
         return "open";
       });
     }
-    // const url = `${baseURL}/venue-booking`;
+    const url = `${baseURL}/venue-booking`;
     // const requestOptions = {
     //   method: "POST",
     //   headers: { "Content-Type": "application/json" },
@@ -57,24 +57,36 @@ const VenueBooking = () => {
     //     activityVenueId: reservationDetails.venueDetails.venueId,
     //  activityCost: reservationDetails.activityCost,
     //     venueSlots: venueSlots,
-    //     totalCost: reservationDetails.venueDetails.venueHrCost*reservationDetails.selectedSlotList.length
+    //     totalCost: reservationDetails.venueDetails.venueHrCost*reservationDetails.selectedSlotList.length,
+    // activityTime: reservationDetails.selectedSlotList
+    //  activityDate: reservationDetails.formattedReservationDate.split("-"),
+    // bookingDate: new Date()
     //   }),
     // };
     // fetch(url, requestOptions).then((response) => response.json());
 
     console.log(
-      reservationDetails.activityName,
-      reservationDetails.activityDescription,
-      reservationDetails.activityCapacity,
-      reservationDetails.activityLocation,
-      reservationDetails.activityCategory,
-      reservationDetails.activityAgeRange,
-      userFromStore.userName,
-      reservationDetails.venueDetails.venueId,
-      venueSlots,
-      reservationDetails.venueDetails.venueHrCost *
-        reservationDetails.selectedSlotList.length,
-      reservationDetails.activityCost
+      JSON.stringify({
+        activityName: reservationDetails.activityName,
+        activityDescription: reservationDetails.activityDescription,
+        activityCapacity: reservationDetails.activityCapacity,
+        activityLocation: reservationDetails.activityLocation,
+        activityCategory: reservationDetails.activityCategory,
+        activityAgeRange: reservationDetails.activityAgeRange,
+        activityCost: reservationDetails.activityCost,
+
+        activityVenueId: reservationDetails.venueDetails.venueId,
+        activityOrganizer: userFromStore.userName,
+        activityVenueOwner: reservationDetails.venueDetails.venueOwner,
+
+        venueSlots: venueSlots,
+        totalCost:
+          reservationDetails.venueDetails.venueHrCost *
+          reservationDetails.selectedSlotList.length,
+        activityTime: reservationDetails.selectedSlotList,
+        activityDate: reservationDetails.formattedReservationDate.split("-"),
+        bookingDate: new Date(),
+      })
     );
   };
 
@@ -82,21 +94,6 @@ const VenueBooking = () => {
 
   useEffect(() => {
     console.log(reservationDetails);
-
-    console.log(
-      reservationDetails.activityName,
-      reservationDetails.activityDescription,
-      reservationDetails.activityCapacity,
-      reservationDetails.activityLocation,
-      reservationDetails.activityCategory,
-      reservationDetails.activityAgeRange,
-      userFromStore.userName,
-      reservationDetails.venueDetails.venueId,
-      reservationDetails.venueDetails.venueHrCost *
-        reservationDetails.selectedSlotList.length,
-      reservationDetails.activityCost
-    );
-    // console.log(reservationDetails);
   }, []);
 
   return (
