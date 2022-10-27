@@ -20,6 +20,7 @@ import ParticipantSearch from "./ParticipantSearch/ParticipantSearch";
 import SpecialLogin from "./SpecialLogin/SpecialLogin";
 import SpecialSignup from "./SpecialSignup/SpecialSignup";
 import VenueDetails from "./VenueDetails/VenueDetails";
+import VenueBooking from "./VenueBooking/VenueBooking";
 
 function App() {
   return (
@@ -38,6 +39,10 @@ function App() {
         <Route path="login/special-login" element={<SpecialLogin />} />
         <Route path="login/special-signup" element={<SpecialSignup />} />
         <Route path="venue-details/:token" element={<VenueDetails />} />
+        <Route
+          path="venue-details/:token/venue-booking"
+          element={<VenueBooking />}
+        />
       </Routes>
     </div>
   );
