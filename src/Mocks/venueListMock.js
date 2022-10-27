@@ -19,6 +19,34 @@ const venueListMock = [
     venueCategory: "Sports",
     venueCity: "Indianapolis",
     venueState: "Indiana",
+    venueSlots: {
+      "2022-10-22": [
+        "open",
+        "open",
+        "open",
+        "open",
+        "open",
+        "open",
+        "open",
+        "open",
+        "open",
+        "open",
+        "open",
+        "open",
+        "open",
+        "open",
+        "open",
+        "open",
+        "open",
+        "open",
+        "open",
+        "open",
+        "open",
+        "open",
+        "open",
+        "open",
+      ],
+    },
   },
   {
     venueAvailability: {
@@ -40,6 +68,7 @@ const venueListMock = [
     venueCategory: "Music",
     venueCity: "Nashville",
     venueState: "Tennessee",
+    venueSlots: {},
   },
 ];
 
