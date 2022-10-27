@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { clearEvent, setEvent } from "../redux/event";
 import baseURL from "../constants/constants";
@@ -43,9 +43,16 @@ const VenueDetails = () => {
   const eventFromStore = useSelector((state) => state.event);
   const dispatch = useDispatch();
   const params = useParams();
+  const [activityName, setActivityName] = useState(null);
+  const [activityCapacity, setActivityCapacity] = useState(0);
+  const [activityDescription, setActivityDescription] = useState(null);
+  const [activityLocation, setActivityLocation] = useState(null);
+  const [activityCategory, setActivityCategory] = useState(null);
+  const [activityAgeRange, setActivityAgeRange] = useState(null);
+  const [activityCost, setActivityCost] = useState(null);
 
   // console.log(params.token);
-  const [eventDetails, setEventDetails] = useState({ ...venueDetailsMock });
+  const [venueDetails, setVenueDetails] = useState({ ...venueDetailsMock });
   const [reservationDate, setReservationDate] = useState(new Date());
   const [availableTimeSlot, setAvailableTimeSlot] = useState([
     "open",
@@ -77,6 +84,34 @@ const VenueDetails = () => {
 
   const [selectedSlotList, setSelectedSlotList] = useState([]);
 
+  const bookingDetailsHandler = () => {
+    if (
+      activityName !== null &&
+      activityName !== "" &&
+      activityName !== undefined &&
+      activityCapacity !== null &&
+      activityCapacity !== "" &&
+      activityCapacity !== undefined &&
+      activityDescription !== null &&
+      activityDescription !== "" &&
+      activityDescription !== undefined &&
+      activityLocation !== null &&
+      activityLocation !== "" &&
+      activityLocation !== undefined &&
+      activityCategory !== undefined &&
+      activityCategory !== null &&
+      activityCategory !== "" &&
+      activityAgeRange !== undefined &&
+      activityAgeRange !== null &&
+      activityAgeRange !== "" &&
+      activityCost !== undefined &&
+      activityCost !== null &&
+      activityCost !== ""
+    ) {
+      return true;
+    } else return false;
+  };
+
   const slotAddRemoveBtn = (index) => {
     if (availableTimeSlot[index] === "open") {
       if (selectedSlotList.includes(index)) {
@@ -86,9 +121,7 @@ const VenueDetails = () => {
             onClick={() => {
               var removeIndex = selectedSlotList.indexOf(index);
               if (removeIndex > -1) {
-                console.log(selectedSlotList, index);
                 setSelectedSlotList(
-                  // [...selectedSlotList].splice(removeIndex, 1)
                   selectedSlotList.filter((val) => val != index)
                 );
               }
@@ -110,32 +143,24 @@ const VenueDetails = () => {
     }
   };
 
-  //   useEffect(() => {
-  //     const url = `${baseURL}/venuelist`;
-  //     const requestOptions = {
-  //       method: "GET",
-  //       headers: { "Content-Type": "application/json" },
-  //     };
-  //     fetch(url, requestOptions)
-  //       .then((response) => response.json())
-
-  //       .then((res) => {
-  //         if (res.status === "OK") {
-  //           res.body.forEach((val) => {
-  //             eventDetails.venueAvailability = JSON.parse(
-  //               eventDetails.venueAvailability.replace(/'/g, '"')
-  //             );
-  //           });
-
-  //           dispatch(setEvent([...res.body]));
-  //           setEventList(JSON.parse(JSON.stringify(eventFromStore.eventList)));
-  //           setFilteredEventList(
-  //             JSON.parse(JSON.stringify(eventFromStore.eventList))
-  //           );
-  //         } else alert("Unable to fetch event venues");
-  //       })
-  //       .catch((error) => console.log("Form submit error", error));
-  //   }, []);
+  // useEffect(() => {
+  //   const url = `${baseURL}/venuedetails`;
+  //   const requestOptions = {
+  //     method: "GET",
+  //     headers: { "Content-Type": "application/json" },
+  //     body: JSON.stringify({
+  //       venueId: params.token,
+  //     }),
+  //   };
+  //   fetch(url, requestOptions)
+  //     .then((response) => response.json())
+  //     .then((res) => {
+  //       if (res.status === "OK") {
+  //         setVenueDetails(JSON.parse(JSON.stringify({ ...res.body })));
+  //       } else alert("Unable to get details for the venue");
+  //     })
+  //     .catch((error) => console.log("API Connection Failed", error));
+  // }, []);
 
   window.onload = async () => {
     // console.log(venueDetailsMock);
@@ -144,31 +169,38 @@ const VenueDetails = () => {
     // await setEventaDetails(JSON.parse(JSON.stringify(eventFromStore.eventList)));
   };
 
-  useEffect(() => {
-    console.log(selectedSlotList);
-  }, [reservationDate, selectedSlotList]);
+  useEffect(() => {}, [reservationDate, selectedSlotList]);
 
   return (
     <div>
       <h1 className="mx-auto" style={{ width: "fit-content" }}>
-        Venue Name: {eventDetails.venueName}
+        Venue Name: {venueDetails.venueName}
       </h1>
       <div className="mx-auto mt-5" style={{ width: "90%" }}>
         <div className="card mb-2 p-3">
           <div className="card-body d-flex justify-content-between">
             <div>
-              <h5 className="card-title">Name: {eventDetails.venueName}</h5>
               <p className="card-text">
-                Description: {eventDetails.venueDescription}
+                <b>Description:</b> {venueDetails.venueDescription}
               </p>
-              <p className="card-text">Address: {eventDetails.venueAddress}</p>
-              <p className="card-text">Owner: {eventDetails.venueOwner}</p>
-              <p className="card-text">Cost/hr: ${eventDetails.venueHrCost}</p>
               <p className="card-text">
-                Category: {eventDetails.venueCategory}
+                <b>Address:</b> {venueDetails.venueAddress}
               </p>
-              <p className="card-text">City: {eventDetails.venueCity}</p>
-              <p className="card-text">State: {eventDetails.venueState}</p>
+              <p className="card-text">
+                <b>Owner:</b> {venueDetails.venueOwner}
+              </p>
+              <p className="card-text">
+                <b>Cost/hr:</b> ${venueDetails.venueHrCost}
+              </p>
+              <p className="card-text">
+                <b>Category:</b> {venueDetails.venueCategory}
+              </p>
+              <p className="card-text">
+                <b>City:</b> {venueDetails.venueCity}
+              </p>
+              <p className="card-text">
+                <b>State:</b> {venueDetails.venueState}
+              </p>
 
               {/* <img className="card-img-top" alt="Card Image" /> */}
             </div>
@@ -182,31 +214,31 @@ const VenueDetails = () => {
                     </tr>
                     <tr>
                       <td>Monday</td>
-                      <td>{`${eventDetails.venueAvailability.mon[0]} - ${eventDetails.venueAvailability.mon[1]}`}</td>
+                      <td>{`${venueDetails.venueAvailability.mon[0]} - ${venueDetails.venueAvailability.mon[1]}`}</td>
                     </tr>
                     <tr>
                       <td>Tuesday</td>
-                      <td>{`${eventDetails.venueAvailability.tue[0]} - ${eventDetails.venueAvailability.tue[1]}`}</td>
+                      <td>{`${venueDetails.venueAvailability.tue[0]} - ${venueDetails.venueAvailability.tue[1]}`}</td>
                     </tr>
                     <tr>
                       <td>Wednesday</td>
-                      <td>{`${eventDetails.venueAvailability.wed[0]} - ${eventDetails.venueAvailability.wed[1]}`}</td>
+                      <td>{`${venueDetails.venueAvailability.wed[0]} - ${venueDetails.venueAvailability.wed[1]}`}</td>
                     </tr>
                     <tr>
                       <td>Thursday</td>
-                      <td>{`${eventDetails.venueAvailability.thu[0]} - ${eventDetails.venueAvailability.thu[1]}`}</td>
+                      <td>{`${venueDetails.venueAvailability.thu[0]} - ${venueDetails.venueAvailability.thu[1]}`}</td>
                     </tr>
                     <tr>
                       <td>Friday</td>
-                      <td>{`${eventDetails.venueAvailability.fri[0]} - ${eventDetails.venueAvailability.fri[1]}`}</td>
+                      <td>{`${venueDetails.venueAvailability.fri[0]} - ${venueDetails.venueAvailability.fri[1]}`}</td>
                     </tr>
                     <tr>
                       <td>Saturday</td>
-                      <td>{`${eventDetails.venueAvailability.sat[0]} - ${eventDetails.venueAvailability.sat[1]}`}</td>
+                      <td>{`${venueDetails.venueAvailability.sat[0]} - ${venueDetails.venueAvailability.sat[1]}`}</td>
                     </tr>
                     <tr>
                       <td>Sunday</td>
-                      <td>{`${eventDetails.venueAvailability.sun[0]} - ${eventDetails.venueAvailability.sun[1]}`}</td>
+                      <td>{`${venueDetails.venueAvailability.sun[0]} - ${venueDetails.venueAvailability.sun[1]}`}</td>
                     </tr>
                   </tbody>
                 </table>
@@ -258,65 +290,196 @@ const VenueDetails = () => {
             </div>
           </div>
 
-          {/* <div>Available Slots for {reservationDate.toLocaleDateString()}</div>
-          <span>
-            <Dropdown onChange={(e) => setSelectedTimeSlot(e)}>
-              <Dropdown.Toggle variant="success" id="dropdown-basic">
-                Dropdown Button
-              </Dropdown.Toggle>
-
-              <Dropdown.Menu>
-                {timeSlots.map((val, index) => {
-                  if (avaiableTimeSlot[index] === "open") {
-                    return (
-                      <Dropdown.Item key={index} eventKey={val}>
-                        {val}
-                      </Dropdown.Item>
-                    );
-                  }
-                })}
-              </Dropdown.Menu>
-            </Dropdown>
-          </span> */}
-
           <div className="mx-auto">
             <h1> Confirm Booking</h1>
           </div>
-          <div className="mx-auto" style={{ width: "500px" }}>
-            <table className="table" style={{ width: "500px" }}>
-              <tbody>
-                <tr>
-                  <th>Date</th>
-                  <td>{`${reservationDate.getUTCFullYear()}-${
-                    reservationDate.getUTCMonth() + 1
-                  }-${reservationDate.getUTCDate()}`}</td>
-                </tr>
-                <tr>
-                  <th>Slots Booked</th>
-                  <td>
-                    <ul>
-                      {selectedSlotList.map((val) => {
-                        return <li key={val}>{timeSlots[val]}</li>;
-                      })}{" "}
-                    </ul>
-                  </td>
-                </tr>
-                <tr>
-                  <th>Total Cost:</th>
-                  <td>{eventDetails.venueHrCost * selectedSlotList.length}</td>
-                </tr>
-                <tr>
-                  <td colSpan={2}>
-                    <div className="mx-auto">
-                      <button className="btn btn-primary">
-                        Confirm Booking
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+          {selectedSlotList.length > 0 ? (
+            <div className="mx-auto" style={{ width: "500px" }}>
+              <table className="table" style={{ width: "500px" }}>
+                <tbody>
+                  <tr>
+                    <th>Enter Activity Name:</th>
+                    <td>
+                      <input
+                        type="text"
+                        onChange={(e) => setActivityName(e.target.value)}
+                      />
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>Enter Activity Capacity:</th>
+                    <td>
+                      <input
+                        type="number"
+                        onChange={(e) => setActivityCapacity(e.target.value)}
+                      />
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>Enter Activity Details:</th>
+                    <td>
+                      <textarea
+                        onChange={(e) => setActivityDescription(e.target.value)}
+                      />
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>Enter Activity Location:</th>
+                    <td>
+                      <textarea
+                        onChange={(e) => setActivityLocation(e.target.value)}
+                      />
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>Enter Activity Category:</th>
+                    <td>
+                      <Dropdown>
+                        <DropdownButton
+                          variant="success"
+                          id="dropdown-basic"
+                          onSelect={(e) => {
+                            setActivityCategory(e);
+                          }}
+                          title="Select Category"
+                        >
+                          <Dropdown.Item eventKey={"Music"}>
+                            Music
+                          </Dropdown.Item>
+                          <Dropdown.Item eventKey={"Sports"}>
+                            Sports
+                          </Dropdown.Item>
+                          <Dropdown.Item eventKey={"Comedy"}>
+                            Comedy
+                          </Dropdown.Item>
+                        </DropdownButton>
+                      </Dropdown>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>Enter Activity Age:</th>
+                    <td>
+                      <Dropdown>
+                        <DropdownButton
+                          variant="success"
+                          id="dropdown-basic"
+                          onSelect={(e) => {
+                            setActivityAgeRange(e);
+                          }}
+                          title="Select Age Range"
+                        >
+                          <Dropdown.Item eventKey={"Any"}>
+                            Everyone
+                          </Dropdown.Item>
+                          <Dropdown.Item eventKey={"A65"}>
+                            Above 65
+                          </Dropdown.Item>
+                          <Dropdown.Item eventKey={"A18"}>
+                            Above 18
+                          </Dropdown.Item>
+                          <Dropdown.Item eventKey={"B18"}>
+                            Below 18
+                          </Dropdown.Item>
+                        </DropdownButton>
+                      </Dropdown>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>Activity Cost</th>
+                    <td>
+                      {" "}
+                      <Dropdown>
+                        <DropdownButton
+                          variant="success"
+                          id="dropdown-basic"
+                          onSelect={(e) => {
+                            setActivityCost(e);
+                          }}
+                          title="Select Cost"
+                        >
+                          <Dropdown.Item eventKey={"Free"}>Free</Dropdown.Item>
+                          <Dropdown.Item eventKey={"Paid"}>Paid</Dropdown.Item>
+                        </DropdownButton>
+                      </Dropdown>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>Date</th>
+                    <td>{`${reservationDate.getUTCFullYear()}-${
+                      reservationDate.getUTCMonth() + 1
+                    }-${reservationDate.getUTCDate()}`}</td>
+                  </tr>
+                  <tr>
+                    <th>Slots Booked</th>
+                    <td>
+                      <ul>
+                        {selectedSlotList.map((val) => {
+                          return <li key={val}>{timeSlots[val]}</li>;
+                        })}{" "}
+                      </ul>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>Total Reservation Cost:</th>
+                    <td>
+                      {venueDetails.venueHrCost * selectedSlotList.length}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td colSpan={2}>
+                      <div className="text-center">
+                        <button
+                          className={
+                            "btn " +
+                            (bookingDetailsHandler()
+                              ? "btn-primary"
+                              : "btn-danger")
+                          }
+                        >
+                          {bookingDetailsHandler() ? (
+                            <Link
+                              to={{
+                                pathname: "venue-booking",
+                              }}
+                              state={{
+                                venueDetails: JSON.parse(
+                                  JSON.stringify(venueDetails)
+                                ),
+                                reservationDate,
+                                availableTimeSlot,
+                                timeSlots,
+                                selectedSlotList,
+                                formattedReservationDate: `${reservationDate.getUTCFullYear()}-${
+                                  reservationDate.getUTCMonth() + 1
+                                }-${reservationDate.getUTCDate()}`,
+                                activityName,
+                                activityLocation,
+                                activityCapacity,
+                                activityCategory,
+                                activityAgeRange,
+                                activityCost,
+                                activityDescription,
+                              }}
+                              style={{
+                                textDecoration: "none",
+                                color: "inherit",
+                              }}
+                            >
+                              Confirm Booking
+                            </Link>
+                          ) : (
+                            "Enter Activity Details to proceed"
+                          )}
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            <div className="mx-auto">Please select a slot first</div>
+          )}
         </div>
       </div>
     </div>
