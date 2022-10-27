@@ -169,7 +169,7 @@ const VenueDetails = () => {
     // await setEventaDetails(JSON.parse(JSON.stringify(eventFromStore.eventList)));
   };
 
-  useEffect(() => {}, [reservationDate, selectedSlotList]);
+  useEffect(() => {}, []);
 
   return (
     <div>
