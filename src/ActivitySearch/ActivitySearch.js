@@ -291,7 +291,7 @@ const ActivitySearch = () => {
                 </div>
                 <div className="align-self-center">
                   <p className="card-text align-self-center">
-                    <b>Date:</b> {val.activityDate.join("-")}
+                    <b>Date:</b> {val.activityDate}
                     <br />
                     <br />
                     <b>Time:</b>{" "}

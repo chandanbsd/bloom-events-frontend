@@ -59,7 +59,7 @@ const venueListMock = [
       sun: ["08AM", "07PM"],
     },
     venueHrCost: 400,
-    venueId: "0",
+    venueId: "1",
     venueLocation: "5A N kinserPike , Bloomington, 47404",
     venueName: "Nashville Arts Center",
     venueOpen: "No",

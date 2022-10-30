@@ -1,4 +1,13 @@
 const venueDetailsMock = {
+  venueId: "0",
+  venueName: "Bill Garett fielhouse",
+  venueOwner: "chandanbsd",
+  venueDescription: "The best sports venue in town",
+  venueAddress: "5A N kinserPike , Bloomington, 47404",
+  venueOpen: "Yes",
+  venueCategory: "Sports",
+  venueCity: "Indianapolis",
+  venueState: "Indiana",
   venueAvailability: {
     mon: ["08AM", "07PM"],
     tue: ["09AM", "07PM"],
@@ -9,15 +18,6 @@ const venueDetailsMock = {
     sun: ["08AM", "07PM"],
   },
   venueHrCost: 400,
-  venueId: "0",
-  venueAddress: "5A N kinserPike , Bloomington, 47404",
-  venueName: "Bill Garett fielhouse",
-  venueOpen: "Yes",
-  venueOwner: "chandanbsd",
-  venueDescription: "The best sports venue in town",
-  venueCategory: "Sports",
-  venueCity: "Indianapolis",
-  venueState: "Indiana",
   venueSlots: {
     "2022-10-22": [
       "open",
