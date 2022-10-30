@@ -53,41 +53,40 @@ const VenueSearch = () => {
     }
   };
 
-  useEffect(() => {
-    const url = `${baseURL}/venuelist`;
-    const requestOptions = {
-      method: "GET",
-      headers: { "Content-Type": "application/json" },
-    };
-    fetch(url, requestOptions)
-      .then((response) => response.json())
+  // useEffect(() => {
+  //   const url = `${baseURL}/venuelist`;
+  //   const requestOptions = {
+  //     method: "GET",
+  //     headers: { "Content-Type": "application/json" },
+  //   };
+  //   fetch(url, requestOptions)
+  //     .then((response) => response.json())
 
-      .then((res) => {
-        if (res.status === "OK") {
-          res.body.forEach((val) => {
-            val.venueAvailability = JSON.parse(
-              val.venueAvailability.replace(/'/g, '"')
-            );
-          });
+  //     .then((res) => {
+  //       if (res.status === "OK") {
+  //         res.body.forEach((val) => {
+  //           val.venueAvailability = JSON.parse(
+  //             val.venueAvailability.replace(/'/g, '"')
+  //           );
+  //         });
 
-          dispatch(setEvent([...res.body]));
-          setEventList(JSON.parse(JSON.stringify(eventFromStore.eventList)));
-          setFilteredEventList(
-            JSON.parse(JSON.stringify(eventFromStore.eventList))
-          );
-        } else alert("Unable to fetch event venues");
-      })
-      .catch((error) => console.log("Form submit error", error));
-  }, []);
+  //         dispatch(setEvent([...res.body]));
+  //         setEventList(JSON.parse(JSON.stringify(eventFromStore.eventList)));
+  //         setFilteredEventList(
+  //           JSON.parse(JSON.stringify(eventFromStore.eventList))
+  //         );
+  //       } else alert("Unable to fetch event venues");
+  //     })
+  //     .catch((error) => console.log("Form submit error", error));
+  // }, []);
 
-  // window.onload = async () => {
-  //   console.log([...venueListMock]);
-  //   await dispatch(setEvent([...venueListMock]));
-  //   await setEventList(JSON.parse(JSON.stringify(eventFromStore.eventList)));
-  //   await setFilteredEventList(
-  //     JSON.parse(JSON.stringify(eventFromStore.eventList))
-  //   );
-  // };
+  window.onload = async () => {
+    await dispatch(setEvent([...venueListMock]));
+    await setEventList(JSON.parse(JSON.stringify(eventFromStore.eventList)));
+    await setFilteredEventList(
+      JSON.parse(JSON.stringify(eventFromStore.eventList))
+    );
+  };
 
   return (
     <div>

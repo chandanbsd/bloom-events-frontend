@@ -21,6 +21,7 @@ import SpecialLogin from "./SpecialLogin/SpecialLogin";
 import SpecialSignup from "./SpecialSignup/SpecialSignup";
 import VenueDetails from "./VenueDetails/VenueDetails";
 import VenueBooking from "./VenueBooking/VenueBooking";
+import ActivityDetails from "./ActivityDetails/ActivityDetails";
 
 function App() {
   return (
@@ -45,6 +46,10 @@ function App() {
         <Route
           path="/venue-search/venue-details/:token/venue-booking"
           element={<VenueBooking />}
+        />
+        <Route
+          path="/activity-search/activity-details/:token"
+          element={<ActivityDetails />}
         />
       </Routes>
     </div>

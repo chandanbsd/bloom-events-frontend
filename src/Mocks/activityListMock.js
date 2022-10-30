@@ -8,16 +8,15 @@ const activityListMock = [
     activityCategory: "Sports",
     activityAgeRange: "A18",
     activityCost: "Paid",
+    activityCostAmount: 25,
     activityOrganizer: "chbangal",
     activityVenueId: "0",
-    activityVenueOwner: "chbangal",
-    activityVenueName: "SRSC",
-    activityVenueAddress: "1601 E Law Ln, Bloomington, IN 47408",
-    activityDate: ["2022", "10", "16"],
+    activityDate: "2022-10-16",
     activityTime: [1, 2, 3],
-    activityCity: "Bloomington",
-    activityState: "Indiana",
-    totalCost: 800,
+    activityVenueCost: 800,
+    activityBookingDate:
+      "Thu Oct 27 2022 16:38:14 GMT-0400 (Eastern Daylight Time)",
+    activityRemainingCapacity: 10,
   },
 ];
 
