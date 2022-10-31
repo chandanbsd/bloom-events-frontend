@@ -39,6 +39,34 @@ const timeSlots = [
   "11 p.m. - 12 a.m.",
 ];
 
+const newVenueSlots = [
+  ["open", -1],
+  ["open", -1],
+  ["open", -1],
+  ["open", -1],
+  ["open", -1],
+  ["open", -1],
+  ["open", -1],
+  ["open", -1],
+  ["open", -1],
+  ["open", -1],
+  ["open", -1],
+  ["open", -1],
+  ["open", -1],
+  ["open", -1],
+  ["open", -1],
+  ["open", -1],
+  ["open", -1],
+  ["open", -1],
+  ["open", -1],
+  ["open", -1],
+  ["open", -1],
+  ["open", -1],
+  ["open", -1],
+  ["open", -1],
+  ["open", -1],
+];
+
 const VenueDetails = () => {
   const eventFromStore = useSelector((state) => state.event);
   const dispatch = useDispatch();
@@ -51,38 +79,15 @@ const VenueDetails = () => {
   const [activityAgeRange, setActivityAgeRange] = useState(null);
   const [activityCost, setActivityCost] = useState(null);
   const [activityCostAmount, setActivityCostAmount] = useState(0);
-  // console.log(params.token);
-  // console.log([...venueListMock].filter((val) => val.venueId === params.token));
   const [venueDetails, setVenueDetails] = useState(null);
-
+  const [formattedReservationDate, setFormattedReservationDate] = useState(
+    `${new Date().getUTCFullYear()}-${
+      new Date().getUTCMonth() + 1
+    }-${new Date().getUTCDate()}`
+  );
   const [reservationDate, setReservationDate] = useState(new Date());
-  const [availableTimeSlot, setAvailableTimeSlot] = useState([
-    "open",
-    "open",
-    "open",
-    "open",
-    "open",
-    "open",
-    "open",
-    "open",
-    "open",
-    "open",
-    "open",
-    "open",
-    "open",
-    "open",
-    "open",
-    "open",
-    "open",
-    "open",
-    "open",
-    "open",
-    "open",
-    "open",
-    "open",
-    "open",
-    "open",
-  ]);
+
+  const [availableTimeSlot, setAvailableTimeSlot] = useState(null);
 
   const [selectedSlotList, setSelectedSlotList] = useState([]);
 
@@ -115,7 +120,7 @@ const VenueDetails = () => {
   };
 
   const slotAddRemoveBtn = (index) => {
-    if (availableTimeSlot[index] === "open") {
+    if (availableTimeSlot[index][0] === "open") {
       if (selectedSlotList.includes(index)) {
         return (
           <button
@@ -142,50 +147,32 @@ const VenueDetails = () => {
           </button>
         );
       }
+    } else {
+      return <b>Unavailable</b>;
     }
   };
 
-  // useEffect(() => {
-  //   const url = `${baseURL}/venuedetails`;
-  //   const requestOptions = {
-  //     method: "GET",
-  //     headers: { "Content-Type": "application/json" },
-  //     body: JSON.stringify({
-  //       venueId: params.token,
-  //     }),
-  //   };
-  //   fetch(url, requestOptions)
-  //     .then((response) => response.json())
-  //     .then((res) => {
-  //       if (res.status === "OK") {
-  //         setVenueDetails(JSON.parse(JSON.stringify({ ...res.body })));
-  //       } else alert("Unable to get details for the venue");
-  //     })
-  //     .catch((error) => console.log("API Connection Failed", error));
-  // }, []);
-
-  window.onload = async () => {
-    // console.log("hi");
-    // console.log(venueDetails.venueAvailability.mon[0]);
-    // console.log(venueDetailsMock);
-    // setEventDetails({ ...venueDetailsMock });
-    // await dispatch(setEvent([...venueListMock]));
-    // await setEventaDetails(JSON.parse(JSON.stringify(eventFromStore.eventList)));
-  };
-
   useEffect(() => {
-    console.log("hi");
-    console.log(
-      [...JSON.parse(JSON.stringify(venueListMock))].filter(
-        (val) => val.venueId === params.token
-      )[0]
-    );
-    setVenueDetails(
-      [...JSON.parse(JSON.stringify(venueListMock))].filter(
-        (val) => val.venueId === params.token
-      )[0]
-    );
-  }, []);
+    if (venueDetails == null) {
+      setVenueDetails({
+        ...JSON.parse(
+          JSON.stringify(
+            eventFromStore.eventList.filter(
+              (val) => val.venueId == params.token
+            )[0]
+          )
+        ),
+      });
+    } else {
+      if (venueDetails.venueSlots.hasOwnProperty(formattedReservationDate)) {
+        setAvailableTimeSlot([
+          ...venueDetails.venueSlots[formattedReservationDate],
+        ]);
+      } else {
+        setAvailableTimeSlot([...newVenueSlots]);
+      }
+    }
+  }, [venueDetails, reservationDate]);
 
   return (
     <div>
@@ -270,46 +257,48 @@ const VenueDetails = () => {
                   value={reservationDate}
                 />
               </div>
-              <div className="d-flex justify-content-between">
-                <div>
-                  <table className="table" style={{ width: "500px" }}>
-                    <tbody>
-                      <tr>
-                        <th>Time</th>
-                        <th>Availability</th>
-                      </tr>
-                      {timeSlots.map((val, index) => {
-                        if (index < 12)
-                          return (
-                            <tr key={index}>
-                              <td>{timeSlots[index]}</td>
-                              <td>{slotAddRemoveBtn(index)}</td>
-                            </tr>
-                          );
-                      })}
-                    </tbody>
-                  </table>
+              {availableTimeSlot !== null && (
+                <div className="d-flex justify-content-between">
+                  <div>
+                    <table className="table" style={{ width: "500px" }}>
+                      <tbody>
+                        <tr>
+                          <th>Time</th>
+                          <th>Availability</th>
+                        </tr>
+                        {timeSlots.map((val, index) => {
+                          if (index < 12)
+                            return (
+                              <tr key={index}>
+                                <td>{timeSlots[index]}</td>
+                                <td>{slotAddRemoveBtn(index)}</td>
+                              </tr>
+                            );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+                  <div>
+                    <table className="table" style={{ width: "500px" }}>
+                      <tbody>
+                        <tr>
+                          <th>Time</th>
+                          <th>Availability</th>
+                        </tr>
+                        {timeSlots.map((val, index) => {
+                          if (index >= 12)
+                            return (
+                              <tr key={index}>
+                                <td>{timeSlots[index]}</td>
+                                <td>{slotAddRemoveBtn(index)}</td>
+                              </tr>
+                            );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
-                <div>
-                  <table className="table" style={{ width: "500px" }}>
-                    <tbody>
-                      <tr>
-                        <th>Time</th>
-                        <th>Availability</th>
-                      </tr>
-                      {timeSlots.map((val, index) => {
-                        if (index >= 12)
-                          return (
-                            <tr key={index}>
-                              <td>{timeSlots[index]}</td>
-                              <td>{slotAddRemoveBtn(index)}</td>
-                            </tr>
-                          );
-                      })}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
+              )}
 
               <div className="mx-auto">
                 <h1> Confirm Booking</h1>

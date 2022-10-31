@@ -3,8 +3,6 @@ import { useParams, Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { activity } from "../redux/activity";
 import baseURL from "../constants/constants";
-import venueListMock from "../Mocks/venueListMock";
-// import venueListMock from "../Mocks/activityDetailsMock";
 import "react-calendar/dist/Calendar.css";
 import TimeRangePicker from "@wojtekmaj/react-timerange-picker";
 import activityListMock from "../Mocks/activityListMock";
@@ -16,6 +14,7 @@ const ActivityDetails = () => {
   const navigate = useNavigate();
 
   const userFromStore = useSelector((state) => state.user);
+  const eventFromStore = useSelector((state) => state.event);
 
   const [activityDetails, setActivityDetails] = useState(null);
   const [venueDetails, setVenueDetails] = useState(null);
@@ -42,7 +41,7 @@ const ActivityDetails = () => {
   useEffect(() => {
     if (activityDetails === null) {
       setActivityDetails(
-        [...JSON.parse(JSON.stringify(activityListMock))].filter(
+        [...JSON.parse(JSON.stringify(activityFromStore.activityList))].filter(
           (val) => val.activityId === params.token
         )[0]
       );
@@ -50,7 +49,7 @@ const ActivityDetails = () => {
 
     if (activityDetails !== null && venueDetails === null) {
       setVenueDetails(
-        [...JSON.parse(JSON.stringify(venueListMock))].filter(
+        [...JSON.parse(JSON.stringify(eventFromStore))].filter(
           (val) => val.venueId === activityDetails.activityVenueId
         )[0]
       );
