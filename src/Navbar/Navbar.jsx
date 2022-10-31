@@ -71,8 +71,11 @@ const Navbar = () => {
             </Dropdown.Toggle>
 
             <Dropdown.Menu>
-              <Link to="../Profile" className="dropdown-item">
+              <Link to="../profile" className="dropdown-item">
                 Profile
+              </Link>
+              <Link to="../calendar" className="dropdown-item">
+                Calendar
               </Link>
               {isAuthenticated === false ? (
                 <Link to="/" onClick={handleLogout} className="dropdown-item">

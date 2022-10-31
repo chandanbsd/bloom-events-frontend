@@ -34,6 +34,7 @@ const ActivityDetails = () => {
       .then((res) => {
         if (res.status === "OK") {
           alert("Booking Confirmed");
+          navigate("/");
         } else alert("Failed to signup for activity. Try again");
       })
       .catch((error) => console.log("API Connection Failed", error));
