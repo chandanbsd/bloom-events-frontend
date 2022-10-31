@@ -4,18 +4,13 @@ import { clearEvent, setEvent } from "../redux/event";
 import Dropdown from "react-bootstrap/Dropdown";
 import DropdownButton from "react-bootstrap/DropdownButton";
 import { usCities, usStates } from "../constants/usaCityStates";
-// import venueListMock from "../Mocks/venueListMock";
 import baseURL from "../constants/constants";
-import activityListMock from "../Mocks/activityListMock";
-import venueListMock from "../Mocks/venueListMock";
-
+import { Link } from "react-router-dom";
+import time24 from "../constants/time24";
 const VenueSearch = () => {
   const [searchKeyword, setSearchKeyword] = useState("");
   const [eventList, setEventList] = useState([]);
   const [filteredEventList, setFilteredEventList] = useState([]);
-  const locations = ["Bloomington", "Indianapolis", "Greenwood"];
-  const categories = ["Sport", "Music"];
-
   const eventFromStore = useSelector((state) => state.event);
   const dispatch = useDispatch();
 
@@ -63,10 +58,18 @@ const VenueSearch = () => {
 
       .then((res) => {
         if (res.status === "OK") {
-          res.body.forEach((val) => {
+          res.body.forEach((val, index) => {
             val.venueAvailability = JSON.parse(
               val.venueAvailability.replace(/'/g, '"')
             );
+            // val.venueSlots = val.venueSlots.map(val)
+
+            for (let [key, value] of Object.entries(val.venueSlots)) {
+              let valueArray = value.split(",");
+              valueArray = valueArray.map((val) => val.split("/"));
+
+              res.body[index].venueSlots[key] = valueArray;
+            }
           });
 
           dispatch(setEvent([...res.body]));
@@ -78,15 +81,6 @@ const VenueSearch = () => {
       })
       .catch((error) => console.log("Form submit error", error));
   }, []);
-
-  // window.onload = async () => {
-  //   console.log([...venueListMock]);
-  //   await dispatch(setEvent([...venueListMock]));
-  //   await setEventList(JSON.parse(JSON.stringify(eventFromStore.eventList)));
-  //   await setFilteredEventList(
-  //     JSON.parse(JSON.stringify(eventFromStore.eventList))
-  //   );
-  // };
 
   return (
     <div>
@@ -109,14 +103,7 @@ const VenueSearch = () => {
             Search
           </button>
         </div>
-        {/* <button
-          className="btn btn-primary"
-          onClick={() => {
-            dispatch(clearEvent());
-          }}
-        >
-          Clear
-        </button> */}
+
         <div
           className="form-group mx-auto mt-5"
           style={{
@@ -213,31 +200,45 @@ const VenueSearch = () => {
                         </tr>
                         <tr>
                           <td>Monday</td>
-                          <td>{`${val.venueAvailability.mon[0]} - ${val.venueAvailability.mon[1]}`}</td>
+                          <td>{`${time24[val.venueAvailability.mon[0]]} - ${
+                            time24[val.venueAvailability.mon[1]]
+                          }`}</td>
                         </tr>
                         <tr>
                           <td>Tuesday</td>
-                          <td>{`${val.venueAvailability.tue[0]} - ${val.venueAvailability.tue[1]}`}</td>
+                          <td>{` ${time24[val.venueAvailability.tue[0]]} - ${
+                            time24[val.venueAvailability.tue[1]]
+                          }`}</td>
                         </tr>
                         <tr>
                           <td>Wednesday</td>
-                          <td>{`${val.venueAvailability.wed[0]} - ${val.venueAvailability.wed[1]}`}</td>
+                          <td>{`${time24[val.venueAvailability.wed[0]]} - ${
+                            time24[val.venueAvailability.wed[1]]
+                          }`}</td>
                         </tr>
                         <tr>
                           <td>Thursday</td>
-                          <td>{`${val.venueAvailability.thu[0]} - ${val.venueAvailability.thu[1]}`}</td>
+                          <td>{`${time24[val.venueAvailability.thu[0]]} - ${
+                            time24[val.venueAvailability.thu[1]]
+                          }`}</td>
                         </tr>
                         <tr>
                           <td>Friday</td>
-                          <td>{`${val.venueAvailability.fri[0]} - ${val.venueAvailability.fri[1]}`}</td>
+                          <td>{`${time24[val.venueAvailability.fri[0]]} - ${
+                            time24[val.venueAvailability.fri[1]]
+                          }`}</td>
                         </tr>
                         <tr>
                           <td>Saturday</td>
-                          <td>{`${val.venueAvailability.sat[0]} - ${val.venueAvailability.sat[1]}`}</td>
+                          <td>{`${time24[val.venueAvailability.sat[0]]} - ${
+                            time24[val.venueAvailability.sat[1]]
+                          }`}</td>
                         </tr>
                         <tr>
                           <td>Sunday</td>
-                          <td>{`${val.venueAvailability.sun[0]} - ${val.venueAvailability.sun[1]}`}</td>
+                          <td>{`${time24[val.venueAvailability.sun[0]]} - ${
+                            time24[val.venueAvailability.sun[1]]
+                          }`}</td>
                         </tr>
                       </tbody>
                     </table>
@@ -245,7 +246,19 @@ const VenueSearch = () => {
                 </div>
               </div>
               <div className="mx-auto">
-                <button className="btn btn-success">Reserve Time</button>
+                <button className="btn btn-success">
+                  <Link
+                    to={{
+                      pathname: `venue-details/${val.venueId}`,
+                    }}
+                    style={{
+                      textDecoration: "none",
+                      color: "inherit",
+                    }}
+                  >
+                    Reserve Time
+                  </Link>
+                </button>
               </div>
             </div>
           );

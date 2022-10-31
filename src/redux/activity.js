@@ -8,6 +8,7 @@ export const activitySlice = createSlice({
 
   reducers: {
     setActivity: (state, action) => {
+      console.log(action.payload);
       state.activityList = JSON.parse(JSON.stringify(action.payload));
       // state.value += 1;
     },
