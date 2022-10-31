@@ -22,6 +22,7 @@ import SpecialSignup from "./SpecialSignup/SpecialSignup";
 import VenueDetails from "./VenueDetails/VenueDetails";
 import VenueBooking from "./VenueBooking/VenueBooking";
 import ActivityDetails from "./ActivityDetails/ActivityDetails";
+import UserCalendar from "./UserCalendar/UserCalendar";
 
 function App() {
   return (
@@ -51,6 +52,7 @@ function App() {
           path="/activity-search/activity-details/:token"
           element={<ActivityDetails />}
         />
+        <Route path="/calendar" element={<UserCalendar />} />
       </Routes>
     </div>
   );
