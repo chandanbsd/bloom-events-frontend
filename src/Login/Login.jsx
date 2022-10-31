@@ -77,6 +77,26 @@ const Login = () => {
             state: specialLoginDetails.state,
           }),
         };
+
+        console.log(
+          JSON.stringify({
+            firstName: user.given_name,
+            lastName: user.family_name,
+            email: user.email,
+            password: null,
+            userName: specialLoginDetails.userName,
+            isOwner: specialLoginDetails.isOwner,
+            age: specialLoginDetails.age,
+            gender: specialLoginDetails.gender,
+            isAvailable: specialLoginDetails.isAvailable,
+            bio: specialLoginDetails.bio,
+            categoryType: specialLoginDetails.categoryType,
+            categoryLevel: specialLoginDetails.categoryLevel,
+            city: specialLoginDetails.city,
+            state: specialLoginDetails.state,
+          })
+        );
+
         fetch(url, requestOptions)
           .then((res) => {
             return res.json();

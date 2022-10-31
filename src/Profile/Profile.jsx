@@ -32,7 +32,7 @@ const Profile = () => {
           </li>
           <li className="list-group-item">
             <b>Are You a Venue Owner?: </b>
-            {profileDetails.isOwner}
+            {profileDetails.isOwner ? "Yes" : "No"}
           </li>
           <li className="list-group-item">
             <b>Age Range: </b>

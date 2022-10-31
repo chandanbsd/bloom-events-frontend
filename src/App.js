@@ -19,6 +19,10 @@ import ActivitySearch from "./ActivitySearch/ActivitySearch";
 import ParticipantSearch from "./ParticipantSearch/ParticipantSearch";
 import SpecialLogin from "./SpecialLogin/SpecialLogin";
 import SpecialSignup from "./SpecialSignup/SpecialSignup";
+import VenueDetails from "./VenueDetails/VenueDetails";
+import VenueBooking from "./VenueBooking/VenueBooking";
+import ActivityDetails from "./ActivityDetails/ActivityDetails";
+import UserCalendar from "./UserCalendar/UserCalendar";
 
 function App() {
   return (
@@ -36,6 +40,19 @@ function App() {
         <Route path="participant-search" element={<ParticipantSearch />} />
         <Route path="login/special-login" element={<SpecialLogin />} />
         <Route path="login/special-signup" element={<SpecialSignup />} />
+        <Route
+          path="/venue-search/venue-details/:token"
+          element={<VenueDetails />}
+        />
+        <Route
+          path="/venue-search/venue-details/:token/venue-booking"
+          element={<VenueBooking />}
+        />
+        <Route
+          path="/activity-search/activity-details/:token"
+          element={<ActivityDetails />}
+        />
+        <Route path="/calendar" element={<UserCalendar />} />
       </Routes>
     </div>
   );

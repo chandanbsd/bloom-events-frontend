@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { clearEvent, setEvent } from "../redux/event";
 import Dropdown from "react-bootstrap/Dropdown";
 import DropdownButton from "react-bootstrap/DropdownButton";
 import { usCities, usStates } from "../constants/usaCityStates";
-import activityListMock from "../Mocks/activityListMock";
-import { setActivity } from "../redux/activity";
+import { clearActivity, setActivity } from "../redux/activity";
 import baseURL from "../constants/constants";
+import timeSlots from "../constants/timeSlots";
+import { clearEvent, setEvent } from "../redux/event";
+import { Link } from "react-router-dom";
 
 let dateObj = new Date();
 let today = [
@@ -15,12 +16,13 @@ let today = [
   dateObj.getUTCDate(),
 ];
 
-console.log(today);
 const ActivitySearch = () => {
   const [searchKeyword, setSearchKeyword] = useState("");
   const [activityList, setActivityList] = useState([]);
   const [filteredActivityList, setFilteredActivityList] = useState([]);
+  const [eventList, setEventList] = useState([]);
 
+  const eventFromStore = useSelector((state) => state.event);
   const activityFromStore = useSelector((state) => state.activity);
   const dispatch = useDispatch();
 
@@ -89,8 +91,28 @@ const ActivitySearch = () => {
   };
 
   useEffect(() => {
-    const url = `${baseURL}/ra`;
-    const requestOptions = {
+    let url = `${baseURL}/venuelist`;
+    let requestOptions = {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    };
+    fetch(url, requestOptions)
+      .then((response) => response.json())
+      .then((res) => {
+        if (res.status === "OK") {
+          console.log(res.body);
+          res.body.forEach((val) => {
+            val.venueAvailability = JSON.parse(
+              val.venueAvailability.replace(/'/g, '"')
+            );
+          });
+          dispatch(setEvent([...res.body]));
+          setEventList(JSON.parse(JSON.stringify(eventFromStore.eventList)));
+        } else alert("Unable to fetch event venues");
+      });
+
+    url = `${baseURL}/ra`;
+    requestOptions = {
       method: "GET",
       headers: { "Content-Type": "application/json" },
     };
@@ -99,30 +121,17 @@ const ActivitySearch = () => {
 
       .then((res) => {
         if (res.status === "OK") {
-          console.log(res);
-
           dispatch(setActivity([...res.body]));
-          setActivityList(
-            JSON.parse(JSON.stringify(activityFromStore.activityList))
-          );
+
+          setActivityList({
+            ...JSON.parse(JSON.stringify(activityFromStore.activityList)),
+          });
           setFilteredActivityList(
             JSON.parse(JSON.stringify(activityFromStore.activityList))
           );
-        } else alert("Unable to fetch event venues");
-      })
-      .catch((error) => console.log("Form submit error", error));
+        } else alert("Unable to fetch activities");
+      });
   }, []);
-
-  // window.onload = async () => {
-  //   console.log([...activityListMock]);
-  //   await dispatch(setActivity([...activityListMock]));
-  //   await setActivityList(
-  //     JSON.parse(JSON.stringify(activityFromStore.activityList))
-  //   );
-  //   await setFilteredActivityList(
-  //     JSON.parse(JSON.stringify(activityFromStore.activityList))
-  //   );
-  // };
 
   return (
     <div>
@@ -191,9 +200,6 @@ const ActivitySearch = () => {
                     {ele}
                   </Dropdown.Item>
                 ))}
-                {/* <Dropdown.Item eventKey={"Indiana"}>Indiana</Dropdown.Item>
-            <Dropdown.Item eventKey={"Tennessee"}>Tennessee</Dropdown.Item>
-            <Dropdown.Item eventKey={"Texas"}>Texas</Dropdown.Item> */}
               </Dropdown.Menu>
             </DropdownButton>
           </Dropdown>
@@ -246,71 +252,91 @@ const ActivitySearch = () => {
           </Dropdown>
         </div>
       </div>
+      {eventFromStore != undefined && activityFromStore != undefined && (
+        <div className="mx-auto mt-5" style={{ width: "50%" }}>
+          {filteredActivityList.map((val, index) => {
+            return (
+              <div className="card mb-2 p-3" key={index}>
+                <div className="card-body d-flex justify-content-around">
+                  <div>
+                    <h5 className="card-title">Name: {val.activityName}</h5>
+                    <p className="card-text">
+                      Description: {val.activityDescription}
+                    </p>
+                    <p className="card-text">
+                      Organizer: {val.activityOrganizer}
+                    </p>
 
-      <div className="mx-auto mt-5" style={{ width: "50%" }}>
-        {filteredActivityList.map((val, index) => {
-          return (
-            <div className="card mb-2 p-3" key={index}>
-              <div className="card-body d-flex justify-content-around">
-                <div>
-                  <h5 className="card-title">Name: {val.activityName}</h5>
-                  <p className="card-text">
-                    Description: {val.activityDescription}
-                  </p>
-                  <p className="card-text">
-                    Organizer: {val.activityOrganizer}
-                  </p>
+                    <p className="card-text">
+                      Venue Name: {val.activityVenueName}
+                    </p>
 
-                  <p className="card-text">
-                    Venue Name: {val.activityVenueName}
-                  </p>
+                    <p className="card-text">
+                      Venue Address: {val.activityVenueAddress}
+                    </p>
 
-                  <p className="card-text">
-                    Venue Address: {val.activityVenueAddress}
-                  </p>
+                    <p className="card-text">
+                      Location: {val.activityLocation}
+                    </p>
 
-                  <p className="card-text">Location: {val.activityLocation}</p>
+                    <p className="card-text">
+                      Age Range:{" "}
+                      {val.activityAgeRange === "A65"
+                        ? "Above 65"
+                        : val.activityAgeRange === "A18"
+                        ? "Above 18"
+                        : "Below 18"}
+                    </p>
 
-                  <p className="card-text">
-                    Age Range:{" "}
-                    {val.activityAgeRange === "A65"
-                      ? "Above 65"
-                      : val.activityAgeRange === "A18"
-                      ? "Above 18"
-                      : "Below 18"}
-                  </p>
+                    <p className="card-text">
+                      Category: {val.activityCategory}
+                    </p>
 
-                  <p className="card-text">Category: {val.activityCategory}</p>
+                    <p className="card-text">City: {val.activityCity}</p>
 
-                  <p className="card-text">City: {val.activityCity}</p>
+                    <p className="card-text">State: {val.activityState}</p>
 
-                  <p className="card-text">State: {val.activityState}</p>
-
-                  <p className="card-text">Cost: {val.activityCost}</p>
-                  {/* <img className="card-img-top" alt="Card Image" /> */}
+                    <p className="card-text">Cost: {val.activityCost}</p>
+                    {/* <img className="card-img-top" alt="Card Image" /> */}
+                  </div>
+                  <div className="align-self-center">
+                    <p className="card-text align-self-center">
+                      <b>Date:</b> {val.activityDate}
+                      <br />
+                      <br />
+                      <b>Time:</b>{" "}
+                      <ul>
+                        {val.activityTime.map((val, index) => (
+                          <li key={index}>{timeSlots[val]}</li>
+                        ))}
+                      </ul>
+                    </p>
+                  </div>
                 </div>
-                <div className="align-self-center">
-                  <p className="card-text align-self-center">
-                    <b>Date:</b> {val.activityDate.join("-")}
-                    <br />
-                    <br />
-                    <b>Time:</b>{" "}
-                    {`${val.activityTime[1]} - ${val.activityTime[2]}`}
-                  </p>
+                <div className="mx-auto">
+                  {new Date(val.activityDate) < today.join("-") ? (
+                    "Closed"
+                  ) : (
+                    <button className="btn btn-success">
+                      <Link
+                        to={{
+                          pathname: `activity-details/${val.activityId}`,
+                        }}
+                        style={{
+                          textDecoration: "none",
+                          color: "inherit",
+                        }}
+                      >
+                        Register
+                      </Link>
+                    </button>
+                  )}
                 </div>
               </div>
-              <div className="mx-auto">
-                {new Date(val.activityDate.join("-")) <
-                new Date(today.join("-")) ? (
-                  "Closed"
-                ) : (
-                  <button className="btn btn-success">Register</button>
-                )}
-              </div>
-            </div>
-          );
-        })}
-      </div>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 };
