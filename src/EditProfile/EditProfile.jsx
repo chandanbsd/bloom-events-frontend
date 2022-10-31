@@ -40,11 +40,6 @@ const EditProfile = () => {
     ) {
       alert("Incorrect Password");
     } else if (
-      profileDetails.isOwner === undefined ||
-      profileDetails.isOwner === ""
-    ) {
-      alert("Choose if you are a venue owner?");
-    } else if (
       profileDetails.gender === undefined ||
       profileDetails.gender === ""
     ) {
@@ -160,21 +155,6 @@ const EditProfile = () => {
               setProfileDetails({ ...profileDetails, password: e.target.value })
             }
           />{" "}
-          <br />
-        </div>
-        <div className="form-group">
-          <label>Are You a Venue Owner?</label>
-          <select
-            className="form-control"
-            onChange={(e) =>
-              setProfileDetails({ ...profileDetails, isOwner: e.target.value })
-            }
-            value={profileDetails.isOwner}
-          >
-            <option value={undefined}>Select your option</option>
-            <option value={true}>Yes</option>
-            <option value={false}>No</option>
-          </select>
           <br />
         </div>
 
