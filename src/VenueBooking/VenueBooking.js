@@ -13,7 +13,6 @@ const VenueBooking = () => {
   const userFromStore = useSelector((state) => state.user);
 
   const handleConfirmation = () => {
-    console.log(reservationDetails.formattedReservationDate);
     let venueSlots = {};
     if (
       reservationDetails.formattedReservationDate in

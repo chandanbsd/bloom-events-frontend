@@ -9,9 +9,8 @@ import { Wrapper, Status } from "@googlemaps/react-wrapper";
 import Dropdown from "react-bootstrap/Dropdown";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
-import TimeRangePicker from "@wojtekmaj/react-timerange-picker";
 import { DropdownButton } from "react-bootstrap";
-
+import time24 from "../constants/time24";
 const timeSlots = [
   "12 a.m. - 1 a.m.",
   "1 a.m. - 2 a.m.",
@@ -39,6 +38,34 @@ const timeSlots = [
   "11 p.m. - 12 a.m.",
 ];
 
+const newVenueSlots = [
+  ["open", -1],
+  ["open", -1],
+  ["open", -1],
+  ["open", -1],
+  ["open", -1],
+  ["open", -1],
+  ["open", -1],
+  ["open", -1],
+  ["open", -1],
+  ["open", -1],
+  ["open", -1],
+  ["open", -1],
+  ["open", -1],
+  ["open", -1],
+  ["open", -1],
+  ["open", -1],
+  ["open", -1],
+  ["open", -1],
+  ["open", -1],
+  ["open", -1],
+  ["open", -1],
+  ["open", -1],
+  ["open", -1],
+  ["open", -1],
+  ["open", -1],
+];
+
 const VenueDetails = () => {
   const eventFromStore = useSelector((state) => state.event);
   const dispatch = useDispatch();
@@ -51,40 +78,19 @@ const VenueDetails = () => {
   const [activityAgeRange, setActivityAgeRange] = useState(null);
   const [activityCost, setActivityCost] = useState(null);
   const [activityCostAmount, setActivityCostAmount] = useState(0);
-  // console.log(params.token);
-  // console.log([...venueListMock].filter((val) => val.venueId === params.token));
   const [venueDetails, setVenueDetails] = useState(null);
-
+  const [formattedReservationDate, setFormattedReservationDate] = useState(
+    `${new Date().getUTCFullYear()}-${
+      new Date().getUTCMonth() + 1
+    }-${new Date().getUTCDate()}`
+  );
   const [reservationDate, setReservationDate] = useState(new Date());
-  const [availableTimeSlot, setAvailableTimeSlot] = useState([
-    "open",
-    "open",
-    "open",
-    "open",
-    "open",
-    "open",
-    "open",
-    "open",
-    "open",
-    "open",
-    "open",
-    "open",
-    "open",
-    "open",
-    "open",
-    "open",
-    "open",
-    "open",
-    "open",
-    "open",
-    "open",
-    "open",
-    "open",
-    "open",
-    "open",
-  ]);
+
+  const [availableTimeSlot, setAvailableTimeSlot] = useState(null);
 
   const [selectedSlotList, setSelectedSlotList] = useState([]);
+
+  const [isLoading, setIsLoading] = useState(false);
 
   const bookingDetailsHandler = () => {
     if (
@@ -115,7 +121,7 @@ const VenueDetails = () => {
   };
 
   const slotAddRemoveBtn = (index) => {
-    if (availableTimeSlot[index] === "open") {
+    if (availableTimeSlot[index][0] === "open") {
       if (selectedSlotList.includes(index)) {
         return (
           <button
@@ -142,50 +148,48 @@ const VenueDetails = () => {
           </button>
         );
       }
+    } else {
+      return <b>Unavailable</b>;
     }
   };
 
-  // useEffect(() => {
-  //   const url = `${baseURL}/venuedetails`;
-  //   const requestOptions = {
-  //     method: "GET",
-  //     headers: { "Content-Type": "application/json" },
-  //     body: JSON.stringify({
-  //       venueId: params.token,
-  //     }),
-  //   };
-  //   fetch(url, requestOptions)
-  //     .then((response) => response.json())
-  //     .then((res) => {
-  //       if (res.status === "OK") {
-  //         setVenueDetails(JSON.parse(JSON.stringify({ ...res.body })));
-  //       } else alert("Unable to get details for the venue");
-  //     })
-  //     .catch((error) => console.log("API Connection Failed", error));
-  // }, []);
+  const handleDate = async (value) => {
+    setIsLoading(true);
 
-  window.onload = async () => {
-    // console.log("hi");
-    // console.log(venueDetails.venueAvailability.mon[0]);
-    // console.log(venueDetailsMock);
-    // setEventDetails({ ...venueDetailsMock });
-    // await dispatch(setEvent([...venueListMock]));
-    // await setEventaDetails(JSON.parse(JSON.stringify(eventFromStore.eventList)));
+    await setReservationDate(value);
+
+    await setFormattedReservationDate(
+      `${value.getUTCFullYear()}-${
+        value.getUTCMonth() + 1
+      }-${value.getUTCDate()}`
+    );
+    if (venueDetails.venueSlots.hasOwnProperty(formattedReservationDate)) {
+      await setAvailableTimeSlot([
+        ...venueDetails.venueSlots[
+          `${value.getUTCFullYear()}-${
+            value.getUTCMonth() + 1
+          }-${value.getUTCDate()}`
+        ],
+      ]);
+    } else {
+      await setAvailableTimeSlot([...newVenueSlots]);
+    }
+    setIsLoading(false);
   };
 
   useEffect(() => {
-    console.log("hi");
-    console.log(
-      [...JSON.parse(JSON.stringify(venueListMock))].filter(
-        (val) => val.venueId === params.token
-      )[0]
-    );
-    setVenueDetails(
-      [...JSON.parse(JSON.stringify(venueListMock))].filter(
-        (val) => val.venueId === params.token
-      )[0]
-    );
-  }, []);
+    if (venueDetails == null) {
+      setVenueDetails({
+        ...JSON.parse(
+          JSON.stringify(
+            eventFromStore.eventList.filter(
+              (val) => val.venueId == params.token
+            )[0]
+          )
+        ),
+      });
+    }
+  }, [venueDetails]);
 
   return (
     <div>
@@ -232,31 +236,59 @@ const VenueDetails = () => {
                         </tr>
                         <tr>
                           <td>Monday</td>
-                          <td>{`${venueDetails.venueAvailability.mon[0]} - ${venueDetails.venueAvailability.mon[1]}`}</td>
+                          <td>{`${
+                            time24[venueDetails.venueAvailability.mon[0]]
+                          } - ${
+                            time24[venueDetails.venueAvailability.mon[1]]
+                          }`}</td>
                         </tr>
                         <tr>
                           <td>Tuesday</td>
-                          <td>{`${venueDetails.venueAvailability.tue[0]} - ${venueDetails.venueAvailability.tue[1]}`}</td>
+                          <td>{` ${
+                            time24[venueDetails.venueAvailability.tue[0]]
+                          } - ${
+                            time24[venueDetails.venueAvailability.tue[1]]
+                          }`}</td>
                         </tr>
                         <tr>
                           <td>Wednesday</td>
-                          <td>{`${venueDetails.venueAvailability.wed[0]} - ${venueDetails.venueAvailability.wed[1]}`}</td>
+                          <td>{`${
+                            time24[venueDetails.venueAvailability.wed[0]]
+                          } - ${
+                            time24[venueDetails.venueAvailability.wed[1]]
+                          }`}</td>
                         </tr>
                         <tr>
                           <td>Thursday</td>
-                          <td>{`${venueDetails.venueAvailability.thu[0]} - ${venueDetails.venueAvailability.thu[1]}`}</td>
+                          <td>{`${
+                            time24[venueDetails.venueAvailability.thu[0]]
+                          } - ${
+                            time24[venueDetails.venueAvailability.thu[1]]
+                          }`}</td>
                         </tr>
                         <tr>
                           <td>Friday</td>
-                          <td>{`${venueDetails.venueAvailability.fri[0]} - ${venueDetails.venueAvailability.fri[1]}`}</td>
+                          <td>{`${
+                            time24[venueDetails.venueAvailability.fri[0]]
+                          } - ${
+                            time24[venueDetails.venueAvailability.fri[1]]
+                          }`}</td>
                         </tr>
                         <tr>
                           <td>Saturday</td>
-                          <td>{`${venueDetails.venueAvailability.sat[0]} - ${venueDetails.venueAvailability.sat[1]}`}</td>
+                          <td>{`${
+                            time24[venueDetails.venueAvailability.sat[0]]
+                          } - ${
+                            time24[venueDetails.venueAvailability.sat[1]]
+                          }`}</td>
                         </tr>
                         <tr>
                           <td>Sunday</td>
-                          <td>{`${venueDetails.venueAvailability.sun[0]} - ${venueDetails.venueAvailability.sun[1]}`}</td>
+                          <td>{`${
+                            time24[venueDetails.venueAvailability.sun[0]]
+                          } - ${
+                            time24[venueDetails.venueAvailability.sun[1]]
+                          }`}</td>
                         </tr>
                       </tbody>
                     </table>
@@ -265,52 +297,68 @@ const VenueDetails = () => {
               </div>
               <h1 className="mx-auto">Reserve Venue</h1>
               <div className="mx-auto">
-                <Calendar
-                  onChange={setReservationDate}
-                  value={reservationDate}
-                />
+                <Calendar onChange={handleDate} value={reservationDate} />
               </div>
-              <div className="d-flex justify-content-between">
-                <div>
-                  <table className="table" style={{ width: "500px" }}>
-                    <tbody>
-                      <tr>
-                        <th>Time</th>
-                        <th>Availability</th>
-                      </tr>
-                      {timeSlots.map((val, index) => {
-                        if (index < 12)
-                          return (
-                            <tr key={index}>
-                              <td>{timeSlots[index]}</td>
-                              <td>{slotAddRemoveBtn(index)}</td>
-                            </tr>
-                          );
-                      })}
-                    </tbody>
-                  </table>
-                </div>
-                <div>
-                  <table className="table" style={{ width: "500px" }}>
-                    <tbody>
-                      <tr>
-                        <th>Time</th>
-                        <th>Availability</th>
-                      </tr>
-                      {timeSlots.map((val, index) => {
-                        if (index >= 12)
-                          return (
-                            <tr key={index}>
-                              <td>{timeSlots[index]}</td>
-                              <td>{slotAddRemoveBtn(index)}</td>
-                            </tr>
-                          );
-                      })}
-                    </tbody>
-                  </table>
-                </div>
+              <br />
+              <div className="mx-auto">
+                <h1>Select Time Slots</h1>
               </div>
+              {availableTimeSlot !== null ? (
+                <div className="d-flex justify-content-between">
+                  {isLoading != true ? (
+                    <React.Fragment>
+                      <div>
+                        <table className="table" style={{ width: "500px" }}>
+                          <tbody>
+                            <tr>
+                              <th>Time</th>
+                              <th>Availability</th>
+                            </tr>
+                            {timeSlots.map((val, index) => {
+                              if (index < 12)
+                                return (
+                                  <tr key={index}>
+                                    <td>{timeSlots[index]}</td>
+                                    <td>{slotAddRemoveBtn(index)}</td>
+                                  </tr>
+                                );
+                            })}
+                          </tbody>
+                        </table>
+                      </div>
+                      <div>
+                        <table className="table" style={{ width: "500px" }}>
+                          <tbody>
+                            <tr>
+                              <th>Time</th>
+                              <th>Availability</th>
+                            </tr>
+                            {timeSlots.map((val, index) => {
+                              if (index >= 12)
+                                return (
+                                  <tr key={index}>
+                                    <td>{timeSlots[index]}</td>
+                                    <td>{slotAddRemoveBtn(index)}</td>
+                                  </tr>
+                                );
+                            })}
+                          </tbody>
+                        </table>
+                      </div>
+                    </React.Fragment>
+                  ) : (
+                    <div className="mx-auto">
+                      <h7>Loading</h7>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <div className="mx-auto">
+                  <h7>Choose date to reserve venue</h7>
+                </div>
+              )}
 
+              <br />
               <div className="mx-auto">
                 <h1> Confirm Booking</h1>
               </div>
