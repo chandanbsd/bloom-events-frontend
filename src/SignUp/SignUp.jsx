@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setProfile } from "../redux/user";
 import baseURL from "../constants/constants";
 import { useNavigate } from "react-router-dom";
-import { usCities, usStates } from "../constants/usaCityStates";
+import { usCities, usStates, usaCityStates } from "../constants/usaCityStates";
 
 const SignUp = () => {
   const user = useSelector((state) => state.user);
@@ -12,38 +12,60 @@ const SignUp = () => {
 
   const dispatch = useDispatch();
   const recaptchaRef = useRef();
-  const [signUpDetails, setSignUpDetails] = useState({});
+  const [signUpDetails, setSignUpDetails] = useState({
+    firstName: null,
+    lastName: null,
+    email: null,
+    userName: null,
+    password: null,
+    isOwner: null,
+    gender: null,
+    bio: null,
+    categoryType: null,
+    categoryLevel: null,
+    isAvailable: null,
+    city: null,
+    state: null,
+    age: null,
+  });
   const navigate = useNavigate();
-  useEffect(() => {}, [signUpDetails]);
+  useEffect(() => {
+    if (signUpDetails.city === null && signUpDetails.state === null) {
+      signUpDetails.state = Object.keys(usaCityStates)[0];
+      signUpDetails.city = usaCityStates[signUpDetails.state][0];
+    }
+  }, [signUpDetails]);
 
   const handleSignUp = () => {
-    if (signUpDetails.firstName === undefined) {
+    if (signUpDetails.firstName === null) {
       alert("Incorrect First Name");
-    } else if (signUpDetails.lastName === undefined) {
+    } else if (signUpDetails.lastName === null) {
       alert("Incorrect Last Name");
-    } else if (signUpDetails.email === undefined) {
+    } else if (signUpDetails.email === null) {
       alert("Incorrect Email");
-    } else if (signUpDetails.userName === undefined) {
+    } else if (signUpDetails.userName === null) {
       alert("Incorrect Username");
-    } else if (signUpDetails.password === undefined) {
+    } else if (signUpDetails.password === null) {
       alert("Incorrect Password");
     } else if (captchaStatus === false) {
       alert("Captcha Failed, Please try again");
-    } else if (signUpDetails.isOwner === undefined) {
+    } else if (signUpDetails.isOwner === null) {
       alert("Choose if you are a venue owner");
-    } else if (signUpDetails.gender === undefined) {
+    } else if (signUpDetails.gender === null) {
       alert("Choose your gender");
-    } else if (signUpDetails.bio === undefined) {
+    } else if (signUpDetails.bio === null) {
       alert("Please enter your bio");
-    } else if (signUpDetails.categoryType === undefined) {
+    } else if (signUpDetails.categoryType === null) {
       alert("Choose your favorite category");
-    } else if (signUpDetails.categoryLevel === undefined) {
+    } else if (signUpDetails.categoryLevel === null) {
       alert("Choose your interest level");
-    } else if (signUpDetails.isAvailable === undefined) {
+    } else if (signUpDetails.isAvailable === null) {
       alert("Choose your availability");
-    } else if (signUpDetails.city === undefined) {
+    } else if (signUpDetails.city === null) {
       alert("Choose your city");
-    } else if (signUpDetails.state === undefined) {
+    } else if (signUpDetails.age === null) {
+      alert("Choose your age");
+    } else if (signUpDetails.state === null) {
       alert("Choose your state");
     } else {
       console.log(JSON.stringify(signUpDetails));
@@ -73,7 +95,7 @@ const SignUp = () => {
   };
 
   if (user.userName === null) {
-    return (
+    return (signUpDetails.city !== null) & (signUpDetails.state !== null) ? (
       <div className="mx-auto" style={{ width: "500px" }}>
         <h1>Signup</h1>
 
@@ -83,7 +105,10 @@ const SignUp = () => {
             type="text"
             className="form-control"
             onChange={(e) =>
-              setSignUpDetails({ ...signUpDetails, firstName: e.target.value })
+              setSignUpDetails({
+                ...signUpDetails,
+                firstName: e.target.value,
+              })
             }
           />{" "}
           <br />
@@ -140,8 +165,8 @@ const SignUp = () => {
               setSignUpDetails({ ...signUpDetails, isOwner: e.target.value })
             }
           >
-            <option value={undefined} defaultValue>
-              Choose an option?
+            <option value={null} defaultValue>
+              Choose an option:
             </option>
             <option value={true}>Yes</option>
             <option value={false}>No</option>
@@ -150,14 +175,14 @@ const SignUp = () => {
         </div>
 
         <div className="form-group">
-          <label>Select Gender?</label>
+          <label>Select Gender: </label>
           <select
             className="form-control"
             onChange={(e) =>
               setSignUpDetails({ ...signUpDetails, gender: e.target.value })
             }
           >
-            <option value={undefined} defaultValue>
+            <option value={null} defaultValue>
               Choose an option
             </option>
             <option value={"Male"}>Male</option>
@@ -179,7 +204,7 @@ const SignUp = () => {
         </div>
 
         <div className="form-group">
-          <label>Choose favorite category?</label>
+          <label>Choose favorite category: </label>
           <select
             className="form-control"
             onChange={(e) =>
@@ -189,7 +214,7 @@ const SignUp = () => {
               })
             }
           >
-            <option value={undefined} defaultValue>
+            <option value={null} defaultValue>
               Choose an option
             </option>
             <option value={"Music"}>Music</option>
@@ -200,7 +225,7 @@ const SignUp = () => {
         </div>
 
         <div className="form-group">
-          <label>Choose Interest Level?</label>
+          <label>Choose Interest Level: </label>
           <select
             className="form-control"
             onChange={(e) =>
@@ -210,7 +235,7 @@ const SignUp = () => {
               })
             }
           >
-            <option value={undefined} defaultValue>
+            <option value={null} defaultValue>
               Choose an option
             </option>
             <option value={"Beginner"}>Beginner</option>
@@ -231,7 +256,7 @@ const SignUp = () => {
               })
             }
           >
-            <option value={undefined} defaultValue>
+            <option value={null} defaultValue>
               Choose an option
             </option>
             <option value={"Yes"}>Yes</option>
@@ -241,42 +266,21 @@ const SignUp = () => {
         </div>
 
         <div className="form-group">
-          <label>Select City?</label>
+          <label>Select State: </label>
           <select
             className="form-control"
-            onChange={(e) =>
-              setSignUpDetails({
-                ...signUpDetails,
-                city: e.target.value,
-              })
-            }
-          >
-            <option value={undefined} defaultValue>
-              Choose an option
-            </option>
-            {usCities.map((ele, index) => (
-              <option value={ele} key={index}>
-                {ele}
-              </option>
-            ))}
-          </select>
-          <br />
-        </div>
-
-        <div className="form-group">
-          <label>Select State?</label>
-          <select
-            className="form-control"
-            onChange={(e) =>
+            onChange={(e) => {
               setSignUpDetails({
                 ...signUpDetails,
                 state: e.target.value,
-              })
-            }
+              });
+
+              setSignUpDetails({
+                ...signUpDetails,
+                city: usaCityStates[e.target.value][0],
+              });
+            }}
           >
-            <option value={undefined} defaultValue>
-              Choose an option
-            </option>
             {usStates.map((ele, index) => (
               <option value={ele} key={index}>
                 {ele}
@@ -286,6 +290,25 @@ const SignUp = () => {
           <br />
         </div>
 
+        <div className="form-group">
+          <label>Select City: </label>
+          <select
+            className="form-control"
+            onChange={(e) => {
+              setSignUpDetails({
+                ...signUpDetails,
+                city: e.target.value,
+              });
+            }}
+          >
+            {usaCityStates[signUpDetails.state].map((ele, index) => (
+              <option value={ele} key={index}>
+                {ele}
+              </option>
+            ))}
+          </select>
+        </div>
+        <br />
         <div className="form-group">
           <label>Select Age Range?</label>
           <select
@@ -297,7 +320,7 @@ const SignUp = () => {
               })
             }
           >
-            <option value={undefined} defaultValue>
+            <option value={null} defaultValue>
               Choose an option
             </option>
 
@@ -321,6 +344,8 @@ const SignUp = () => {
           </button>
         </div>
       </div>
+    ) : (
+      <div>Loading Form</div>
     );
   } else {
     return <h1>You are already Logged In</h1>;
