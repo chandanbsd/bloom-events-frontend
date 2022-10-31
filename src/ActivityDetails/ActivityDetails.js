@@ -20,7 +20,7 @@ const ActivityDetails = () => {
   const [venueDetails, setVenueDetails] = useState(null);
 
   const handleActivityRegistration = () => {
-    const url = `${baseURL}/activityregistration`;
+    const url = `${baseURL}/RegActivity`;
     const requestOptions = {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -33,6 +33,7 @@ const ActivityDetails = () => {
       .then((response) => response.json())
       .then((res) => {
         if (res.status === "OK") {
+          alert("Booking Confirmed");
         } else alert("Failed to signup for activity. Try again");
       })
       .catch((error) => console.log("API Connection Failed", error));
@@ -42,14 +43,20 @@ const ActivityDetails = () => {
     if (activityDetails === null) {
       setActivityDetails(
         [...JSON.parse(JSON.stringify(activityFromStore.activityList))].filter(
-          (val) => val.activityId === params.token
+          (val) => val.activityId == params.token
         )[0]
       );
+
+      console.log([
+        ...JSON.parse(JSON.stringify(activityFromStore.activityList)).filter(
+          (val) => val.activityId == params.token
+        ),
+      ]);
     }
 
     if (activityDetails !== null && venueDetails === null) {
       setVenueDetails(
-        [...JSON.parse(JSON.stringify(eventFromStore))].filter(
+        [...JSON.parse(JSON.stringify(eventFromStore.eventList))].filter(
           (val) => val.venueId === activityDetails.activityVenueId
         )[0]
       );
