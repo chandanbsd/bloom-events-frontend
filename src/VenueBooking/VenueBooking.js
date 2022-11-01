@@ -40,8 +40,19 @@ const VenueBooking = () => {
         return "open";
       });
     }
-    const url = `${baseURL}/venue-booking`;
-    /*
+    const url = `${baseURL}/venuebooking`;
+
+    let resSlots = "";
+    for (let [key, val] of reservationDetails.availableTimeSlot) {
+      resSlots += key + "/" + val + ",";
+    }
+    resSlots = resSlots.slice(0, resSlots.length - 1);
+
+    const keyString = `${reservationDetails.formattedReservationDate}`;
+
+    const venueSlotObject = {};
+
+    venueSlotObject[reservationDetails.formattedReservationDate] = resSlots;
     const requestOptions = {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -58,14 +69,16 @@ const VenueBooking = () => {
         activityVenueCost:
           reservationDetails.venueDetails.venueHrCost *
           reservationDetails.selectedSlotList.length,
-        activityTime: reservationDetails.selectedSlotList,
-        activityDate: reservationDetails.formattedReservationDate.split("-"),
+        activityTime: JSON.stringify(reservationDetails.selectedSlotList),
+        activityDate: reservationDetails.formattedReservationDate,
         activityBookingDate: new Date(),
-        venueSlots: venueSlots,
+        venueSlots: venueSlotObject,
+        activityOrganizer: userFromStore.userName,
+        activityRemainingCapacity: reservationDetails.activityCapacity,
       }),
     };
     fetch(url, requestOptions).then((response) => response.json());
-*/
+
     console.log(
       JSON.stringify({
         activityName: reservationDetails.activityName,
@@ -80,19 +93,17 @@ const VenueBooking = () => {
         activityVenueCost:
           reservationDetails.venueDetails.venueHrCost *
           reservationDetails.selectedSlotList.length,
-        activityTime: reservationDetails.selectedSlotList,
-        activityDate: reservationDetails.formattedReservationDate.split("-"),
+        activityTime: JSON.stringify(reservationDetails.selectedSlotList),
+        activityDate: reservationDetails.formattedReservationDate,
         activityBookingDate: new Date(),
-        venueSlots: venueSlots,
+        venueSlots: venueSlotObject,
+        activityOrganizer: userFromStore.userName,
+        activityRemainingCapacity: reservationDetails.activityCapacity,
       })
     );
   };
 
   const navigate = useNavigate();
-
-  useEffect(() => {
-    console.log(reservationDetails);
-  }, []);
 
   return (
     <div className="mx-auto mt-5" style={{ width: "50%" }}>
@@ -111,8 +122,7 @@ const VenueBooking = () => {
             <b>Venue Owner:</b> {reservationDetails.venueDetails.venueOwner}
           </div>
           <div>
-            <b>Organizer Username:</b>{" "}
-            {reservationDetails.venueDetails.venueOwner}
+            <b>Organizer Username:</b> {userFromStore.userName}
           </div>
           <div>
             <b>Selected time slots:</b>{" "}
@@ -129,7 +139,9 @@ const VenueBooking = () => {
           </div>
           <button
             className="btn btn-success"
-            onClick={() => handleConfirmation()}
+            onClick={() => {
+              handleConfirmation();
+            }}
           >
             Confirm Payment
           </button>
