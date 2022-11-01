@@ -4,6 +4,7 @@ import userReducer from "./user";
 import eventReducer from "./event";
 import activityReducer from "./activity";
 import participantReducer from "./participant";
+import themeReducer from "./theme";
 import storage from "redux-persist/lib/storage";
 import { persistReducer, persistStore } from "redux-persist";
 import thunk from "redux-thunk";
@@ -17,7 +18,8 @@ const appReducer = combineReducers({
   user: userReducer,
   event: eventReducer,
   activity: activityReducer,
-  participant: participantReducer
+  participant: participantReducer,
+  theme: themeReducer,
 });
 
 const rootReducer = (state, action) => {

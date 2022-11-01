@@ -4,10 +4,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { setProfile } from "../redux/user";
 import BackgroundIMG from "../images/background.jpeg";
 import "./home.css";
+import themeStyles from "../themeStyles";
 const Home = () => {
   const { loginWithRedirect, user, isAuthenticated, isLoading } = useAuth0();
   const userFromStore = useSelector((state) => state.user);
   const dispatch = useDispatch();
+  const themeFromStore = useSelector((state) => state.theme);
   console.log(userFromStore);
 
   return (
@@ -16,7 +18,7 @@ const Home = () => {
       userFromStore === null ||
       userFromStore.firstName === null ||
       userFromStore.firstName === undefined ? (
-        <div className="home-light">
+        <div className={themeStyles[themeFromStore.value].body}>
           <h1>Home Page</h1>
           <h2>Welcome to bloom events</h2>
           <p>
@@ -31,7 +33,10 @@ const Home = () => {
           />
         </div>
       ) : (
-        <div className="home-light">
+        <div
+          className={themeStyles[themeFromStore.value].body + " text-center"}
+          style={{ height: "100vw" }}
+        >
           <h1>
             {userFromStore.isOwner
               ? "Hello Venue Owner"

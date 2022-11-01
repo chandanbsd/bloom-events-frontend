@@ -417,7 +417,11 @@ const VenueDetails = () => {
                               onSelect={(e) => {
                                 setActivityCategory(e);
                               }}
-                              title="Select Category"
+                              title={
+                                activityCategory == null
+                                  ? "Select Category"
+                                  : activityCategory
+                              }
                             >
                               <Dropdown.Item eventKey={"Music"}>
                                 Music
@@ -442,7 +446,11 @@ const VenueDetails = () => {
                               onSelect={(e) => {
                                 setActivityAgeRange(e);
                               }}
-                              title="Select Age Range"
+                              title={
+                                activityAgeRange == null
+                                  ? "Select Age Range"
+                                  : activityCategory
+                              }
                             >
                               <Dropdown.Item eventKey={"Any"}>
                                 Everyone
@@ -471,7 +479,11 @@ const VenueDetails = () => {
                               onSelect={(e) => {
                                 setActivityCost(e);
                               }}
-                              title="Select Cost"
+                              title={
+                                activityCost == null
+                                  ? "Select Cost"
+                                  : activityCategory
+                              }
                             >
                               <Dropdown.Item eventKey={"Free"}>
                                 Free
