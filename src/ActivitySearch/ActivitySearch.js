@@ -8,7 +8,7 @@ import baseURL from "../constants/constants";
 import timeSlots from "../constants/timeSlots";
 import { clearEvent, setEvent } from "../redux/event";
 import { Link } from "react-router-dom";
-
+import time24 from "../constants/time24";
 let dateObj = new Date();
 let today = [
   dateObj.getUTCFullYear(),
@@ -267,12 +267,10 @@ const ActivitySearch = () => {
                       Organizer: {val.activityOrganizer}
                     </p>
 
-                    <p className="card-text">
-                      Venue Name: {val.activityVenueName}
-                    </p>
+                    <p className="card-text">Venue Name: {val.venueName}</p>
 
                     <p className="card-text">
-                      Venue Address: {val.activityVenueAddress}
+                      Venue Address: {val.venueAddress}
                     </p>
 
                     <p className="card-text">
@@ -292,11 +290,14 @@ const ActivitySearch = () => {
                       Category: {val.activityCategory}
                     </p>
 
-                    <p className="card-text">City: {val.activityCity}</p>
+                    <p className="card-text">City: {val.venueCity}</p>
 
-                    <p className="card-text">State: {val.activityState}</p>
+                    <p className="card-text">State: {val.venueState}</p>
 
-                    <p className="card-text">Cost: {val.activityCost}</p>
+                    <p className="card-text">
+                      Cost Category: {val.activityCost}
+                    </p>
+
                     {/* <img className="card-img-top" alt="Card Image" /> */}
                   </div>
                   <div className="align-self-center">
@@ -305,11 +306,9 @@ const ActivitySearch = () => {
                       <br />
                       <br />
                       <b>Time:</b>{" "}
-                      <ul>
-                        {val.activityTime.map((val, index) => (
-                          <li key={index}>{timeSlots[val]}</li>
-                        ))}
-                      </ul>
+                      {`${time24[Math.max.apply(Math, val.activityTime)]}` +
+                        "-" +
+                        `${time24[Math.min.apply(Math, val.activityTime)]}`}
                     </p>
                   </div>
                 </div>
