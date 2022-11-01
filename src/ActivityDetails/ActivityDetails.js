@@ -4,8 +4,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { activity } from "../redux/activity";
 import baseURL from "../constants/constants";
 import "react-calendar/dist/Calendar.css";
-import TimeRangePicker from "@wojtekmaj/react-timerange-picker";
-import activityListMock from "../Mocks/activityListMock";
+import { clearActivity, setActivity } from "../redux/activity";
+import ReactStars from "react-rating-stars-component";
 
 const ActivityDetails = () => {
   const activityFromStore = useSelector((state) => state.activity);
@@ -18,7 +18,33 @@ const ActivityDetails = () => {
 
   const [activityDetails, setActivityDetails] = useState(null);
   const [venueDetails, setVenueDetails] = useState(null);
+  const [registeredActivities, setRegisteredActivities] = useState(null);
 
+  const [review, setReview] = useState("");
+  const [stars, setStars] = useState(0);
+
+  const [activityReview, setActivityReview] = useState(null);
+
+  const updateActivityStore = () => {
+    const url = `${baseURL}/ra`;
+    const requestOptions = {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    };
+    fetch(url, requestOptions)
+      .then((response) => response.json())
+
+      .then((res) => {
+        if (res.status === "OK") {
+          dispatch(setActivity([...res.body]));
+          setActivityDetails(
+            [
+              ...JSON.parse(JSON.stringify(activityFromStore.activityList)),
+            ].filter((val) => val.activityId == params.token)[0]
+          );
+        } else alert("Unable to fetch activities");
+      });
+  };
   const handleActivityRegistration = () => {
     const url = `${baseURL}/RegActivity`;
     const requestOptions = {
@@ -33,14 +59,71 @@ const ActivityDetails = () => {
       .then((response) => response.json())
       .then((res) => {
         if (res.status === "OK") {
+          updateActivityStore();
           alert("Booking Confirmed");
-          navigate("/");
+          window.location.reload();
         } else alert("Failed to signup for activity. Try again");
       })
       .catch((error) => console.log("API Connection Failed", error));
   };
 
+  const handleReviewSubmit = () => {
+    const url = `${baseURL}/insertreview`;
+    const requestOptions = {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        activityId: activityDetails.activityId,
+        userName: userFromStore.userName,
+        review: review,
+        rating: stars,
+      }),
+    };
+    fetch(url, requestOptions).then((response) => response.json());
+
+    handleActivityReviews();
+    window.location.reload();
+  };
+
+  const handleActivityCancellation = () => {
+    const url = `${baseURL}/CancelActivity`;
+    const requestOptions = {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        activityId: activityDetails.activityId,
+        userName: userFromStore.userName,
+      }),
+    };
+    fetch(url, requestOptions)
+      .then((response) => response.json())
+      .then((res) => {
+        if (res.status === "OK") {
+          updateActivityStore();
+          alert("Booking Cancelled");
+          window.location.reload();
+        } else alert("Failed to cancel registration for activity. Try again");
+      })
+      .catch((error) => console.log("API Connection Failed", error));
+  };
+
+  const handleActivityReviews = () => {
+    const url = `${baseURL}/returnreview`;
+    const requestOptions = {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    };
+
+    fetch(url, requestOptions)
+      .then((response) => response.json())
+      .then((res) => setActivityReview([...res.body]))
+      .catch((error) => console.log("API Connection Failed", error));
+  };
+
   useEffect(() => {
+    if (activityReview === null) {
+      handleActivityReviews();
+    }
     if (activityDetails === null) {
       setActivityDetails(
         [...JSON.parse(JSON.stringify(activityFromStore.activityList))].filter(
@@ -62,80 +145,174 @@ const ActivityDetails = () => {
         )[0]
       );
     }
-  }, [activityDetails, venueDetails]);
+
+    if (registeredActivities == null) {
+      const url = `${baseURL}/Registered_acts`;
+      const requestOptions = {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userName: userFromStore.userName,
+        }),
+      };
+      fetch(url, requestOptions)
+        .then((response) => response.json())
+        .then((res) => {
+          if (res.status === "OK") {
+            setRegisteredActivities([...res.body]);
+          } else alert("Failed to get registered activities");
+        });
+    }
+  }, [activityDetails, venueDetails, registeredActivities]);
 
   return (
     <div>
-      {activityDetails !== null && venueDetails !== null ? (
-        <div>
-          <h1 className="mx-auto" style={{ width: "fit-content" }}>
-            Activity Name: {activityDetails.activityName}
-          </h1>
-          <div className="mx-auto mt-5" style={{ width: "50%" }}>
-            <div className="card mb-2 p-3">
-              <div className="card-body d-flex justify-content-between">
-                <div>
-                  <p className="card-text">
-                    <b>Description:</b> {activityDetails.activityDescription}
-                  </p>
-                  <p className="card-text">
-                    <b>Capacity:</b> {activityDetails.activityCapacity}
-                  </p>
-                  <p className="card-text">
-                    <b>Location:</b> {activityDetails.activityLocation}
-                  </p>
-                  <p className="card-text">
-                    <b>Category:</b> {activityDetails.activityCategory}
-                  </p>
-                  <p className="card-text">
-                    <b>Age Range:</b> {activityDetails.activityAgeRange}
-                  </p>
-                  <p className="card-text">
-                    <b>Cost:</b> {activityDetails.activityCostAmount}
-                  </p>
-                  <p className="card-text">
-                    <b>Venue Name:</b> {venueDetails.venueName}
-                  </p>
-                  <p className="card-text">
-                    <b>Venue Name:</b> {venueDetails.venueAddress}
-                  </p>
-                  <p className="card-text">
-                    <b>City:</b> {venueDetails.venueCity}
-                  </p>
-                  <p className="card-text">
-                    <b>State:</b> {venueDetails.venueState}
-                  </p>
+      {activityDetails !== null &&
+      venueDetails !== null &&
+      registeredActivities !== null ? (
+        <div className="d-flex justify-content-between">
+          <div>
+            <div className="mx-auto text-center">
+              <h1 style={{ width: "50vw" }}>
+                Activity Name: {activityDetails.activityName}
+              </h1>
+            </div>
+            <div className="mx-auto mt-5">
+              <div className="card mb-2 p-3 " style={{ minHeight: "800px" }}>
+                <div className="card-body d-flex justify-content-between">
+                  <div>
+                    <p className="card-text">
+                      <b>Description:</b> {activityDetails.activityDescription}
+                    </p>
+                    <p className="card-text">
+                      <b>Capacity:</b> {activityDetails.activityCapacity}
+                    </p>
+                    <p className="card-text">
+                      <b>Location:</b> {activityDetails.activityLocation}
+                    </p>
+                    <p className="card-text">
+                      <b>Category:</b> {activityDetails.activityCategory}
+                    </p>
+                    <p className="card-text">
+                      <b>Age Range:</b> {activityDetails.activityAgeRange}
+                    </p>
+                    <p className="card-text">
+                      <b>Cost:</b> {activityDetails.activityCostAmount}
+                    </p>
+                    <p className="card-text">
+                      <b>Venue Name:</b> {venueDetails.venueName}
+                    </p>
+                    <p className="card-text">
+                      <b>Venue Address:</b> {venueDetails.venueAddress}
+                    </p>
+                    <p className="card-text">
+                      <b>City:</b> {venueDetails.venueCity}
+                    </p>
+                    <p className="card-text">
+                      <b>State:</b> {venueDetails.venueState}
+                    </p>
 
-                  <p className="card-text">
-                    <b>Remaining Capacity:</b>{" "}
-                    {activityDetails.activityRemainingCapacity}
-                  </p>
+                    <p className="card-text">
+                      <b>Remaining Capacity:</b>{" "}
+                      {activityDetails.activityRemainingCapacity}
+                    </p>
 
-                  {/* <img className="card-img-top" alt="Card Image" /> */}
+                    {/* <img className="card-img-top" alt="Card Image" /> */}
+                  </div>
                 </div>
-              </div>
 
-              <div>
-                <div colSpan={2}>
-                  <div className="text-center">
-                    <button
-                      className={
-                        "btn " +
-                        (activityDetails.activityRemainingCapacity > 0
-                          ? "btn-primary"
-                          : "btn-danger")
-                      }
-                      onClick={handleActivityRegistration}
-                    >
-                      {activityDetails.activityRemainingCapacity > 0
-                        ? "Confirm Booking"
-                        : "Activity has reached maximum capacity"}
-                    </button>
+                <div>
+                  <div colSpan={2}>
+                    <div className="text-center">
+                      {!registeredActivities.includes(
+                        activityDetails.activityId
+                      ) ? (
+                        <button
+                          className={
+                            "btn " +
+                            (activityDetails.activityRemainingCapacity > 0
+                              ? "btn-primary"
+                              : "btn-danger")
+                          }
+                          onClick={handleActivityRegistration}
+                        >
+                          {activityDetails.activityRemainingCapacity > 0
+                            ? "Confirm Booking"
+                            : "Activity has reached maximum capacity"}
+                        </button>
+                      ) : (
+                        <div>
+                          <button
+                            className="btn btn-danger"
+                            onClick={handleActivityCancellation}
+                          >
+                            Cancel Registration
+                          </button>
+                          <div
+                            className="mt-5 mx-auto"
+                            style={{ width: "500px" }}
+                          >
+                            <h3>Review Activity</h3>
+                            <br></br>
+                            <div className="form-group">
+                              <label>Select Stars </label>
+
+                              <ReactStars
+                                count={5}
+                                onChange={setStars}
+                                size={24}
+                                activeColor="#ffd700"
+                                classNames={"mx-auto"}
+                              />
+
+                              <br />
+                            </div>
+                            <div className="form-group">
+                              <label>Enter Review: </label>
+                              <textarea
+                                type="text"
+                                className="form-control"
+                                onChange={(e) => setReview(e.target.value)}
+                              />
+                              <br />
+                            </div>
+                            <button
+                              className="btn btn-primary"
+                              onClick={handleReviewSubmit}
+                            >
+                              Submit Review
+                            </button>
+                          </div>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
+          {activityReview !== null && (
+            <div>
+              <div className="mx-auto text-center">
+                <h1 style={{ width: "50vw" }}>Reviews</h1>
+              </div>
+              <div className="mx-auto mt-5">
+                <div className="card mb-2 p-3" style={{ minHeight: "800px" }}>
+                  <div className="card-body">
+                    {activityReview.map((val, index) => (
+                      <div key={index} className="card">
+                        <ul style={{ listStyleType: "none" }}>
+                          <li>Participant Username: {val.userName}</li>
+                          <li>Rating: {val.rating}</li>
+                          <li>Review: {val.review}</li>
+                        </ul>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       ) : (
         <div> Loading</div>
