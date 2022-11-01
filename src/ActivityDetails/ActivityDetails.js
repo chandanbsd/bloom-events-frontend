@@ -97,7 +97,7 @@ const ActivityDetails = () => {
                     <b>Venue Name:</b> {venueDetails.venueName}
                   </p>
                   <p className="card-text">
-                    <b>Venue Name:</b> {venueDetails.venueAddress}
+                    <b>Venue Address:</b> {venueDetails.venueAddress}
                   </p>
                   <p className="card-text">
                     <b>City:</b> {venueDetails.venueCity}
