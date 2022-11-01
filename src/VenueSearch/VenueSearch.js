@@ -62,7 +62,6 @@ const VenueSearch = () => {
             val.venueAvailability = JSON.parse(
               val.venueAvailability.replace(/'/g, '"')
             );
-            // val.venueSlots = val.venueSlots.map(val)
 
             for (let [key, value] of Object.entries(val.venueSlots)) {
               let valueArray = value.split(",");
