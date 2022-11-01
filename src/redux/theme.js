@@ -8,11 +8,11 @@ export const themeSlice = createSlice({
 
   reducers: {
     setTheme: (state, action) => {
-      state.value = state.value === "light" ? "dark" : "light";
+      state.value = action.payload;
     },
   },
 });
 
-export const { setProfile } = themeSlice.actions;
+export const { setTheme } = themeSlice.actions;
 
 export default themeSlice.reducer;
