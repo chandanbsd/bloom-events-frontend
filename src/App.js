@@ -23,6 +23,7 @@ import VenueDetails from "./VenueDetails/VenueDetails";
 import VenueBooking from "./VenueBooking/VenueBooking";
 import ActivityDetails from "./ActivityDetails/ActivityDetails";
 import UserCalendar from "./UserCalendar/UserCalendar";
+import StripeApp from "./PaymentApp";
 
 function App() {
   return (
@@ -53,6 +54,7 @@ function App() {
           element={<ActivityDetails />}
         />
         <Route path="/calendar" element={<UserCalendar />} />
+        <Route path="/payments" element={<StripeApp />} />
       </Routes>
     </div>
   );
