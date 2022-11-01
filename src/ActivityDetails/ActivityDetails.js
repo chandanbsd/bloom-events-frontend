@@ -4,8 +4,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { activity } from "../redux/activity";
 import baseURL from "../constants/constants";
 import "react-calendar/dist/Calendar.css";
-import TimeRangePicker from "@wojtekmaj/react-timerange-picker";
-import activityListMock from "../Mocks/activityListMock";
 
 const ActivityDetails = () => {
   const activityFromStore = useSelector((state) => state.activity);
