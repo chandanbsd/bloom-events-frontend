@@ -7,12 +7,14 @@ import { usCities, usStates } from "../constants/usaCityStates";
 import baseURL from "../constants/constants";
 import { Link } from "react-router-dom";
 import time24 from "../constants/time24";
+import themeStyles from "../themeStyles";
 const VenueSearch = () => {
   const [searchKeyword, setSearchKeyword] = useState("");
   const [eventList, setEventList] = useState([]);
   const [filteredEventList, setFilteredEventList] = useState([]);
   const eventFromStore = useSelector((state) => state.event);
   const dispatch = useDispatch();
+  const themeFromStore = useSelector((state) => state.theme);
 
   const processSearch = async () => {
     if (searchKeyword === "" || searchKeyword === undefined)
@@ -82,8 +84,8 @@ const VenueSearch = () => {
   }, []);
 
   return (
-    <div>
-      <h1 className="mx-auto text-center">Search Event Venues</h1>
+    <div className={themeStyles[themeFromStore.value].body}>
+      <h1 className={"mx-auto text-center "}>Search Event Venues</h1>
       <div>
         <div style={{ display: "flex", width: "50%" }} className="mx-auto pt-5">
           <input
@@ -173,7 +175,15 @@ const VenueSearch = () => {
       <div className="mx-auto mt-5" style={{ width: "50%" }}>
         {filteredEventList.map((val, index) => {
           return (
-            <div className="card mb-2 p-3" key={index}>
+            <div
+              className={
+                "card mb-2 p-3 " +
+                themeStyles[themeFromStore.value].bodyHeavy +
+                " " +
+                themeStyles[themeFromStore.value].text
+              }
+              key={index}
+            >
               <div className="card-body d-flex justify-content-around">
                 <div>
                   <h5 className="card-title">Name: {val.venueName}</h5>
@@ -191,7 +201,14 @@ const VenueSearch = () => {
                 </div>
                 <div className="align-self-center">
                   <div>
-                    <table className="table">
+                    <table
+                      className={
+                        "table " +
+                        themeStyles[themeFromStore.value].bodyHeavy +
+                        " " +
+                        themeStyles[themeFromStore.value].text
+                      }
+                    >
                       <tbody>
                         <tr>
                           <th>Day</th>
