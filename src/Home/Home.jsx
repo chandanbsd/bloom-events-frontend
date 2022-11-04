@@ -13,7 +13,7 @@ const Home = () => {
   console.log(userFromStore);
 
   return (
-    <React.Fragment>
+    <div className="mx-auto text-center">
       {userFromStore === undefined ||
       userFromStore === null ||
       userFromStore.firstName === null ||
@@ -44,7 +44,7 @@ const Home = () => {
           </h1>
         </div>
       )}
-    </React.Fragment>
+    </div>
   );
 };
 
