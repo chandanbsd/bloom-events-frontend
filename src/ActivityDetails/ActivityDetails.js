@@ -25,6 +25,12 @@ const ActivityDetails = () => {
 
   const [activityReview, setActivityReview] = useState(null);
 
+  const [paymentCreds, setPaymentCreds] = useState({
+    cardNumber: null,
+    cvv: null,
+    expiry: null,
+  });
+
   const updateActivityStore = () => {
     const url = `${baseURL}/ra`;
     const requestOptions = {
@@ -46,22 +52,41 @@ const ActivityDetails = () => {
       });
   };
   const handleActivityRegistration = () => {
-    const url = `${baseURL}/RegActivity`;
-    const requestOptions = {
+    let url = `${baseURL}/activityPayment`;
+    let requestOptions = {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         activityId: activityDetails.activityId,
-        userName: userFromStore.userName,
+        participantuserName: userFromStore.userName,
+        organizeruserName: activityDetails.activityOrganizer,
+        amount: activityDetails.activityCostAmount,
       }),
     };
+
     fetch(url, requestOptions)
       .then((response) => response.json())
       .then((res) => {
         if (res.status === "OK") {
-          updateActivityStore();
-          alert("Booking Confirmed");
-          window.location.reload();
+          url = `${baseURL}/RegActivity`;
+          requestOptions = {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              activityId: activityDetails.activityId,
+              userName: userFromStore.userName,
+            }),
+          };
+          fetch(url, requestOptions)
+            .then((response) => response.json())
+            .then((res) => {
+              if (res.status === "OK") {
+                updateActivityStore();
+                alert("Booking Confirmed");
+                window.location.reload();
+              } else alert("Failed to signup for activity. Try again");
+            })
+            .catch((error) => console.log("API Connection Failed", error));
         } else alert("Failed to signup for activity. Try again");
       })
       .catch((error) => console.log("API Connection Failed", error));
@@ -227,19 +252,89 @@ const ActivityDetails = () => {
                       {!registeredActivities.includes(
                         activityDetails.activityId
                       ) ? (
-                        <button
-                          className={
-                            "btn " +
-                            (activityDetails.activityRemainingCapacity > 0
-                              ? "btn-primary"
-                              : "btn-danger")
-                          }
-                          onClick={handleActivityRegistration}
-                        >
-                          {activityDetails.activityRemainingCapacity > 0
-                            ? "Confirm Booking"
-                            : "Activity has reached maximum capacity"}
-                        </button>
+                        <div>
+                          <div style={{ width: "500px" }} className="mx-auto">
+                            <div>
+                              Enter Card Number:{" "}
+                              <input
+                                type={"text"}
+                                className="form-control"
+                                maxLength={16}
+                                style={{
+                                  width: "50%",
+                                  display: "inline-block",
+                                }}
+                                onChange={(e) => {
+                                  setPaymentCreds({
+                                    ...paymentCreds,
+                                    cardNumber: e.target.value,
+                                  });
+                                }}
+                              ></input>
+                            </div>
+                            <br />
+                            <div>
+                              Enter Card Expiry:{" "}
+                              <input
+                                type={"month"}
+                                className="form-control"
+                                style={{
+                                  width: "50%",
+                                  display: "inline-block",
+                                }}
+                                onChange={(e) => {
+                                  setPaymentCreds({
+                                    ...paymentCreds,
+                                    expiry: e.target.value,
+                                  });
+                                }}
+                              ></input>
+                            </div>
+                            <br />
+                            <div>
+                              Enter Card CVV:{" "}
+                              <input
+                                type={"password"}
+                                className="form-control"
+                                maxLength={3}
+                                style={{
+                                  width: "50%",
+                                  display: "inline-block",
+                                }}
+                                onChange={(e) => {
+                                  setPaymentCreds({
+                                    ...paymentCreds,
+                                    cvv: e.target.value,
+                                  });
+                                }}
+                              ></input>
+                            </div>
+                          </div>
+                          <br />
+                          <button
+                            className={
+                              "btn " +
+                              (activityDetails.activityRemainingCapacity > 0
+                                ? "btn-primary"
+                                : "btn-danger")
+                            }
+                            onClick={() => {
+                              if (
+                                paymentCreds.cardNumber !== null &&
+                                paymentCreds.cvv !== null &&
+                                paymentCreds.expiry != null
+                              )
+                                handleActivityRegistration();
+                              else {
+                                alert("Please fill all payment details");
+                              }
+                            }}
+                          >
+                            {activityDetails.activityRemainingCapacity > 0
+                              ? "Confirm Booking"
+                              : "Activity has reached maximum capacity"}
+                          </button>
+                        </div>
                       ) : (
                         <div>
                           <button
