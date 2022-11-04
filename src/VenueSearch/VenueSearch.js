@@ -8,6 +8,7 @@ import baseURL from "../constants/constants";
 import { Link } from "react-router-dom";
 import time24 from "../constants/time24";
 import themeStyles from "../themeStyles";
+import { usaCityStates } from "../constants/usaCityStates";
 const VenueSearch = () => {
   const [searchKeyword, setSearchKeyword] = useState("");
   const [eventList, setEventList] = useState([]);
@@ -15,6 +16,7 @@ const VenueSearch = () => {
   const eventFromStore = useSelector((state) => state.event);
   const dispatch = useDispatch();
   const themeFromStore = useSelector((state) => state.theme);
+  const [stateFilter, setStateFilter] = useState(null)
 
   const processSearch = async () => {
     if (searchKeyword === "" || searchKeyword === undefined)
@@ -118,6 +120,27 @@ const VenueSearch = () => {
               variant="success"
               id="dropdown-basic"
               onSelect={(e) => {
+                handleStateFilter(e);
+                setStateFilter(e)
+              }}
+              title="Select State"
+            >
+              <Dropdown.Menu style={{ maxHeight: "500px", overflow: "scroll" }}>
+                <Dropdown.Item eventKey={"Any"}>Any</Dropdown.Item>
+                {Object.keys(usaCityStates).map((ele, index) => (
+                  <Dropdown.Item eventKey={ele} key={index}>
+                    {ele}
+                  </Dropdown.Item>
+                ))}
+              </Dropdown.Menu>
+            </DropdownButton>
+          </Dropdown>
+
+          <Dropdown>
+            <DropdownButton
+              variant="success"
+              id="dropdown-basic"
+              onSelect={(e) => {
                 handleCityFilter(e);
               }}
               title="Select City"
@@ -126,33 +149,17 @@ const VenueSearch = () => {
                 style={{ maxHeight: "500px", overflowY: "scroll" }}
               >
                 <Dropdown.Item eventKey={"Any"}>Any</Dropdown.Item>
-                {usCities.map((ele, index) => (
+                {stateFilter !== null && usaCityStates[stateFilter]?.map((ele, index) => (
                   <Dropdown.Item eventKey={ele} key={index}>
                     {ele}
                   </Dropdown.Item>
                 ))}
+                {stateFilter === null && <Dropdown.Item eventKey={"Any"}>Select state first</Dropdown.Item>}
+                 
               </Dropdown.Menu>
             </DropdownButton>
           </Dropdown>
-          <Dropdown>
-            <DropdownButton
-              variant="success"
-              id="dropdown-basic"
-              onSelect={(e) => {
-                handleStateFilter(e);
-              }}
-              title="Select State"
-            >
-              <Dropdown.Menu style={{ maxHeight: "500px", overflow: "scroll" }}>
-                <Dropdown.Item eventKey={"Any"}>Any</Dropdown.Item>
-                {usStates.map((ele, index) => (
-                  <Dropdown.Item eventKey={ele} key={index}>
-                    {ele}
-                  </Dropdown.Item>
-                ))}
-              </Dropdown.Menu>
-            </DropdownButton>
-          </Dropdown>
+
 
           <Dropdown>
             <DropdownButton
