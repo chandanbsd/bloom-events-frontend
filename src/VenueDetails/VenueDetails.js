@@ -6,6 +6,8 @@ import baseURL from "../constants/constants";
 import venueListMock from "../Mocks/venueListMock";
 // import venueListMock from "../Mocks/venueDetailsMock";
 import { Wrapper, Status } from "@googlemaps/react-wrapper";
+import ImageUploading from "react-images-uploading";
+
 import Dropdown from "react-bootstrap/Dropdown";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
@@ -67,6 +69,7 @@ const newVenueSlots = [
 ];
 
 const VenueDetails = () => {
+  const [images, setImages] = React.useState([]);
   const eventFromStore = useSelector((state) => state.event);
   const dispatch = useDispatch();
   const params = useParams();
@@ -92,6 +95,9 @@ const VenueDetails = () => {
 
   const [isLoading, setIsLoading] = useState(false);
 
+  const [venueLayoutImage, setVenueLayoutImage] = useState(null);
+  const [anotherVenueImage, setAnotherVenueImage] = useState(null);
+  const fileReader = new FileReader();
   const bookingDetailsHandler = () => {
     if (
       activityName !== null &&
@@ -176,6 +182,19 @@ const VenueDetails = () => {
     }
     setIsLoading(false);
   };
+
+  const handleVenueLayoutImage = (e) => {
+    let fileReader = new FileReader(e.target.files[0]);
+    console.log(e.target.files[0]);
+    setVenueLayoutImage(fileReader.result);
+  };
+
+  // const handleAnotherVenueImage = (ele) => {
+  //   let fileReader = new FileReader();
+  //   fileReader.onloadend =
+  //   let file = ele.file[0];
+  //   setAnotherVenueImage(fileReader.result);
+  // };
 
   useEffect(() => {
     if (venueDetails == null) {
@@ -363,224 +382,263 @@ const VenueDetails = () => {
                 <h1> Confirm Booking</h1>
               </div>
               {selectedSlotList.length > 0 ? (
-                <div className="mx-auto" style={{ width: "500px" }}>
-                  <table className="table" style={{ width: "500px" }}>
-                    <tbody>
-                      <tr>
-                        <th>Enter Activity Name:</th>
-                        <td>
-                          <input
-                            type="text"
-                            onChange={(e) => setActivityName(e.target.value)}
-                          />
-                        </td>
-                      </tr>
-                      <tr>
-                        <th>Enter Activity Capacity:</th>
-                        <td>
-                          <input
-                            type="number"
-                            onChange={(e) =>
-                              setActivityCapacity(e.target.value)
-                            }
-                          />
-                        </td>
-                      </tr>
-                      <tr>
-                        <th>Enter Activity Details:</th>
-                        <td>
-                          <textarea
-                            onChange={(e) =>
-                              setActivityDescription(e.target.value)
-                            }
-                          />
-                        </td>
-                      </tr>
-                      <tr>
-                        <th>Enter Activity Location:</th>
-                        <td>
-                          <input
-                            type="text"
-                            onChange={(e) =>
-                              setActivityLocation(e.target.value)
-                            }
-                          />
-                        </td>
-                      </tr>
-                      <tr>
-                        <th>Enter Activity Category:</th>
-                        <td>
-                          <Dropdown>
-                            <DropdownButton
-                              variant="success"
-                              id="dropdown-basic"
-                              onSelect={(e) => {
-                                setActivityCategory(e);
+                <div className="d-flex justify-content-between">
+                  <div className="mx-auto" style={{ width: "500px" }}>
+                    <table className="table" style={{ width: "500px" }}>
+                      <tbody>
+                        <tr>
+                          <th>Enter Activity Name:</th>
+                          <td>
+                            <input
+                              type="text"
+                              onChange={(e) => setActivityName(e.target.value)}
+                            />
+                          </td>
+                        </tr>
+                        <tr>
+                          <th>Enter Activity Capacity:</th>
+                          <td>
+                            <input
+                              type="number"
+                              onChange={(e) =>
+                                setActivityCapacity(e.target.value)
+                              }
+                            />
+                          </td>
+                        </tr>
+                        <tr>
+                          <th>Enter Activity Details:</th>
+                          <td>
+                            <textarea
+                              onChange={(e) =>
+                                setActivityDescription(e.target.value)
+                              }
+                            />
+                          </td>
+                        </tr>
+                        <tr>
+                          <th>Enter Activity Location:</th>
+                          <td>
+                            <input
+                              type="text"
+                              onChange={(e) =>
+                                setActivityLocation(e.target.value)
+                              }
+                            />
+                          </td>
+                        </tr>
+                        <tr>
+                          <th>Enter Activity Category:</th>
+                          <td>
+                            <Dropdown>
+                              <DropdownButton
+                                variant="success"
+                                id="dropdown-basic"
+                                onSelect={(e) => {
+                                  setActivityCategory(e);
+                                }}
+                                title={
+                                  activityCategory == null
+                                    ? "Select Category"
+                                    : activityCategory
+                                }
+                              >
+                                <Dropdown.Item eventKey={"Music"}>
+                                  Music
+                                </Dropdown.Item>
+                                <Dropdown.Item eventKey={"Sports"}>
+                                  Sports
+                                </Dropdown.Item>
+                                <Dropdown.Item eventKey={"Comedy"}>
+                                  Comedy
+                                </Dropdown.Item>
+                              </DropdownButton>
+                            </Dropdown>
+                          </td>
+                        </tr>
+                        <tr>
+                          <th>Enter Activity Age:</th>
+                          <td>
+                            <Dropdown>
+                              <DropdownButton
+                                variant="success"
+                                id="dropdown-basic"
+                                onSelect={(e) => {
+                                  setActivityAgeRange(e);
+                                }}
+                                title={
+                                  activityAgeRange == null
+                                    ? "Select Age Range"
+                                    : activityCategory
+                                }
+                              >
+                                <Dropdown.Item eventKey={"Any"}>
+                                  Everyone
+                                </Dropdown.Item>
+                                <Dropdown.Item eventKey={"A65"}>
+                                  Above 65
+                                </Dropdown.Item>
+                                <Dropdown.Item eventKey={"A18"}>
+                                  Above 18
+                                </Dropdown.Item>
+                                <Dropdown.Item eventKey={"B18"}>
+                                  Below 18
+                                </Dropdown.Item>
+                              </DropdownButton>
+                            </Dropdown>
+                          </td>
+                        </tr>
+                        <tr>
+                          <th>Activity Cost</th>
+                          <td>
+                            {" "}
+                            <Dropdown>
+                              <DropdownButton
+                                variant="success"
+                                id="dropdown-basic"
+                                onSelect={(e) => {
+                                  setActivityCost(e);
+                                }}
+                                title={
+                                  activityCost == null
+                                    ? "Select Cost"
+                                    : activityCategory
+                                }
+                              >
+                                <Dropdown.Item eventKey={"Free"}>
+                                  Free
+                                </Dropdown.Item>
+                                <Dropdown.Item eventKey={"Paid"}>
+                                  Paid
+                                </Dropdown.Item>
+                              </DropdownButton>
+                            </Dropdown>
+                          </td>
+                        </tr>
+                        <tr>
+                          <th>Activity Cost Amount</th>
+                          <td>
+                            {" "}
+                            <input
+                              type="number"
+                              onChange={(e) =>
+                                setActivityCostAmount(e.target.value)
+                              }
+                            />
+                          </td>
+                        </tr>
+                        <tr>
+                          <th>Date</th>
+                          <td>{`${reservationDate.getUTCFullYear()}-${
+                            reservationDate.getUTCMonth() + 1
+                          }-${reservationDate.getUTCDate()}`}</td>
+                        </tr>
+                        <tr>
+                          <th>Slots Booked</th>
+                          <td>
+                            <ul>
+                              {selectedSlotList.map((val) => {
+                                return <li key={val}>{timeSlots[val]}</li>;
+                              })}{" "}
+                            </ul>
+                          </td>
+                        </tr>
+                        <tr>
+                          <th>Total Reservation Cost:</th>
+                          <td>
+                            {venueDetails.venueHrCost * selectedSlotList.length}
+                          </td>
+                        </tr>
+                        <tr>
+                          <th>Select Venue Layout Image</th>
+                          <td>
+                            <input
+                              type="file"
+                              accept="image/png, image/jpeg"
+                              className="form-control"
+                              onChange={(e) => {
+                                console.log(e.files);
+                                handleVenueLayoutImage(e);
                               }}
-                              title={
-                                activityCategory == null
-                                  ? "Select Category"
-                                  : activityCategory
-                              }
-                            >
-                              <Dropdown.Item eventKey={"Music"}>
-                                Music
-                              </Dropdown.Item>
-                              <Dropdown.Item eventKey={"Sports"}>
-                                Sports
-                              </Dropdown.Item>
-                              <Dropdown.Item eventKey={"Comedy"}>
-                                Comedy
-                              </Dropdown.Item>
-                            </DropdownButton>
-                          </Dropdown>
-                        </td>
-                      </tr>
-                      <tr>
-                        <th>Enter Activity Age:</th>
-                        <td>
-                          <Dropdown>
-                            <DropdownButton
-                              variant="success"
-                              id="dropdown-basic"
-                              onSelect={(e) => {
-                                setActivityAgeRange(e);
-                              }}
-                              title={
-                                activityAgeRange == null
-                                  ? "Select Age Range"
-                                  : activityCategory
-                              }
-                            >
-                              <Dropdown.Item eventKey={"Any"}>
-                                Everyone
-                              </Dropdown.Item>
-                              <Dropdown.Item eventKey={"A65"}>
-                                Above 65
-                              </Dropdown.Item>
-                              <Dropdown.Item eventKey={"A18"}>
-                                Above 18
-                              </Dropdown.Item>
-                              <Dropdown.Item eventKey={"B18"}>
-                                Below 18
-                              </Dropdown.Item>
-                            </DropdownButton>
-                          </Dropdown>
-                        </td>
-                      </tr>
-                      <tr>
-                        <th>Activity Cost</th>
-                        <td>
-                          {" "}
-                          <Dropdown>
-                            <DropdownButton
-                              variant="success"
-                              id="dropdown-basic"
-                              onSelect={(e) => {
-                                setActivityCost(e);
-                              }}
-                              title={
-                                activityCost == null
-                                  ? "Select Cost"
-                                  : activityCategory
-                              }
-                            >
-                              <Dropdown.Item eventKey={"Free"}>
-                                Free
-                              </Dropdown.Item>
-                              <Dropdown.Item eventKey={"Paid"}>
-                                Paid
-                              </Dropdown.Item>
-                            </DropdownButton>
-                          </Dropdown>
-                        </td>
-                      </tr>
-                      <tr>
-                        <th>Activity Cost Amount</th>
-                        <td>
-                          {" "}
-                          <input
-                            type="number"
-                            onChange={(e) =>
-                              setActivityCostAmount(e.target.value)
-                            }
-                          />
-                        </td>
-                      </tr>
-                      <tr>
-                        <th>Date</th>
-                        <td>{`${reservationDate.getUTCFullYear()}-${
-                          reservationDate.getUTCMonth() + 1
-                        }-${reservationDate.getUTCDate()}`}</td>
-                      </tr>
-                      <tr>
-                        <th>Slots Booked</th>
-                        <td>
-                          <ul>
-                            {selectedSlotList.map((val) => {
-                              return <li key={val}>{timeSlots[val]}</li>;
-                            })}{" "}
-                          </ul>
-                        </td>
-                      </tr>
-                      <tr>
-                        <th>Total Reservation Cost:</th>
-                        <td>
-                          {venueDetails.venueHrCost * selectedSlotList.length}
-                        </td>
-                      </tr>
-                      <tr>
-                        <td colSpan={2}>
-                          <div className="text-center">
-                            <button
-                              className={
-                                "btn " +
-                                (bookingDetailsHandler()
-                                  ? "btn-primary"
-                                  : "btn-danger")
-                              }
-                            >
-                              {bookingDetailsHandler() ? (
-                                <Link
-                                  to={{
-                                    pathname: "venue-booking",
-                                  }}
-                                  state={{
-                                    venueDetails: JSON.parse(
-                                      JSON.stringify(venueDetails)
-                                    ),
-                                    reservationDate,
-                                    availableTimeSlot,
-                                    timeSlots,
-                                    selectedSlotList,
-                                    formattedReservationDate: `${reservationDate.getUTCFullYear()}-${
-                                      reservationDate.getUTCMonth() + 1
-                                    }-${reservationDate.getUTCDate()}`,
-                                    activityName,
-                                    activityLocation,
-                                    activityCapacity,
-                                    activityCategory,
-                                    activityAgeRange,
-                                    activityCost,
-                                    activityDescription,
-                                    activityCostAmount,
-                                  }}
-                                  style={{
-                                    textDecoration: "none",
-                                    color: "inherit",
-                                  }}
-                                >
-                                  Confirm Booking
-                                </Link>
-                              ) : (
-                                "Enter Activity Details to proceed"
-                              )}
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
+                            ></input>
+                          </td>
+                        </tr>
+
+                        <tr>
+                          <th>Select Another Venue Image</th>
+                          <td>
+                            <input
+                              type="file"
+                              accept="image/png, image/jpeg"
+                              className="form-control"
+                              // onChange={handleAnotherVenueImage}
+                            ></input>
+                          </td>
+                        </tr>
+
+                        <tr>
+                          <td colSpan={2}>
+                            <div className="text-center">
+                              <button
+                                className={
+                                  "btn " +
+                                  (bookingDetailsHandler()
+                                    ? "btn-primary"
+                                    : "btn-danger")
+                                }
+                              >
+                                {bookingDetailsHandler() ? (
+                                  <Link
+                                    to={{
+                                      pathname: "venue-booking",
+                                    }}
+                                    state={{
+                                      venueDetails: JSON.parse(
+                                        JSON.stringify(venueDetails)
+                                      ),
+                                      reservationDate,
+                                      availableTimeSlot,
+                                      timeSlots,
+                                      selectedSlotList,
+                                      formattedReservationDate: `${reservationDate.getUTCFullYear()}-${
+                                        reservationDate.getUTCMonth() + 1
+                                      }-${reservationDate.getUTCDate()}`,
+                                      activityName,
+                                      activityLocation,
+                                      activityCapacity,
+                                      activityCategory,
+                                      activityAgeRange,
+                                      activityCost,
+                                      activityDescription,
+                                      activityCostAmount,
+                                    }}
+                                    style={{
+                                      textDecoration: "none",
+                                      color: "inherit",
+                                    }}
+                                  >
+                                    Confirm Booking
+                                  </Link>
+                                ) : (
+                                  "Enter Activity Details to proceed"
+                                )}
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div style={{ width: "200px", height: "200px" }}>
+                    {venueLayoutImage && (
+                      <img src={fileReader.readAsDataURL(venueLayoutImage)} />
+                    )}
+                  </div>
+                  <div style={{ width: "200px", height: "200px" }}>
+                    {anotherVenueImage && (
+                      <img src={fileReader.readAsDataURL(anotherVenueImage)} />
+                    )}
+                  </div>
                 </div>
               ) : (
                 <div className="mx-auto">Please select a slot first</div>

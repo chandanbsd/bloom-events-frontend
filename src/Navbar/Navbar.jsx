@@ -50,10 +50,8 @@ const Navbar = () => {
     await dispatch(
       setTheme(themeFromStore.value == "light" ? "dark" : "light")
     );
-    console.log(themeFromStore.value);
   };
   useEffect(() => {
-    console.log(themeFromStore);
     if (localTheme == null) {
       setLocalTheme(themeFromStore.value);
     }
@@ -100,6 +98,9 @@ const Navbar = () => {
                 </Link>
                 <Link to="../calendar" className="dropdown-item">
                   Calendar
+                </Link>
+                <Link to="../bookmarks" className="dropdown-item">
+                  Bookmarks
                 </Link>
                 {isAuthenticated === false ? (
                   <Link to="/" onClick={handleLogout} className="dropdown-item">
