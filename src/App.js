@@ -25,10 +25,10 @@ import VenueBooking from "./VenueBooking/VenueBooking";
 import ActivityDetails from "./ActivityDetails/ActivityDetails";
 import UserCalendar from "./UserCalendar/UserCalendar";
 import themeStyles from "./themeStyles";
+import Bookmarks from "./Bookmarks/Bookmarks";
 
 function App() {
   const themeFromStore = useSelector((state) => state.theme);
-  console.log(themeStyles[themeFromStore.value].body);
   return (
     <div className="App">
       <Navbar />
@@ -57,6 +57,7 @@ function App() {
           element={<ActivityDetails />}
         />
         <Route path="/calendar" element={<UserCalendar />} />
+        <Route path="/bookmarks" element={<Bookmarks/>}/>
       </Routes>
     </div>
   );

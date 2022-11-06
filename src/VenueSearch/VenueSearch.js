@@ -16,7 +16,7 @@ const VenueSearch = () => {
   const eventFromStore = useSelector((state) => state.event);
   const dispatch = useDispatch();
   const themeFromStore = useSelector((state) => state.theme);
-  const [stateFilter, setStateFilter] = useState(null)
+  const [stateFilter, setStateFilter] = useState(null);
 
   const processSearch = async () => {
     if (searchKeyword === "" || searchKeyword === undefined)
@@ -121,7 +121,7 @@ const VenueSearch = () => {
               id="dropdown-basic"
               onSelect={(e) => {
                 handleStateFilter(e);
-                setStateFilter(e)
+                setStateFilter(e);
               }}
               title="Select State"
             >
@@ -149,17 +149,20 @@ const VenueSearch = () => {
                 style={{ maxHeight: "500px", overflowY: "scroll" }}
               >
                 <Dropdown.Item eventKey={"Any"}>Any</Dropdown.Item>
-                {stateFilter !== null && usaCityStates[stateFilter]?.map((ele, index) => (
-                  <Dropdown.Item eventKey={ele} key={index}>
-                    {ele}
+                {stateFilter !== null &&
+                  usaCityStates[stateFilter]?.map((ele, index) => (
+                    <Dropdown.Item eventKey={ele} key={index}>
+                      {ele}
+                    </Dropdown.Item>
+                  ))}
+                {stateFilter === null && (
+                  <Dropdown.Item eventKey={"Any"}>
+                    Select state first
                   </Dropdown.Item>
-                ))}
-                {stateFilter === null && <Dropdown.Item eventKey={"Any"}>Select state first</Dropdown.Item>}
-                 
+                )}
               </Dropdown.Menu>
             </DropdownButton>
           </Dropdown>
-
 
           <Dropdown>
             <DropdownButton
