@@ -16,8 +16,8 @@ const Bookmarks = () => {
   const activityFromStore = useSelector((state) => state.activity);
 
   //   useEffect(() => {
-  //     setVenueBookmarks(bookmarksMock.favVenues);
-  //     setActivityBookmarks(bookmarksMock.favActivites);
+  //     setVenueBookmarks(bookmarksMock.favVenue);
+  //     setActivityBookmarks(bookmarksMock.favActivity);
 
   //     return () => {};
   //   }, [venueBookmarks, activityBookmarks]);
@@ -54,7 +54,7 @@ const Bookmarks = () => {
         .then((res) =>
           setFilteredEventList(
             JSON.parse(JSON.stringify(eventFromStore.eventList)).filter((ele) =>
-              bookmarksMock.favVenues.includes(ele.venueId)
+              bookmarksMock.favVenue.includes(ele.venueId)
             )
           )
         );
@@ -75,7 +75,7 @@ const Bookmarks = () => {
 
             setFilteredActivityList(
               JSON.parse(JSON.stringify(activityFromStore.activityList)).filter(
-                (ele) => bookmarksMock.favActivites.includes(ele.activityId)
+                (ele) => bookmarksMock.favActivity.includes(ele.activityId)
               )
             );
           } else alert("Unable to fetch activities");
@@ -84,22 +84,22 @@ const Bookmarks = () => {
       console.log(filteredActivityList);
     }
 
-    setVenueBookmarks(bookmarksMock.favVenues);
-    setActivityBookmarks(bookmarksMock.favActivites);
+    setVenueBookmarks(bookmarksMock.favVenue);
+    setActivityBookmarks(bookmarksMock.favActivity);
 
     /*
      .then((res) =>
           setFilteredActivityList(
             JSON.parse(JSON.stringify(eventFromStore.eventList)).filter(
               (ele) =>
-                eventFromStore.eventList.venueId == bookmarksMock.favVenues
+                eventFromStore.eventList.venueId == bookmarksMock.favVenue
             )
           )
         )
         .then((res) => {
-          setVenueBookmarks(bookmarksMock.favActivites);
+          setVenueBookmarks(bookmarksMock.favActivity);
 
-          setActivityBookmarks(bookmarksMock.favActivites);
+          setActivityBookmarks(bookmarksMock.favActivity);
         })
         .catch((error) => console.log("Form submit error", error));
     */
