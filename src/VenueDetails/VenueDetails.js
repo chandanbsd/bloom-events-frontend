@@ -13,6 +13,7 @@ import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import { DropdownButton } from "react-bootstrap";
 import time24 from "../constants/time24";
+import bookmarksMock from "../Mocks/bookmarksMock";
 const timeSlots = [
   "12 a.m. - 1 a.m.",
   "1 a.m. - 2 a.m.",
@@ -71,6 +72,7 @@ const newVenueSlots = [
 const VenueDetails = () => {
   const [images, setImages] = React.useState([]);
   const eventFromStore = useSelector((state) => state.event);
+  const userFromStore = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const params = useParams();
   const [activityName, setActivityName] = useState(null);
@@ -98,6 +100,9 @@ const VenueDetails = () => {
   const [venueLayoutImage, setVenueLayoutImage] = useState(null);
   const [anotherVenueImage, setAnotherVenueImage] = useState(null);
   const fileReader = new FileReader();
+
+  const [bookmark, setBookmark] = useState(null);
+
   const bookingDetailsHandler = () => {
     if (
       activityName !== null &&
@@ -196,6 +201,55 @@ const VenueDetails = () => {
   //   setAnotherVenueImage(fileReader.result);
   // };
 
+  const handleBookmarks = () => {
+    let url = `${baseURL}/bookmark`;
+    let requestOptions = {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        userName: userFromStore.userName,
+        favVenue: bookmark.favVenue,
+        favActivity: bookmark.favActivity,
+      }),
+    };
+    fetch(url, requestOptions)
+      .then((response) => response.json())
+      .then((res) => {
+        if (res.status === "OK") {
+        } else {
+          alert("Bookmarking Failed");
+        }
+      });
+  };
+
+  const addBookmarks = () => {
+    let newFavVenue = bookmark.favVenue;
+    let index = newFavVenue.indexOf(venueDetails.venueId);
+    if (index > -1) {
+      newFavVenue.splice(index, 1);
+    }
+
+    let url = `${baseURL}/bookmark`;
+    let requestOptions = {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        userName: userFromStore.userName,
+        favVenue: newFavVenue,
+        favActivity: bookmark.favActivity,
+      }),
+    };
+    fetch(url, requestOptions)
+      .then((response) => response.json())
+      .then((res) => {
+        if (res.status === "OK") {
+          window.location.reload();
+        } else {
+          alert("Bookmarking Failed");
+        }
+      });
+  };
+
   useEffect(() => {
     if (venueDetails == null) {
       setVenueDetails({
@@ -208,11 +262,26 @@ const VenueDetails = () => {
         ),
       });
     }
-  }, [venueDetails]);
+
+    if (bookmark == null) {
+      let url = `${baseURL}/getbookmark`;
+      let requestOptions = {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userName: userFromStore.userName,
+        }),
+      };
+
+      fetch(url, requestOptions)
+        .then((response) => response.json())
+        .then((res) => setBookmark({ ...res.body }));
+    }
+  }, [venueDetails, bookmark]);
 
   return (
     <div>
-      {venueDetails !== null ? (
+      {venueDetails !== null && bookmark != null ? (
         <div>
           <h1 className="mx-auto" style={{ width: "fit-content" }}>
             Venue Name: {venueDetails.venueName}
@@ -313,7 +382,22 @@ const VenueDetails = () => {
                     </table>
                   </div>
                 </div>
+                <div>
+                  {bookmark.favVenue.includes(venueDetails.venueId) ? (
+                    <button
+                      className="btn btn-danger"
+                      onClick={handleBookmarks}
+                    >
+                      Remove from bookmarks
+                    </button>
+                  ) : (
+                    <button className="btn btn-primary" onClick={addBookmarks}>
+                      Add to bookmark
+                    </button>
+                  )}
+                </div>
               </div>
+
               <h1 className="mx-auto">Reserve Venue</h1>
               <div className="mx-auto">
                 <Calendar onChange={handleDate} value={reservationDate} />
@@ -647,7 +731,9 @@ const VenueDetails = () => {
           </div>
         </div>
       ) : (
-        <div> Loading</div>
+        <div className="mx-auto text-center mt-5">
+          <h1> Loading</h1>
+        </div>
       )}
     </div>
   );
