@@ -38,7 +38,7 @@ const Home = () => {
           style={{ height: "100vw" }}
         >
           <h1>
-            {userFromStore.isOwner
+            {userFromStore.isOwner == "true"
               ? "Hello Venue Owner"
               : "Hello Event Participants"}
           </h1>
