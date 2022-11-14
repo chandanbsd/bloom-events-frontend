@@ -186,6 +186,7 @@ const VenueDetails = () => {
     } else {
       await setAvailableTimeSlot([...newVenueSlots]);
     }
+    console.log(availableTimeSlot);
     setIsLoading(false);
   };
 
@@ -286,7 +287,8 @@ const VenueDetails = () => {
     if (venueBookmarks == null && activityBookmarks == null) {
       handleGetBookmarks();
     }
-  }, [venueDetails]);
+    console.log(selectedSlotList);
+  }, [venueDetails, selectedSlotList]);
 
   return (
     <div>
@@ -564,7 +566,7 @@ const VenueDetails = () => {
                                 title={
                                   activityAgeRange == null
                                     ? "Select Age Range"
-                                    : activityCategory
+                                    : activityAgeRange
                                 }
                               >
                                 <Dropdown.Item eventKey={"Any"}>
@@ -597,7 +599,7 @@ const VenueDetails = () => {
                                 title={
                                   activityCost == null
                                     ? "Select Cost"
-                                    : activityCategory
+                                    : activityCost
                                 }
                               >
                                 <Dropdown.Item eventKey={"Free"}>
