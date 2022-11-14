@@ -101,8 +101,6 @@ const VenueDetails = () => {
   const [anotherVenueImage, setAnotherVenueImage] = useState(null);
   const fileReader = new FileReader();
 
-  const [bookmark, setBookmark] = useState(null);
-
   const [venueBookmarks, setVenueBookmarks] = useState(null);
   const [activityBookmarks, setActivityBookmarks] = useState(null);
 
@@ -196,13 +194,6 @@ const VenueDetails = () => {
     setVenueLayoutImage(fileReader.result);
   };
 
-  // const handleAnotherVenueImage = (ele) => {
-  //   let fileReader = new FileReader();
-  //   fileReader.onloadend =
-  //   let file = ele.file[0];
-  //   setAnotherVenueImage(fileReader.result);
-  // };
-
   const removeBookmarks = () => {
     let newFavVenue = [...venueBookmarks].filter(
       (val) => val != venueDetails.venueId
@@ -295,7 +286,7 @@ const VenueDetails = () => {
     if (venueBookmarks == null && activityBookmarks == null) {
       handleGetBookmarks();
     }
-  }, [venueDetails, bookmark]);
+  }, [venueDetails]);
 
   return (
     <div>

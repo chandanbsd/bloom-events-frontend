@@ -26,8 +26,8 @@ const ActivityDetails = () => {
   const [activityReview, setActivityReview] = useState(null);
   const [participantList, setParticipantList] = useState(null);
 
-  const [venueBookmarks, setVenueBookmarks] = useState(null);
   const [activityBookmarks, setActivityBookmarks] = useState(null);
+  const [venueBookmarks, setVenueBookmarks] = useState(null);
 
   const [paymentCreds, setPaymentCreds] = useState({
     cardNumber: null,
@@ -173,7 +173,6 @@ const ActivityDetails = () => {
   };
 
   const handleBookmarks = () => {
-    console.log("hi");
     let url = `${baseURL}/getbookmark`;
     let requestOptions = {
       method: "POST",
@@ -190,12 +189,65 @@ const ActivityDetails = () => {
         if (res.status === "OK") {
           setVenueBookmarks(res.body.favVenue);
           setActivityBookmarks(res.body.favActivity);
-          console.log(res.body.favVenue);
-          console.log(res.body.favActivity);
         } else alert("Unable to fetch bookmarks");
         return true;
       });
   };
+
+  const removeBookmarks = () => {
+    let newFavActivity = [...activityBookmarks].filter(
+      (val) => val != activityDetails.activityId
+    );
+
+    let url = `${baseURL}/bookmark`;
+    let requestOptions = {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        userName: userFromStore.userName,
+        favVenue: venueBookmarks,
+        favActivity: newFavActivity,
+      }),
+    };
+    fetch(url, requestOptions)
+      .then((response) => response.json())
+      .then((res) => {
+        if (res.status === "OK") {
+          window.location.reload();
+        } else {
+          alert("Bookmarking Failed");
+        }
+      });
+  };
+
+  const addBookmarks = () => {
+    let newFavActivity = [...activityBookmarks];
+    console.log(activityBookmarks, newFavActivity);
+    newFavActivity.push(activityDetails.activityId);
+
+    newFavActivity = newFavActivity.sort((a, b) => a - b);
+
+    let url = `${baseURL}/bookmark`;
+    let requestOptions = {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        userName: userFromStore.userName,
+        favVenue: venueBookmarks,
+        favActivity: newFavActivity,
+      }),
+    };
+    fetch(url, requestOptions)
+      .then((response) => response.json())
+      .then((res) => {
+        if (res.status === "OK") {
+          window.location.reload();
+        } else {
+          alert("Bookmarking Failed");
+        }
+      });
+  };
+
   useEffect(() => {
     if (activityReview === null) {
       handleActivityReviews();
@@ -216,7 +268,7 @@ const ActivityDetails = () => {
       );
       handleRegisteredUsers();
 
-      if (venueBookmarks == null && activityBookmarks == null) {
+      if (activityBookmarks == null && activityBookmarks == null) {
         handleBookmarks();
       }
     }
@@ -243,20 +295,32 @@ const ActivityDetails = () => {
     venueDetails,
     registeredActivities,
     activityBookmarks,
-    venueBookmarks,
+    activityBookmarks,
   ]);
 
   return (
     <div>
       {activityDetails !== null &&
       venueDetails !== null &&
-      registeredActivities !== null ? (
+      registeredActivities !== null &&
+      activityBookmarks != null ? (
         <div className="d-flex justify-content-between">
           <div>
             <div className="mx-auto text-center">
               <h1 style={{ width: "50vw" }}>
                 Activity Name: {activityDetails.activityName}
               </h1>
+              <div>
+                {activityBookmarks.includes(activityDetails.activityId) ? (
+                  <button className="btn btn-danger" onClick={removeBookmarks}>
+                    Remove from bookmarks
+                  </button>
+                ) : (
+                  <button className="btn btn-primary" onClick={addBookmarks}>
+                    Add to bookmark
+                  </button>
+                )}
+              </div>
             </div>
             <div className="mx-auto mt-5">
               <div className="card mb-2 p-3 " style={{ minHeight: "800px" }}>

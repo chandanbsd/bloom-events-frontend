@@ -35,8 +35,6 @@ const Bookmarks = () => {
           if (res.status === "OK") {
             setVenueBookmarks(res.body.favVenue);
             setActivityBookmarks(res.body.favActivity);
-            console.log(res.body.favVenue);
-            console.log(res.body.favActivity);
           } else alert("Unable to fetch bookmarks");
           return true;
         });
@@ -77,7 +75,7 @@ const Bookmarks = () => {
         );
     }
 
-    if (filteredActivityList === null && activityBookmarks !== null) {
+    if (filteredActivityList == null && activityBookmarks !== null) {
       const url = `${baseURL}/ra`;
       const requestOptions = {
         method: "GET",
@@ -98,13 +96,6 @@ const Bookmarks = () => {
           } else alert("Unable to fetch activities");
         });
     }
-
-    console.log(
-      venueBookmarks,
-      activityBookmarks,
-      filteredActivityList,
-      filteredEventList
-    );
   }, [
     venueBookmarks,
     activityBookmarks,
@@ -116,8 +107,8 @@ const Bookmarks = () => {
     <div>
       {venueBookmarks !== null &&
       activityBookmarks !== null &&
-      filteredActivityList !== null &&
-      filteredEventList !== null ? (
+      filteredActivityList != null &&
+      filteredEventList != null ? (
         <div>
           <div className="card mb-2 p-3 mx-auto mt-2" style={{ width: "50%" }}>
             <div className="align-self-center" style={{ width: "100%" }}>
@@ -128,9 +119,10 @@ const Bookmarks = () => {
                     <th>Venue Name</th>
                     <th>Link to Venue</th>
                   </tr>
+
                   {venueBookmarks.map((ele, index) => (
                     <tr key={index}>
-                      <td>{filteredEventList[index].venueName}</td>
+                      <td>{filteredEventList[ele].venueName}</td>
                       <td>
                         {" "}
                         <button className="btn btn-primary">
