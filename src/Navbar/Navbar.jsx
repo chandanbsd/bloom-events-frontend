@@ -74,7 +74,7 @@ const Navbar = () => {
             <Link to="venue-creation" className="nav-item navbar-brand">
               <span>Add Venue</span>
             </Link>
-            <Link to="participant-search" className="nav-item navbar-brand">
+            <Link to="venue-search" className="nav-item navbar-brand">
               <span>Manage Venue</span>
             </Link>
             <Link to="/calendar" className="nav-item navbar-brand">
