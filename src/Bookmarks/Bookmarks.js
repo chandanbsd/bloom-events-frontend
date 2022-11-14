@@ -1,19 +1,21 @@
 import React, { useEffect, useState } from "react";
-import bookmarksMock from "../Mocks/bookmarksMock";
 import baseURL from "../constants/constants";
 import { useDispatch, useSelector } from "react-redux";
-import { clearActivity, setActivity } from "../redux/activity";
+import activity, { clearActivity, setActivity } from "../redux/activity";
 import { clearEvent, setEvent } from "../redux/event";
 import { Link } from "react-router-dom";
+import { setUser } from "../redux/user";
 
 const Bookmarks = () => {
   const eventFromStore = useSelector((state) => state.event);
+  const userFromStore = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const [venueBookmarks, setVenueBookmarks] = useState(null);
   const [activityBookmarks, setActivityBookmarks] = useState(null);
   const [filteredEventList, setFilteredEventList] = useState(null);
   const [filteredActivityList, setFilteredActivityList] = useState(null);
   const activityFromStore = useSelector((state) => state.activity);
+  const [fetchComplete, setFetchComplete] = useState(0);
 
   //   useEffect(() => {
   //     setVenueBookmarks(bookmarksMock.favVenue);
@@ -22,14 +24,40 @@ const Bookmarks = () => {
   //     return () => {};
   //   }, [venueBookmarks, activityBookmarks]);
 
-  useEffect(() => {
-    let url = `${baseURL}/venuelist`;
+  const handleBookmarks = () => {
+    let url = `${baseURL}/getbookmark`;
     let requestOptions = {
-      method: "GET",
+      method: "POST",
       headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        userName: userFromStore.userName,
+      }),
     };
 
-    if (filteredEventList === null) {
+    fetch(url, requestOptions)
+      .then((response) => response.json())
+
+      .then((res) => {
+        if (res.status === "OK") {
+          setVenueBookmarks(res.body.favVenue);
+          setActivityBookmarks(res.body.favActivity);
+          console.log(res.body.favVenue);
+          console.log(res.body.favActivity);
+        } else alert("Unable to fetch bookmarks");
+        return true;
+      })
+      .then((res) => handleVenueList())
+      .then((res) => handleActivityList());
+  };
+
+  const handleVenueList = () => {
+    console.log("here");
+    if (venueBookmarks !== null && filteredEventList === null) {
+      let url = `${baseURL}/venuelist`;
+      let requestOptions = {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      };
       fetch(url, requestOptions)
         .then((response) => response.json())
 
@@ -54,15 +82,18 @@ const Bookmarks = () => {
         .then((res) =>
           setFilteredEventList(
             JSON.parse(JSON.stringify(eventFromStore.eventList)).filter((ele) =>
-              bookmarksMock.favVenue.includes(ele.venueId)
+              venueBookmarks.favVenue.includes(ele.venueId)
             )
           )
         );
     }
+    return true;
+  };
 
-    if (filteredActivityList === null) {
-      url = `${baseURL}/ra`;
-      requestOptions = {
+  const handleActivityList = () => {
+    if (filteredActivityList === null && activityBookmarks !== null) {
+      const url = `${baseURL}/ra`;
+      const requestOptions = {
         method: "GET",
         headers: { "Content-Type": "application/json" },
       };
@@ -75,18 +106,35 @@ const Bookmarks = () => {
 
             setFilteredActivityList(
               JSON.parse(JSON.stringify(activityFromStore.activityList)).filter(
-                (ele) => bookmarksMock.favActivity.includes(ele.activityId)
+                (ele) => activityBookmarks.favActivity.includes(ele.activityId)
               )
             );
           } else alert("Unable to fetch activities");
         });
-    } else {
-      console.log(filteredActivityList);
     }
+  };
 
-    setVenueBookmarks(bookmarksMock.favVenue);
-    setActivityBookmarks(bookmarksMock.favActivity);
+  useEffect(() => {
+    handleBookmarks();
 
+    if (fetchComplete != true) {
+      handleBookmarks();
+      handleVenueList();
+      handleActivityList();
+
+      if (
+        venueBookmarks != null &&
+        (activityBookmarks != null) & (filteredActivityList != null) &&
+        filteredEventList != null
+      ) {
+        setFetchComplete(true);
+      } else {
+        console.log("incrementing");
+        setFetchComplete(fetchComplete + 1);
+      }
+    }
+    // handleVenueList();
+    // handleActivityList();
     /*
      .then((res) =>
           setFilteredActivityList(
@@ -103,12 +151,7 @@ const Bookmarks = () => {
         })
         .catch((error) => console.log("Form submit error", error));
     */
-  }, [
-    venueBookmarks,
-    activityBookmarks,
-    filteredEventList,
-    filteredActivityList,
-  ]);
+  }, [fetchComplete]);
 
   return (
     <div>
