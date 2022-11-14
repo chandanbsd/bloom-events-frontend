@@ -9,6 +9,7 @@ import SignUp from "./SignUp/SignUp";
 import EditProfile from "./EditProfile/EditProfile";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap";
+import { useDispatch, useSelector } from "react-redux";
 
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import { useAuth0 } from "@auth0/auth0-react";
@@ -23,8 +24,11 @@ import VenueDetails from "./VenueDetails/VenueDetails";
 import VenueBooking from "./VenueBooking/VenueBooking";
 import ActivityDetails from "./ActivityDetails/ActivityDetails";
 import UserCalendar from "./UserCalendar/UserCalendar";
+import themeStyles from "./themeStyles";
+import Bookmarks from "./Bookmarks/Bookmarks";
 
 function App() {
+  const themeFromStore = useSelector((state) => state.theme);
   return (
     <div className="App">
       <Navbar />
@@ -53,6 +57,7 @@ function App() {
           element={<ActivityDetails />}
         />
         <Route path="/calendar" element={<UserCalendar />} />
+        <Route path="/bookmarks" element={<Bookmarks/>}/>
       </Routes>
     </div>
   );
