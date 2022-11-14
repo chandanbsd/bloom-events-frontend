@@ -3,17 +3,45 @@ import { Form } from "react-bootstrap";
 import { useSelector } from "react-redux";
 import { usaCityStates, usStates, usCities } from "../constants/usaCityStates";
 import time24 from "../constants/time24";
-import initalTimeSlot from "../constants/initalTimeSlot";
 import baseURL from "../constants/constants";
+import { useNavigate } from "react-router-dom";
+
+const timeSlotNewInitial = [
+  ["open", -1],
+  ["open", -1],
+  ["open", -1],
+  ["open", -1],
+  ["open", -1],
+  ["open", -1],
+  ["open", -1],
+  ["open", -1],
+  ["open", -1],
+  ["open", -1],
+  ["open", -1],
+  ["open", -1],
+  ["open", -1],
+  ["open", -1],
+  ["open", -1],
+  ["open", -1],
+  ["open", -1],
+  ["open", -1],
+  ["open", -1],
+  ["open", -1],
+  ["open", -1],
+  ["open", -1],
+  ["open", -1],
+  ["open", -1],
+  ["open", -1],
+];
 
 const VenueCreation = () => {
   const userFromStore = useSelector((state) => state.user);
   let resSlots = "";
-  for (let [key, val] of initalTimeSlot) {
-    resSlots += key + "/" + val + ",";
+  for (let [key, val] of timeSlotNewInitial) {
+    resSlots += key + "/" + -1 + ",";
   }
   resSlots = resSlots.slice(0, resSlots.length - 1);
-
+  const navigate = useNavigate();
   const [venueDetails, setVenueDetails] = useState({
     venueHrCost: null,
     venueAddress: null,
@@ -23,7 +51,7 @@ const VenueCreation = () => {
     venueDescription: null,
     venueCategory: null,
     venueCity: null,
-    venueState: "Alabama",
+    venueState: null,
     venueSlots: resSlots,
   });
 
@@ -59,10 +87,25 @@ const VenueCreation = () => {
 
     fetch(url, requestOptions)
       .then((response) => response.json())
-      .then((res) => console.log(res));
+      .then((res) => {
+        alert("Booking Sucessfull");
+        navigate(`/activity-search`);
+      });
   };
 
   const handleSubmit = () => {
+    console.log(
+      venueDetails.venueHrCost &&
+        venueDetails.venueAddress &&
+        venueDetails.venueName &&
+        venueDetails.venueOpen &&
+        venueDetails.venueOwner &&
+        venueDetails.venueDescription &&
+        venueDetails.venueCategory &&
+        venueDetails.venueCity &&
+        venueDetails.venueState &&
+        venueDetails.venueSlots
+    );
     if (
       venueDetails.venueHrCost &&
       venueDetails.venueAddress &&
@@ -100,6 +143,11 @@ const VenueCreation = () => {
       }
     } else alert("Enter all details");
   };
+
+  useEffect(() => {
+    console.log(venueDetails);
+  }, [venueDetails]);
+
   return (
     <>
       {userFromStore.isOwner ? (
@@ -220,11 +268,6 @@ const VenueCreation = () => {
                       ...venueDetails,
                       venueState: e.target.value,
                     });
-
-                    setVenueDetails({
-                      ...venueDetails,
-                      city: usaCityStates[e.target.value][0],
-                    });
                   }}
                 >
                   {usStates.map((ele, index) => (
@@ -238,21 +281,29 @@ const VenueCreation = () => {
 
               <div className="form-group">
                 <label>Select City: </label>
-                <select
-                  className="form-control"
-                  onChange={(e) => {
-                    setVenueDetails({
-                      ...venueDetails,
-                      venueCity: e.target.value,
-                    });
-                  }}
-                >
-                  {usaCityStates[venueDetails.venueState].map((ele, index) => (
-                    <option value={ele} key={index}>
-                      {ele}
-                    </option>
-                  ))}
-                </select>
+                {venueDetails.venueState != null ? (
+                  <select
+                    className="form-control"
+                    onChange={(e) => {
+                      setVenueDetails({
+                        ...venueDetails,
+                        venueCity: e.target.value,
+                      });
+                    }}
+                  >
+                    {usaCityStates[venueDetails.venueState].map(
+                      (ele, index) => {
+                        return (
+                          <option value={ele} key={index}>
+                            {ele}
+                          </option>
+                        );
+                      }
+                    )}
+                  </select>
+                ) : (
+                  <div>Select state first</div>
+                )}
               </div>
               <br />
             </div>
