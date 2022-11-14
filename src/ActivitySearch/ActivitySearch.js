@@ -9,6 +9,9 @@ import timeSlots from "../constants/timeSlots";
 import { clearEvent, setEvent } from "../redux/event";
 import { Link } from "react-router-dom";
 import time24 from "../constants/time24";
+import { usaCityStates } from "../constants/usaCityStates";
+
+
 let dateObj = new Date();
 let today = [
   dateObj.getUTCFullYear(),
@@ -21,7 +24,7 @@ const ActivitySearch = () => {
   const [activityList, setActivityList] = useState([]);
   const [filteredActivityList, setFilteredActivityList] = useState([]);
   const [eventList, setEventList] = useState([]);
-
+  const [stateFilter, setStateFilter] = useState(null)
   const eventFromStore = useSelector((state) => state.event);
   const activityFromStore = useSelector((state) => state.activity);
   const dispatch = useDispatch();
@@ -39,10 +42,11 @@ const ActivitySearch = () => {
   };
 
   const handleCityFilter = (e) => {
+    console.log(activityList)
     if (e === "Any") setFilteredActivityList([...activityList]);
     else {
       setFilteredActivityList(
-        activityList.filter((ele) => ele.activityCity === e)
+        activityList.filter((ele) => ele.venueCity === e)
       );
     }
   };
@@ -51,7 +55,7 @@ const ActivitySearch = () => {
     if (e === "Any") setFilteredActivityList([...activityList]);
     else {
       setFilteredActivityList(
-        activityList.filter((ele) => ele.activityState === e)
+        activityList.filter((ele) => ele.venueState === e)
       );
     }
   };
@@ -123,9 +127,9 @@ const ActivitySearch = () => {
         if (res.status === "OK") {
           dispatch(setActivity([...res.body]));
 
-          setActivityList({
+          setActivityList([
             ...JSON.parse(JSON.stringify(activityFromStore.activityList)),
-          });
+          ]);
           setFilteredActivityList(
             JSON.parse(JSON.stringify(activityFromStore.activityList))
           );
@@ -163,6 +167,29 @@ const ActivitySearch = () => {
             justifyContent: "space-between",
           }}
         >
+
+
+          <Dropdown>
+            <DropdownButton
+              variant="success"
+              id="dropdown-basic"
+              onSelect={(e) => {
+                handleStateFilter(e);
+                setStateFilter(e)
+              }}
+              title="Select State"
+            >
+              <Dropdown.Menu style={{ maxHeight: "500px", overflow: "scroll" }}>
+                <Dropdown.Item eventKey={"Any"}>Any</Dropdown.Item>
+                {Object.keys(usaCityStates).map((ele, index) => (
+                  <Dropdown.Item eventKey={ele} key={index}>
+                    {ele}
+                  </Dropdown.Item>
+                ))}
+              </Dropdown.Menu>
+            </DropdownButton>
+          </Dropdown>
+
           <Dropdown>
             <DropdownButton
               variant="success"
@@ -176,34 +203,16 @@ const ActivitySearch = () => {
                 style={{ maxHeight: "500px", overflowY: "scroll" }}
               >
                 <Dropdown.Item eventKey={"Any"}>Any</Dropdown.Item>
-                {usCities.map((ele, index) => (
+                {stateFilter !== null && usaCityStates[stateFilter]?.map((ele, index) => (
                   <Dropdown.Item eventKey={ele} key={index}>
                     {ele}
                   </Dropdown.Item>
                 ))}
+                {stateFilter === null && <Dropdown.Item eventKey={"Any"}>Select state first</Dropdown.Item>}
+                 
               </Dropdown.Menu>
             </DropdownButton>
           </Dropdown>
-          <Dropdown>
-            <DropdownButton
-              variant="success"
-              id="dropdown-basic"
-              onSelect={(e) => {
-                handleStateFilter(e);
-              }}
-              title="Select State"
-            >
-              <Dropdown.Menu style={{ maxHeight: "500px", overflow: "scroll" }}>
-                <Dropdown.Item eventKey={"Any"}>Any</Dropdown.Item>
-                {usStates.map((ele, index) => (
-                  <Dropdown.Item eventKey={ele} key={index}>
-                    {ele}
-                  </Dropdown.Item>
-                ))}
-              </Dropdown.Menu>
-            </DropdownButton>
-          </Dropdown>
-
           <Dropdown>
             <DropdownButton
               variant="success"

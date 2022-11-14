@@ -6,11 +6,14 @@ import baseURL from "../constants/constants";
 import venueListMock from "../Mocks/venueListMock";
 // import venueListMock from "../Mocks/venueDetailsMock";
 import { Wrapper, Status } from "@googlemaps/react-wrapper";
+import ImageUploading from "react-images-uploading";
+
 import Dropdown from "react-bootstrap/Dropdown";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import { DropdownButton } from "react-bootstrap";
 import time24 from "../constants/time24";
+import bookmarksMock from "../Mocks/bookmarksMock";
 const timeSlots = [
   "12 a.m. - 1 a.m.",
   "1 a.m. - 2 a.m.",
@@ -67,7 +70,9 @@ const newVenueSlots = [
 ];
 
 const VenueDetails = () => {
+  const [images, setImages] = React.useState([]);
   const eventFromStore = useSelector((state) => state.event);
+  const userFromStore = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const params = useParams();
   const [activityName, setActivityName] = useState(null);
@@ -91,6 +96,13 @@ const VenueDetails = () => {
   const [selectedSlotList, setSelectedSlotList] = useState([]);
 
   const [isLoading, setIsLoading] = useState(false);
+
+  const [venueLayoutImage, setVenueLayoutImage] = useState(null);
+  const [anotherVenueImage, setAnotherVenueImage] = useState(null);
+  const fileReader = new FileReader();
+
+  const [venueBookmarks, setVenueBookmarks] = useState(null);
+  const [activityBookmarks, setActivityBookmarks] = useState(null);
 
   const bookingDetailsHandler = () => {
     if (
@@ -177,6 +189,87 @@ const VenueDetails = () => {
     setIsLoading(false);
   };
 
+  const handleVenueLayoutImage = (e) => {
+    let fileReader = new FileReader(e.target.files[0]);
+    setVenueLayoutImage(fileReader.result);
+  };
+
+  const removeBookmarks = () => {
+    let newFavVenue = [...venueBookmarks].filter(
+      (val) => val != venueDetails.venueId
+    );
+
+    let url = `${baseURL}/bookmark`;
+    let requestOptions = {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        userName: userFromStore.userName,
+        favVenue: newFavVenue,
+        favActivity: activityBookmarks,
+      }),
+    };
+    fetch(url, requestOptions)
+      .then((response) => response.json())
+      .then((res) => {
+        if (res.status === "OK") {
+          window.location.reload();
+        } else {
+          alert("Bookmarking Failed");
+        }
+      });
+  };
+
+  const addBookmarks = () => {
+    let newFavVenue = [...venueBookmarks];
+    console.log(venueBookmarks, newFavVenue);
+    newFavVenue.push(venueDetails.venueId);
+
+    newFavVenue = newFavVenue.sort((a, b) => a - b);
+
+    let url = `${baseURL}/bookmark`;
+    let requestOptions = {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        userName: userFromStore.userName,
+        favVenue: newFavVenue,
+        favActivity: activityBookmarks,
+      }),
+    };
+    fetch(url, requestOptions)
+      .then((response) => response.json())
+      .then((res) => {
+        if (res.status === "OK") {
+          window.location.reload();
+        } else {
+          alert("Bookmarking Failed");
+        }
+      });
+  };
+
+  const handleGetBookmarks = () => {
+    let url = `${baseURL}/getbookmark`;
+    let requestOptions = {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        userName: userFromStore.userName,
+      }),
+    };
+
+    fetch(url, requestOptions)
+      .then((response) => response.json())
+
+      .then((res) => {
+        if (res.status === "OK") {
+          setVenueBookmarks(res.body.favVenue);
+          setActivityBookmarks(res.body.favActivity);
+        } else alert("Unable to fetch bookmarks");
+        return true;
+      });
+  };
+
   useEffect(() => {
     if (venueDetails == null) {
       setVenueDetails({
@@ -189,11 +282,17 @@ const VenueDetails = () => {
         ),
       });
     }
+
+    if (venueBookmarks == null && activityBookmarks == null) {
+      handleGetBookmarks();
+    }
   }, [venueDetails]);
 
   return (
     <div>
-      {venueDetails !== null ? (
+      {venueDetails !== null &&
+      venueBookmarks !== null &&
+      activityBookmarks != null ? (
         <div>
           <h1 className="mx-auto" style={{ width: "fit-content" }}>
             Venue Name: {venueDetails.venueName}
@@ -294,7 +393,22 @@ const VenueDetails = () => {
                     </table>
                   </div>
                 </div>
+                <div>
+                  {venueBookmarks.includes(venueDetails.venueId) ? (
+                    <button
+                      className="btn btn-danger"
+                      onClick={removeBookmarks}
+                    >
+                      Remove from bookmarks
+                    </button>
+                  ) : (
+                    <button className="btn btn-primary" onClick={addBookmarks}>
+                      Add to bookmark
+                    </button>
+                  )}
+                </div>
               </div>
+
               <h1 className="mx-auto">Reserve Venue</h1>
               <div className="mx-auto">
                 <Calendar onChange={handleDate} value={reservationDate} />
@@ -348,13 +462,13 @@ const VenueDetails = () => {
                     </React.Fragment>
                   ) : (
                     <div className="mx-auto">
-                      <h7>Loading</h7>
+                      <h6>Loading</h6>
                     </div>
                   )}
                 </div>
               ) : (
                 <div className="mx-auto">
-                  <h7>Choose date to reserve venue</h7>
+                  <h6>Choose date to reserve venue</h6>
                 </div>
               )}
 
@@ -363,224 +477,262 @@ const VenueDetails = () => {
                 <h1> Confirm Booking</h1>
               </div>
               {selectedSlotList.length > 0 ? (
-                <div className="mx-auto" style={{ width: "500px" }}>
-                  <table className="table" style={{ width: "500px" }}>
-                    <tbody>
-                      <tr>
-                        <th>Enter Activity Name:</th>
-                        <td>
-                          <input
-                            type="text"
-                            onChange={(e) => setActivityName(e.target.value)}
-                          />
-                        </td>
-                      </tr>
-                      <tr>
-                        <th>Enter Activity Capacity:</th>
-                        <td>
-                          <input
-                            type="number"
-                            onChange={(e) =>
-                              setActivityCapacity(e.target.value)
-                            }
-                          />
-                        </td>
-                      </tr>
-                      <tr>
-                        <th>Enter Activity Details:</th>
-                        <td>
-                          <textarea
-                            onChange={(e) =>
-                              setActivityDescription(e.target.value)
-                            }
-                          />
-                        </td>
-                      </tr>
-                      <tr>
-                        <th>Enter Activity Location:</th>
-                        <td>
-                          <input
-                            type="text"
-                            onChange={(e) =>
-                              setActivityLocation(e.target.value)
-                            }
-                          />
-                        </td>
-                      </tr>
-                      <tr>
-                        <th>Enter Activity Category:</th>
-                        <td>
-                          <Dropdown>
-                            <DropdownButton
-                              variant="success"
-                              id="dropdown-basic"
-                              onSelect={(e) => {
-                                setActivityCategory(e);
+                <div className="d-flex justify-content-between">
+                  <div className="mx-auto" style={{ width: "500px" }}>
+                    <table className="table" style={{ width: "500px" }}>
+                      <tbody>
+                        <tr>
+                          <th>Enter Activity Name:</th>
+                          <td>
+                            <input
+                              type="text"
+                              onChange={(e) => setActivityName(e.target.value)}
+                            />
+                          </td>
+                        </tr>
+                        <tr>
+                          <th>Enter Activity Capacity:</th>
+                          <td>
+                            <input
+                              type="number"
+                              onChange={(e) =>
+                                setActivityCapacity(e.target.value)
+                              }
+                            />
+                          </td>
+                        </tr>
+                        <tr>
+                          <th>Enter Activity Details:</th>
+                          <td>
+                            <textarea
+                              onChange={(e) =>
+                                setActivityDescription(e.target.value)
+                              }
+                            />
+                          </td>
+                        </tr>
+                        <tr>
+                          <th>Enter Activity Location:</th>
+                          <td>
+                            <input
+                              type="text"
+                              onChange={(e) =>
+                                setActivityLocation(e.target.value)
+                              }
+                            />
+                          </td>
+                        </tr>
+                        <tr>
+                          <th>Enter Activity Category:</th>
+                          <td>
+                            <Dropdown>
+                              <DropdownButton
+                                variant="success"
+                                id="dropdown-basic"
+                                onSelect={(e) => {
+                                  setActivityCategory(e);
+                                }}
+                                title={
+                                  activityCategory == null
+                                    ? "Select Category"
+                                    : activityCategory
+                                }
+                              >
+                                <Dropdown.Item eventKey={"Music"}>
+                                  Music
+                                </Dropdown.Item>
+                                <Dropdown.Item eventKey={"Sports"}>
+                                  Sports
+                                </Dropdown.Item>
+                                <Dropdown.Item eventKey={"Comedy"}>
+                                  Comedy
+                                </Dropdown.Item>
+                              </DropdownButton>
+                            </Dropdown>
+                          </td>
+                        </tr>
+                        <tr>
+                          <th>Enter Activity Age:</th>
+                          <td>
+                            <Dropdown>
+                              <DropdownButton
+                                variant="success"
+                                id="dropdown-basic"
+                                onSelect={(e) => {
+                                  setActivityAgeRange(e);
+                                }}
+                                title={
+                                  activityAgeRange == null
+                                    ? "Select Age Range"
+                                    : activityCategory
+                                }
+                              >
+                                <Dropdown.Item eventKey={"Any"}>
+                                  Everyone
+                                </Dropdown.Item>
+                                <Dropdown.Item eventKey={"A65"}>
+                                  Above 65
+                                </Dropdown.Item>
+                                <Dropdown.Item eventKey={"A18"}>
+                                  Above 18
+                                </Dropdown.Item>
+                                <Dropdown.Item eventKey={"B18"}>
+                                  Below 18
+                                </Dropdown.Item>
+                              </DropdownButton>
+                            </Dropdown>
+                          </td>
+                        </tr>
+                        <tr>
+                          <th>Activity Cost</th>
+                          <td>
+                            {" "}
+                            <Dropdown>
+                              <DropdownButton
+                                variant="success"
+                                id="dropdown-basic"
+                                onSelect={(e) => {
+                                  setActivityCost(e);
+                                }}
+                                title={
+                                  activityCost == null
+                                    ? "Select Cost"
+                                    : activityCategory
+                                }
+                              >
+                                <Dropdown.Item eventKey={"Free"}>
+                                  Free
+                                </Dropdown.Item>
+                                <Dropdown.Item eventKey={"Paid"}>
+                                  Paid
+                                </Dropdown.Item>
+                              </DropdownButton>
+                            </Dropdown>
+                          </td>
+                        </tr>
+                        <tr>
+                          <th>Activity Cost Amount</th>
+                          <td>
+                            {" "}
+                            <input
+                              type="number"
+                              onChange={(e) =>
+                                setActivityCostAmount(e.target.value)
+                              }
+                            />
+                          </td>
+                        </tr>
+                        <tr>
+                          <th>Date</th>
+                          <td>{`${reservationDate.getUTCFullYear()}-${
+                            reservationDate.getUTCMonth() + 1
+                          }-${reservationDate.getUTCDate()}`}</td>
+                        </tr>
+                        <tr>
+                          <th>Slots Booked</th>
+                          <td>
+                            <ul>
+                              {selectedSlotList.map((val) => {
+                                return <li key={val}>{timeSlots[val]}</li>;
+                              })}{" "}
+                            </ul>
+                          </td>
+                        </tr>
+                        <tr>
+                          <th>Total Reservation Cost:</th>
+                          <td>
+                            {venueDetails.venueHrCost * selectedSlotList.length}
+                          </td>
+                        </tr>
+                        <tr>
+                          <th>Select Venue Layout Image</th>
+                          <td>
+                            <input
+                              type="file"
+                              accept="image/png, image/jpeg"
+                              className="form-control"
+                              onChange={(e) => {
+                                handleVenueLayoutImage(e);
                               }}
-                              title={
-                                activityCategory == null
-                                  ? "Select Category"
-                                  : activityCategory
-                              }
-                            >
-                              <Dropdown.Item eventKey={"Music"}>
-                                Music
-                              </Dropdown.Item>
-                              <Dropdown.Item eventKey={"Sports"}>
-                                Sports
-                              </Dropdown.Item>
-                              <Dropdown.Item eventKey={"Comedy"}>
-                                Comedy
-                              </Dropdown.Item>
-                            </DropdownButton>
-                          </Dropdown>
-                        </td>
-                      </tr>
-                      <tr>
-                        <th>Enter Activity Age:</th>
-                        <td>
-                          <Dropdown>
-                            <DropdownButton
-                              variant="success"
-                              id="dropdown-basic"
-                              onSelect={(e) => {
-                                setActivityAgeRange(e);
-                              }}
-                              title={
-                                activityAgeRange == null
-                                  ? "Select Age Range"
-                                  : activityCategory
-                              }
-                            >
-                              <Dropdown.Item eventKey={"Any"}>
-                                Everyone
-                              </Dropdown.Item>
-                              <Dropdown.Item eventKey={"A65"}>
-                                Above 65
-                              </Dropdown.Item>
-                              <Dropdown.Item eventKey={"A18"}>
-                                Above 18
-                              </Dropdown.Item>
-                              <Dropdown.Item eventKey={"B18"}>
-                                Below 18
-                              </Dropdown.Item>
-                            </DropdownButton>
-                          </Dropdown>
-                        </td>
-                      </tr>
-                      <tr>
-                        <th>Activity Cost</th>
-                        <td>
-                          {" "}
-                          <Dropdown>
-                            <DropdownButton
-                              variant="success"
-                              id="dropdown-basic"
-                              onSelect={(e) => {
-                                setActivityCost(e);
-                              }}
-                              title={
-                                activityCost == null
-                                  ? "Select Cost"
-                                  : activityCategory
-                              }
-                            >
-                              <Dropdown.Item eventKey={"Free"}>
-                                Free
-                              </Dropdown.Item>
-                              <Dropdown.Item eventKey={"Paid"}>
-                                Paid
-                              </Dropdown.Item>
-                            </DropdownButton>
-                          </Dropdown>
-                        </td>
-                      </tr>
-                      <tr>
-                        <th>Activity Cost Amount</th>
-                        <td>
-                          {" "}
-                          <input
-                            type="number"
-                            onChange={(e) =>
-                              setActivityCostAmount(e.target.value)
-                            }
-                          />
-                        </td>
-                      </tr>
-                      <tr>
-                        <th>Date</th>
-                        <td>{`${reservationDate.getUTCFullYear()}-${
-                          reservationDate.getUTCMonth() + 1
-                        }-${reservationDate.getUTCDate()}`}</td>
-                      </tr>
-                      <tr>
-                        <th>Slots Booked</th>
-                        <td>
-                          <ul>
-                            {selectedSlotList.map((val) => {
-                              return <li key={val}>{timeSlots[val]}</li>;
-                            })}{" "}
-                          </ul>
-                        </td>
-                      </tr>
-                      <tr>
-                        <th>Total Reservation Cost:</th>
-                        <td>
-                          {venueDetails.venueHrCost * selectedSlotList.length}
-                        </td>
-                      </tr>
-                      <tr>
-                        <td colSpan={2}>
-                          <div className="text-center">
-                            <button
-                              className={
-                                "btn " +
-                                (bookingDetailsHandler()
-                                  ? "btn-primary"
-                                  : "btn-danger")
-                              }
-                            >
-                              {bookingDetailsHandler() ? (
-                                <Link
-                                  to={{
-                                    pathname: "venue-booking",
-                                  }}
-                                  state={{
-                                    venueDetails: JSON.parse(
-                                      JSON.stringify(venueDetails)
-                                    ),
-                                    reservationDate,
-                                    availableTimeSlot,
-                                    timeSlots,
-                                    selectedSlotList,
-                                    formattedReservationDate: `${reservationDate.getUTCFullYear()}-${
-                                      reservationDate.getUTCMonth() + 1
-                                    }-${reservationDate.getUTCDate()}`,
-                                    activityName,
-                                    activityLocation,
-                                    activityCapacity,
-                                    activityCategory,
-                                    activityAgeRange,
-                                    activityCost,
-                                    activityDescription,
-                                    activityCostAmount,
-                                  }}
-                                  style={{
-                                    textDecoration: "none",
-                                    color: "inherit",
-                                  }}
-                                >
-                                  Confirm Booking
-                                </Link>
-                              ) : (
-                                "Enter Activity Details to proceed"
-                              )}
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
+                            ></input>
+                          </td>
+                        </tr>
+
+                        <tr>
+                          <th>Select Another Venue Image</th>
+                          <td>
+                            <input
+                              type="file"
+                              accept="image/png, image/jpeg"
+                              className="form-control"
+                              // onChange={handleAnotherVenueImage}
+                            ></input>
+                          </td>
+                        </tr>
+
+                        <tr>
+                          <td colSpan={2}>
+                            <div className="text-center">
+                              <button
+                                className={
+                                  "btn " +
+                                  (bookingDetailsHandler()
+                                    ? "btn-primary"
+                                    : "btn-danger")
+                                }
+                              >
+                                {bookingDetailsHandler() ? (
+                                  <Link
+                                    to={{
+                                      pathname: "venue-booking",
+                                    }}
+                                    state={{
+                                      venueDetails: JSON.parse(
+                                        JSON.stringify(venueDetails)
+                                      ),
+                                      reservationDate,
+                                      availableTimeSlot,
+                                      timeSlots,
+                                      selectedSlotList,
+                                      formattedReservationDate: `${reservationDate.getUTCFullYear()}-${
+                                        reservationDate.getUTCMonth() + 1
+                                      }-${reservationDate.getUTCDate()}`,
+                                      activityName,
+                                      activityLocation,
+                                      activityCapacity,
+                                      activityCategory,
+                                      activityAgeRange,
+                                      activityCost,
+                                      activityDescription,
+                                      activityCostAmount,
+                                    }}
+                                    style={{
+                                      textDecoration: "none",
+                                      color: "inherit",
+                                    }}
+                                  >
+                                    Confirm Booking
+                                  </Link>
+                                ) : (
+                                  "Enter Activity Details to proceed"
+                                )}
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div style={{ width: "200px", height: "200px" }}>
+                    {venueLayoutImage && (
+                      <img src={fileReader.readAsDataURL(venueLayoutImage)} />
+                    )}
+                  </div>
+                  <div style={{ width: "200px", height: "200px" }}>
+                    {anotherVenueImage && (
+                      <img src={fileReader.readAsDataURL(anotherVenueImage)} />
+                    )}
+                  </div>
                 </div>
               ) : (
                 <div className="mx-auto">Please select a slot first</div>
@@ -589,7 +741,9 @@ const VenueDetails = () => {
           </div>
         </div>
       ) : (
-        <div> Loading</div>
+        <div className="mx-auto text-center mt-5">
+          <h1> Loading</h1>
+        </div>
       )}
     </div>
   );

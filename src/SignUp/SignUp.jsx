@@ -28,12 +28,15 @@ const SignUp = () => {
     state: null,
     age: null,
   });
+
+  const [loadingPage, setLoadingPage] = useState(true);
   const navigate = useNavigate();
   useEffect(() => {
     if (signUpDetails.city === null && signUpDetails.state === null) {
       signUpDetails.state = Object.keys(usaCityStates)[0];
       signUpDetails.city = usaCityStates[signUpDetails.state][0];
     }
+    setLoadingPage(false);
   }, [signUpDetails]);
 
   const handleSignUp = () => {
@@ -95,7 +98,7 @@ const SignUp = () => {
   };
 
   if (user.userName === null) {
-    return (signUpDetails.city !== null) & (signUpDetails.state !== null) ? (
+    return loadingPage == false ? (
       <div className="mx-auto" style={{ width: "500px" }}>
         <h1>Signup</h1>
 

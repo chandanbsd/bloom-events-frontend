@@ -18,9 +18,10 @@ const UserCalendar = () => {
   const [activitiesParticipated, setActivitiesParticipated] = useState(null);
   const handleDate = (val) => {};
   let venueTemp;
+
   useEffect(() => {
     if (activitiesParticipated === null) {
-      let url = `http://localhost:5000/Registered_acts`;
+      let url = `${baseURL}/Registered_acts`;
       let requestOptions = {
         method: "POST",
         headers: { "Content-Type": "application/json" },
