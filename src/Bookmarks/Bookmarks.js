@@ -17,41 +17,31 @@ const Bookmarks = () => {
   const activityFromStore = useSelector((state) => state.activity);
   const [fetchComplete, setFetchComplete] = useState(0);
 
-  //   useEffect(() => {
-  //     setVenueBookmarks(bookmarksMock.favVenue);
-  //     setActivityBookmarks(bookmarksMock.favActivity);
+  useEffect(() => {
+    if (venueBookmarks == null && activityBookmarks == null) {
+      let url = `${baseURL}/getbookmark`;
+      let requestOptions = {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userName: userFromStore.userName,
+        }),
+      };
 
-  //     return () => {};
-  //   }, [venueBookmarks, activityBookmarks]);
+      fetch(url, requestOptions)
+        .then((response) => response.json())
 
-  const handleBookmarks = () => {
-    let url = `${baseURL}/getbookmark`;
-    let requestOptions = {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        userName: userFromStore.userName,
-      }),
-    };
+        .then((res) => {
+          if (res.status === "OK") {
+            setVenueBookmarks(res.body.favVenue);
+            setActivityBookmarks(res.body.favActivity);
+            console.log(res.body.favVenue);
+            console.log(res.body.favActivity);
+          } else alert("Unable to fetch bookmarks");
+          return true;
+        });
+    }
 
-    fetch(url, requestOptions)
-      .then((response) => response.json())
-
-      .then((res) => {
-        if (res.status === "OK") {
-          setVenueBookmarks(res.body.favVenue);
-          setActivityBookmarks(res.body.favActivity);
-          console.log(res.body.favVenue);
-          console.log(res.body.favActivity);
-        } else alert("Unable to fetch bookmarks");
-        return true;
-      })
-      .then((res) => handleVenueList())
-      .then((res) => handleActivityList());
-  };
-
-  const handleVenueList = () => {
-    console.log("here");
     if (venueBookmarks !== null && filteredEventList === null) {
       let url = `${baseURL}/venuelist`;
       let requestOptions = {
@@ -71,7 +61,6 @@ const Bookmarks = () => {
               for (let [key, value] of Object.entries(val.venueSlots)) {
                 let valueArray = value.split(",");
                 valueArray = valueArray.map((val) => val.split("/"));
-
                 res.body[index].venueSlots[key] = valueArray;
               }
             });
@@ -82,15 +71,12 @@ const Bookmarks = () => {
         .then((res) =>
           setFilteredEventList(
             JSON.parse(JSON.stringify(eventFromStore.eventList)).filter((ele) =>
-              venueBookmarks.favVenue.includes(ele.venueId)
+              venueBookmarks.includes(ele.venueId)
             )
           )
         );
     }
-    return true;
-  };
 
-  const handleActivityList = () => {
     if (filteredActivityList === null && activityBookmarks !== null) {
       const url = `${baseURL}/ra`;
       const requestOptions = {
@@ -106,52 +92,25 @@ const Bookmarks = () => {
 
             setFilteredActivityList(
               JSON.parse(JSON.stringify(activityFromStore.activityList)).filter(
-                (ele) => activityBookmarks.favActivity.includes(ele.activityId)
+                (ele) => activityBookmarks.includes(ele.activityId)
               )
             );
           } else alert("Unable to fetch activities");
         });
     }
-  };
 
-  useEffect(() => {
-    handleBookmarks();
-
-    if (fetchComplete != true) {
-      handleBookmarks();
-      handleVenueList();
-      handleActivityList();
-
-      if (
-        venueBookmarks != null &&
-        (activityBookmarks != null) & (filteredActivityList != null) &&
-        filteredEventList != null
-      ) {
-        setFetchComplete(true);
-      } else {
-        console.log("incrementing");
-        setFetchComplete(fetchComplete + 1);
-      }
-    }
-    // handleVenueList();
-    // handleActivityList();
-    /*
-     .then((res) =>
-          setFilteredActivityList(
-            JSON.parse(JSON.stringify(eventFromStore.eventList)).filter(
-              (ele) =>
-                eventFromStore.eventList.venueId == bookmarksMock.favVenue
-            )
-          )
-        )
-        .then((res) => {
-          setVenueBookmarks(bookmarksMock.favActivity);
-
-          setActivityBookmarks(bookmarksMock.favActivity);
-        })
-        .catch((error) => console.log("Form submit error", error));
-    */
-  }, [fetchComplete]);
+    console.log(
+      venueBookmarks,
+      activityBookmarks,
+      filteredActivityList,
+      filteredEventList
+    );
+  }, [
+    venueBookmarks,
+    activityBookmarks,
+    filteredActivityList,
+    filteredEventList,
+  ]);
 
   return (
     <div>
