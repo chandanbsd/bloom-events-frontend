@@ -103,6 +103,9 @@ const VenueDetails = () => {
 
   const [bookmark, setBookmark] = useState(null);
 
+  const [venueBookmarks, setVenueBookmarks] = useState(null);
+  const [activityBookmarks, setActivityBookmarks] = useState(null);
+
   const bookingDetailsHandler = () => {
     if (
       activityName !== null &&
@@ -190,7 +193,6 @@ const VenueDetails = () => {
 
   const handleVenueLayoutImage = (e) => {
     let fileReader = new FileReader(e.target.files[0]);
-    console.log(e.target.files[0]);
     setVenueLayoutImage(fileReader.result);
   };
 
@@ -201,33 +203,10 @@ const VenueDetails = () => {
   //   setAnotherVenueImage(fileReader.result);
   // };
 
-  const handleBookmarks = () => {
-    let url = `${baseURL}/bookmark`;
-    let requestOptions = {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        userName: userFromStore.userName,
-        favVenue: bookmark.favVenue,
-        favActivity: bookmark.favActivity,
-      }),
-    };
-    fetch(url, requestOptions)
-      .then((response) => response.json())
-      .then((res) => {
-        if (res.status === "OK") {
-        } else {
-          alert("Bookmarking Failed");
-        }
-      });
-  };
-
-  const addBookmarks = () => {
-    let newFavVenue = bookmark.favVenue;
-    let index = newFavVenue.indexOf(venueDetails.venueId);
-    if (index > -1) {
-      newFavVenue.splice(index, 1);
-    }
+  const removeBookmarks = () => {
+    let newFavVenue = [...venueBookmarks].filter(
+      (val) => val != venueDetails.venueId
+    );
 
     let url = `${baseURL}/bookmark`;
     let requestOptions = {
@@ -236,7 +215,7 @@ const VenueDetails = () => {
       body: JSON.stringify({
         userName: userFromStore.userName,
         favVenue: newFavVenue,
-        favActivity: bookmark.favActivity,
+        favActivity: activityBookmarks,
       }),
     };
     fetch(url, requestOptions)
@@ -247,6 +226,56 @@ const VenueDetails = () => {
         } else {
           alert("Bookmarking Failed");
         }
+      });
+  };
+
+  const addBookmarks = () => {
+    let newFavVenue = [...venueBookmarks];
+    console.log(venueBookmarks, newFavVenue);
+    newFavVenue.push(venueDetails.venueId);
+
+    newFavVenue = newFavVenue.sort((a, b) => a - b);
+
+    let url = `${baseURL}/bookmark`;
+    let requestOptions = {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        userName: userFromStore.userName,
+        favVenue: newFavVenue,
+        favActivity: activityBookmarks,
+      }),
+    };
+    fetch(url, requestOptions)
+      .then((response) => response.json())
+      .then((res) => {
+        if (res.status === "OK") {
+          window.location.reload();
+        } else {
+          alert("Bookmarking Failed");
+        }
+      });
+  };
+
+  const handleGetBookmarks = () => {
+    let url = `${baseURL}/getbookmark`;
+    let requestOptions = {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        userName: userFromStore.userName,
+      }),
+    };
+
+    fetch(url, requestOptions)
+      .then((response) => response.json())
+
+      .then((res) => {
+        if (res.status === "OK") {
+          setVenueBookmarks(res.body.favVenue);
+          setActivityBookmarks(res.body.favActivity);
+        } else alert("Unable to fetch bookmarks");
+        return true;
       });
   };
 
@@ -263,25 +292,16 @@ const VenueDetails = () => {
       });
     }
 
-    if (bookmark == null) {
-      let url = `${baseURL}/getbookmark`;
-      let requestOptions = {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          userName: userFromStore.userName,
-        }),
-      };
-
-      fetch(url, requestOptions)
-        .then((response) => response.json())
-        .then((res) => setBookmark({ ...res.body }));
+    if (venueBookmarks == null && activityBookmarks == null) {
+      handleGetBookmarks();
     }
   }, [venueDetails, bookmark]);
 
   return (
     <div>
-      {venueDetails !== null && bookmark != null ? (
+      {venueDetails !== null &&
+      venueBookmarks !== null &&
+      activityBookmarks != null ? (
         <div>
           <h1 className="mx-auto" style={{ width: "fit-content" }}>
             Venue Name: {venueDetails.venueName}
@@ -383,10 +403,10 @@ const VenueDetails = () => {
                   </div>
                 </div>
                 <div>
-                  {bookmark.favVenue.includes(venueDetails.venueId) ? (
+                  {venueBookmarks.includes(venueDetails.venueId) ? (
                     <button
                       className="btn btn-danger"
-                      onClick={handleBookmarks}
+                      onClick={removeBookmarks}
                     >
                       Remove from bookmarks
                     </button>
@@ -451,13 +471,13 @@ const VenueDetails = () => {
                     </React.Fragment>
                   ) : (
                     <div className="mx-auto">
-                      <h7>Loading</h7>
+                      <h6>Loading</h6>
                     </div>
                   )}
                 </div>
               ) : (
                 <div className="mx-auto">
-                  <h7>Choose date to reserve venue</h7>
+                  <h6>Choose date to reserve venue</h6>
                 </div>
               )}
 
@@ -641,7 +661,6 @@ const VenueDetails = () => {
                               accept="image/png, image/jpeg"
                               className="form-control"
                               onChange={(e) => {
-                                console.log(e.files);
                                 handleVenueLayoutImage(e);
                               }}
                             ></input>
