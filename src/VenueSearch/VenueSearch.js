@@ -14,6 +14,7 @@ const VenueSearch = () => {
   const [eventList, setEventList] = useState([]);
   const [filteredEventList, setFilteredEventList] = useState(null);
   const eventFromStore = useSelector((state) => state.event);
+  const userFromStore = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const themeFromStore = useSelector((state) => state.theme);
   const [stateFilter, setStateFilter] = useState(null);
@@ -51,48 +52,97 @@ const VenueSearch = () => {
     }
   };
 
-  useEffect(() => {
-    if (filteredEventList == null) {
-      const url = `${baseURL}/venuelist`;
-      const requestOptions = {
-        method: "GET",
-        headers: { "Content-Type": "application/json" },
-      };
-      fetch(url, requestOptions)
-        .then((response) => response.json())
+  const handleOpenClose = (venueId, venueOpen) => {
+    let newOpen = venueOpen == "true" ? "false" : "true";
+    console.log(venueId, venueOpen, newOpen);
+    const url = `${baseURL}/venueopenclose`;
+    const requestOptions = {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        venueId: venueId,
+        venueOpen: newOpen,
+      }),
+    };
 
-        .then((res) => {
-          if (res.status === "OK") {
-            console.log(res.body);
-            res.body.forEach((val, index) => {
-              val.venueAvailability = JSON.parse(
-                val.venueAvailability.replace(/'/g, '"')
-              );
+    fetch(url, requestOptions)
+      .then((response) => response.json())
+      .then((res) => {
+        if (res.status == "OK") {
+          alert("Update Successfull");
+          fetchVenueHandler();
+          window.location.reload();
+        } else {
+          alert("Update Failed");
+        }
+      });
+  };
 
-              for (let [key, value] of Object.entries(val.venueSlots)) {
-                let valueArray = value.split(",");
-                valueArray = valueArray.map((val) => val.split("/"));
+  const fetchVenueHandler = () => {
+    const url = `${baseURL}/venuelist`;
+    const requestOptions = {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    };
+    fetch(url, requestOptions)
+      .then((response) => response.json())
 
-                res.body[index].venueSlots[key] = valueArray;
-              }
-            });
+      .then((res) => {
+        if (res.status === "OK") {
+          res.body.forEach((val, index) => {
+            val.venueAvailability = JSON.parse(
+              val.venueAvailability.replace(/'/g, '"')
+            );
 
+            for (let [key, value] of Object.entries(val.venueSlots)) {
+              let valueArray = value.split(",");
+              valueArray = valueArray.map((val) => val.split("/"));
+
+              res.body[index].venueSlots[key] = valueArray;
+            }
+          });
+
+          if (userFromStore != null && userFromStore.isOwner == "true") {
+            dispatch(
+              setEvent(
+                JSON.parse(
+                  JSON.stringify(
+                    res.body.filter(
+                      (val) => val.venueOwner == userFromStore.userName
+                    )
+                  )
+                )
+              )
+            );
+            setEventList(JSON.parse(JSON.stringify(eventFromStore.eventList)));
+            setFilteredEventList(
+              JSON.parse(JSON.stringify(eventFromStore.eventList))
+            );
+          } else {
             dispatch(setEvent(JSON.parse(JSON.stringify(res.body))));
             setEventList(JSON.parse(JSON.stringify(eventFromStore.eventList)));
             setFilteredEventList(
               JSON.parse(JSON.stringify(eventFromStore.eventList))
             );
-          } else alert("Unable to fetch event venues");
-        })
-        .catch((error) => console.log("Form submit error", error));
-    }
+          }
+        } else alert("Unable to fetch event venues");
+      })
+      .catch((error) => console.log("Form submit error", error));
+  };
+
+  useEffect(() => {
+    if (filteredEventList == null) fetchVenueHandler();
   }, [filteredEventList]);
 
   return (
     <>
       {filteredEventList != null ? (
         <div className={themeStyles[themeFromStore.value].body}>
-          <h1 className={"mx-auto text-center "}>Search Event Venues</h1>
+          <h1 className={"mx-auto text-center "}>
+            {userFromStore?.isOwner == "true"
+              ? "Manage Your Venues"
+              : "Search Event Venues"}
+          </h1>
           <div>
             <div
               style={{ display: "flex", width: "50%" }}
@@ -282,19 +332,76 @@ const VenueSearch = () => {
                     </div>
                   </div>
                   <div className="mx-auto">
-                    <button className="btn btn-success">
-                      <Link
-                        to={{
-                          pathname: `venue-details/${val.venueId}`,
-                        }}
-                        style={{
-                          textDecoration: "none",
-                          color: "inherit",
-                        }}
+                    {val.venueOpen == "true" ? (
+                      <button className="btn btn-success">
+                        <Link
+                          to={{
+                            pathname: `venue-details/${val.venueId}`,
+                          }}
+                          style={{
+                            textDecoration: "none",
+                            color: "inherit",
+                          }}
+                        >
+                          Reserve Time
+                        </Link>
+                      </button>
+                    ) : (
+                      <button className="btn btn-warning m-2">
+                        Closed by Venue Owner
+                      </button>
+                    )}
+
+                    {/* {userFromStore != null &&
+                    val.venueAvailability.venueOpen == "false" ? (
+                      <button
+                        className="btn btn-primary m-2"
+                        onClick={() =>
+                          handleOpenClose(
+                            val.venueId,
+                            val.venueAvailability.venueOpen
+                          )
+                        }
                       >
-                        Reserve Time
-                      </Link>
-                    </button>
+                        Open Booking{" "}
+                      </button>
+                    ) : (
+                      <button
+                        className="btn btn-danger m-2"
+                        onClick={() =>
+                          handleOpenClose(
+                            val.venueId,
+                            val.venueAvailability.venueOpen
+                          )
+                        }
+                      >
+                        Close Bookings
+                      </button>
+                    )} */}
+                    {userFromStore != null &&
+                      userFromStore.userName == val.venueOwner && (
+                        <>
+                          {val.venueOpen == "false" ? (
+                            <button
+                              className="btn btn-primary m-2"
+                              onClick={() => {
+                                handleOpenClose(val.venueId, val.venueOpen);
+                              }}
+                            >
+                              Open Booking{" "}
+                            </button>
+                          ) : (
+                            <button
+                              className="btn btn-danger m-2"
+                              onClick={() => {
+                                handleOpenClose(val.venueId, val.venueOpen);
+                              }}
+                            >
+                              Close Bookings
+                            </button>
+                          )}
+                        </>
+                      )}
                   </div>
                 </div>
               );
