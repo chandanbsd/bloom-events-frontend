@@ -26,6 +26,9 @@ const ActivityDetails = () => {
   const [activityReview, setActivityReview] = useState(null);
   const [participantList, setParticipantList] = useState(null);
 
+  const [venueBookmarks, setVenueBookmarks] = useState(null);
+  const [activityBookmarks, setActivityBookmarks] = useState(null);
+
   const [paymentCreds, setPaymentCreds] = useState({
     cardNumber: null,
     cvv: null,
@@ -169,6 +172,30 @@ const ActivityDetails = () => {
       .catch((error) => console.log("API Connection Failed", error));
   };
 
+  const handleBookmarks = () => {
+    console.log("hi");
+    let url = `${baseURL}/getbookmark`;
+    let requestOptions = {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        userName: userFromStore.userName,
+      }),
+    };
+
+    fetch(url, requestOptions)
+      .then((response) => response.json())
+
+      .then((res) => {
+        if (res.status === "OK") {
+          setVenueBookmarks(res.body.favVenue);
+          setActivityBookmarks(res.body.favActivity);
+          console.log(res.body.favVenue);
+          console.log(res.body.favActivity);
+        } else alert("Unable to fetch bookmarks");
+        return true;
+      });
+  };
   useEffect(() => {
     if (activityReview === null) {
       handleActivityReviews();
@@ -188,6 +215,10 @@ const ActivityDetails = () => {
         )[0]
       );
       handleRegisteredUsers();
+
+      if (venueBookmarks == null && activityBookmarks == null) {
+        handleBookmarks();
+      }
     }
 
     if (registeredActivities == null) {
@@ -207,7 +238,13 @@ const ActivityDetails = () => {
           } else alert("Failed to get registered activities");
         });
     }
-  }, [activityDetails, venueDetails, registeredActivities]);
+  }, [
+    activityDetails,
+    venueDetails,
+    registeredActivities,
+    activityBookmarks,
+    venueBookmarks,
+  ]);
 
   return (
     <div>
