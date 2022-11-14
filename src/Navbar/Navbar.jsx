@@ -69,15 +69,35 @@ const Navbar = () => {
         <Link to="/" className="nav-item navbar-brand">
           <span>Bloom Events Home</span>
         </Link>
-        <Link to="venue-search" className="nav-item navbar-brand">
-          <span>Venue Search</span>
-        </Link>
-        <Link to="activity-search" className="nav-item navbar-brand">
-          <span>Activity Search</span>
-        </Link>
-        <Link to="participant-search" className="nav-item navbar-brand">
-          <span>Participant Search</span>
-        </Link>
+        {userFromStore && userFromStore.isOwner == "true" ? (
+          <>
+            <Link to="venue-creation" className="nav-item navbar-brand">
+              <span>Add Venue</span>
+            </Link>
+            <Link to="participant-search" className="nav-item navbar-brand">
+              <span>Manage Venue</span>
+            </Link>
+            <Link to="/calendar" className="nav-item navbar-brand">
+              <span>View Bookings</span>
+            </Link>
+          </>
+        ) : (
+          <>
+            <Link to="venue-search" className="nav-item navbar-brand">
+              <span>Venue Search</span>
+            </Link>
+            <Link to="activity-search" className="nav-item navbar-brand">
+              <span>Activity Search</span>
+            </Link>
+            <Link to="participant-search" className="nav-item navbar-brand">
+              <span>Participant Search</span>
+            </Link>
+
+            <Link to="participant-search" className="nav-item navbar-brand">
+              <span>Participant Search</span>
+            </Link>
+          </>
+        )}
 
         {userFromStore.userName === null ? (
           <React.Fragment>
