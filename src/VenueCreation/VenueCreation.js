@@ -3,14 +3,41 @@ import { Form } from "react-bootstrap";
 import { useSelector } from "react-redux";
 import { usaCityStates, usStates, usCities } from "../constants/usaCityStates";
 import time24 from "../constants/time24";
-import initalTimeSlot from "../constants/initalTimeSlot";
 import baseURL from "../constants/constants";
 import { useNavigate } from "react-router-dom";
+
+const timeSlotNewInitial = [
+  ["open", -1],
+  ["open", -1],
+  ["open", -1],
+  ["open", -1],
+  ["open", -1],
+  ["open", -1],
+  ["open", -1],
+  ["open", -1],
+  ["open", -1],
+  ["open", -1],
+  ["open", -1],
+  ["open", -1],
+  ["open", -1],
+  ["open", -1],
+  ["open", -1],
+  ["open", -1],
+  ["open", -1],
+  ["open", -1],
+  ["open", -1],
+  ["open", -1],
+  ["open", -1],
+  ["open", -1],
+  ["open", -1],
+  ["open", -1],
+  ["open", -1],
+];
 
 const VenueCreation = () => {
   const userFromStore = useSelector((state) => state.user);
   let resSlots = "";
-  for (let [key, val] of initalTimeSlot) {
+  for (let [key, val] of timeSlotNewInitial) {
     resSlots += key + "/" + -1 + ",";
   }
   resSlots = resSlots.slice(0, resSlots.length - 1);
@@ -67,6 +94,18 @@ const VenueCreation = () => {
   };
 
   const handleSubmit = () => {
+    console.log(
+      venueDetails.venueHrCost &&
+        venueDetails.venueAddress &&
+        venueDetails.venueName &&
+        venueDetails.venueOpen &&
+        venueDetails.venueOwner &&
+        venueDetails.venueDescription &&
+        venueDetails.venueCategory &&
+        venueDetails.venueCity &&
+        venueDetails.venueState &&
+        venueDetails.venueSlots
+    );
     if (
       venueDetails.venueHrCost &&
       venueDetails.venueAddress &&
