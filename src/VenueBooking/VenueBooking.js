@@ -40,6 +40,7 @@ const VenueBooking = () => {
         return "open";
       });
     }
+
     const url = `${baseURL}/venuebooking`;
 
     let resSlots = "";
@@ -53,31 +54,42 @@ const VenueBooking = () => {
     const venueSlotObject = {};
 
     venueSlotObject[reservationDetails.formattedReservationDate] = resSlots;
-    const requestOptions = {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        activityName: reservationDetails.activityName,
-        activityDescription: reservationDetails.activityDescription,
-        activityCapacity: reservationDetails.activityCapacity,
-        activityLocation: reservationDetails.activityLocation,
-        activityCategory: reservationDetails.activityCategory,
-        activityAgeRange: reservationDetails.activityAgeRange,
-        activityCost: reservationDetails.activityCost,
-        activityCostAmount: reservationDetails.activityCostAmount,
-        activityVenueId: reservationDetails.venueDetails.venueId,
-        activityVenueCost:
-          reservationDetails.venueDetails.venueHrCost *
-          reservationDetails.selectedSlotList.length,
-        activityTime: JSON.stringify(reservationDetails.selectedSlotList),
-        activityDate: reservationDetails.formattedReservationDate,
-        activityBookingDate: new Date(),
-        venueSlots: venueSlotObject,
-        activityOrganizer: userFromStore.userName,
-        activityRemainingCapacity: reservationDetails.activityCapacity,
-      }),
-    };
-    fetch(url, requestOptions).then((response) => response.json());
+
+    console.log(venueSlotObject);
+
+    // const requestOptions = {
+    //   method: "POST",
+    //   headers: { "Content-Type": "application/json" },
+    //   body: JSON.stringify({
+    //     activityName: reservationDetails.activityName,
+    //     activityDescription: reservationDetails.activityDescription,
+    //     activityCapacity: reservationDetails.activityCapacity,
+    //     activityLocation: reservationDetails.activityLocation,
+    //     activityCategory: reservationDetails.activityCategory,
+    //     activityAgeRange: reservationDetails.activityAgeRange,
+    //     activityCost: reservationDetails.activityCost,
+    //     activityCostAmount: reservationDetails.activityCostAmount,
+    //     activityVenueId: reservationDetails.venueDetails.venueId,
+    //     activityVenueCost:
+    //       reservationDetails.venueDetails.venueHrCost *
+    //       reservationDetails.selectedSlotList.length,
+    //     activityTime: JSON.stringify(reservationDetails.selectedSlotList),
+    //     activityDate: reservationDetails.formattedReservationDate,
+    //     activityBookingDate: new Date(),
+    //     venueSlots: venueSlotObject,
+    //     activityOrganizer: userFromStore.userName,
+    //     activityRemainingCapacity: reservationDetails.activityCapacity,
+    //   }),
+    // };
+    // fetch(url, requestOptions)
+    //   .then((response) => response.json())
+    //   .then((res) => {
+    //     if (res.status == "OK") {
+    //       console.log(res);
+    //       alert("Booking Sucessfull");
+    //       // navigate(`/activity-search`);
+    //     }
+    //   });
 
     console.log(
       JSON.stringify({
