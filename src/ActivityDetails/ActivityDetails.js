@@ -24,6 +24,7 @@ const ActivityDetails = () => {
   const [stars, setStars] = useState(0);
 
   const [activityReview, setActivityReview] = useState(null);
+  const [participantList, setParticipantList] = useState(null);
 
   const [paymentCreds, setPaymentCreds] = useState({
     cardNumber: null,
@@ -87,7 +88,10 @@ const ActivityDetails = () => {
               } else alert("Failed to signup for activity. Try again");
             })
             .catch((error) => console.log("API Connection Failed", error));
-        } else alert("Failed to signup for activity. Try again");
+        } else
+          alert(
+            "Failed to signup for activity. You may have already registered"
+          );
       })
       .catch((error) => console.log("API Connection Failed", error));
   };
@@ -145,6 +149,26 @@ const ActivityDetails = () => {
       .catch((error) => console.log("API Connection Failed", error));
   };
 
+  const handleRegisteredUsers = () => {
+    const url = `${baseURL}/return_participant_Details`;
+    const requestOptions = {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        activityId: activityDetails.activityId,
+      }),
+    };
+
+    fetch(url, requestOptions)
+      .then((response) => response.json())
+      .then((res) => {
+        if (res.status === "OK") {
+          setParticipantList(res.body);
+        } else alert("Failed to fetch users");
+      })
+      .catch((error) => console.log("API Connection Failed", error));
+  };
+
   useEffect(() => {
     if (activityReview === null) {
       handleActivityReviews();
@@ -155,12 +179,6 @@ const ActivityDetails = () => {
           (val) => val.activityId == params.token
         )[0]
       );
-
-      console.log([
-        ...JSON.parse(JSON.stringify(activityFromStore.activityList)).filter(
-          (val) => val.activityId == params.token
-        ),
-      ]);
     }
 
     if (activityDetails !== null && venueDetails === null) {
@@ -169,6 +187,7 @@ const ActivityDetails = () => {
           (val) => val.venueId === activityDetails.activityVenueId
         )[0]
       );
+      handleRegisteredUsers();
     }
 
     if (registeredActivities == null) {
@@ -386,16 +405,17 @@ const ActivityDetails = () => {
               </div>
             </div>
           </div>
-          {activityReview !== null && (
-            <div>
-              <div className="mx-auto text-center">
-                <h1 style={{ width: "50vw" }}>Reviews</h1>
-              </div>
-              <div className="mx-auto mt-5">
-                <div className="card mb-2 p-3" style={{ minHeight: "800px" }}>
+
+          <div>
+            <div className="mx-auto mt-5" style={{ minHeight: "400px" }}>
+              <div className="card mb-2 p-3">
+                <div className="mx-auto text-center">
+                  <h1 style={{ width: "50vw" }}>Reviews</h1>
+                </div>
+                {activityReview !== null && (
                   <div className="card-body">
                     {activityReview.map((val, index) => (
-                      <div key={index} className="card">
+                      <div key={index} className="card p-3 mb-1">
                         <ul style={{ listStyleType: "none" }}>
                           <li>Participant Username: {val.userName}</li>
                           <li>Rating: {val.rating}</li>
@@ -404,10 +424,27 @@ const ActivityDetails = () => {
                       </div>
                     ))}
                   </div>
+                )}
+                <div className="mx-auto mt-5" style={{ minHeight: "400px" }}>
+                  <div className="card mb-2 p-3">
+                    <div className="mx-auto text-center">
+                      <h1 style={{ width: "50vw" }}>Participant List</h1>
+                    </div>
+
+                    <div className="card-body">
+                      {participantList !== null &&
+                        participantList.emailList.map((val, index) => (
+                          <div className="card p-3 mb-1" id={index} key={index}>
+                            <div>{participantList.emailList[index]}</div>
+                            <div>{participantList.userNameList[index]}</div>
+                          </div>
+                        ))}
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
-          )}
+          </div>
         </div>
       ) : (
         <div> Loading</div>
