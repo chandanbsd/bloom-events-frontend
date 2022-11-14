@@ -4,22 +4,27 @@ import { useSelector } from "react-redux";
 import { usaCityStates, usStates, usCities } from "../constants/usaCityStates";
 import time24 from "../constants/time24";
 import initalTimeSlot from "../constants/initalTimeSlot";
+import baseURL from "../constants/constants";
 
 const VenueCreation = () => {
   const userFromStore = useSelector((state) => state.user);
+  let resSlots = "";
+  for (let [key, val] of initalTimeSlot) {
+    resSlots += key + "/" + val + ",";
+  }
+  resSlots = resSlots.slice(0, resSlots.length - 1);
 
   const [venueDetails, setVenueDetails] = useState({
     venueHrCost: null,
-    venueId: null,
     venueAddress: null,
     venueName: null,
     venueOpen: null,
-    venueOwner: null,
+    venueOwner: userFromStore.userName,
     venueDescription: null,
     venueCategory: null,
     venueCity: null,
     venueState: "Alabama",
-    venueSlots: initalTimeSlot,
+    venueSlots: resSlots,
   });
 
   const [mon, setMon] = useState([]);
@@ -30,10 +35,36 @@ const VenueCreation = () => {
   const [sat, setSat] = useState([]);
   const [sun, setSun] = useState([]);
 
+  const postRequest = () => {
+    let url = `${baseURL}/registervenue`;
+    let requestOptions = {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        ...venueDetails,
+        venueAvailability: {
+          mon: mon,
+          tue: tue,
+          wed: wed,
+          thu: thu,
+          fri: fri,
+          sat: sat,
+          sun: sun,
+        },
+        creationDate: `${new Date().getUTCFullYear()}-${
+          new Date().getUTCMonth() + 1
+        }-${new Date().getUTCDate()}`,
+      }),
+    };
+
+    fetch(url, requestOptions)
+      .then((response) => response.json())
+      .then((res) => console.log(res));
+  };
+
   const handleSubmit = () => {
     if (
       venueDetails.venueHrCost &&
-      venueDetails.venueId &&
       venueDetails.venueAddress &&
       venueDetails.venueName &&
       venueDetails.venueOpen &&
@@ -62,7 +93,7 @@ const VenueCreation = () => {
           sat[1] > sat[0] &&
           sun[1] > sun[0]
         ) {
-          console.log(mon, tue, wed, thu, fri, sat, sun);
+          postRequest();
         } else {
           alert("Closing time cannot be before opening time");
         }
@@ -187,7 +218,7 @@ const VenueCreation = () => {
                   onChange={(e) => {
                     setVenueDetails({
                       ...venueDetails,
-                      state: e.target.value,
+                      venueState: e.target.value,
                     });
 
                     setVenueDetails({
@@ -212,7 +243,7 @@ const VenueCreation = () => {
                   onChange={(e) => {
                     setVenueDetails({
                       ...venueDetails,
-                      city: e.target.value,
+                      venueCity: e.target.value,
                     });
                   }}
                 >
