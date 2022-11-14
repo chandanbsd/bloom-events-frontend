@@ -63,7 +63,7 @@ const VenueBooking = () => {
         if (res.status == "OK") {
           console.log(res);
           alert("Booking Sucessfull");
-          navigate(`/activity-search`);
+          navigate(`/venue-search`);
         }
       });
 
