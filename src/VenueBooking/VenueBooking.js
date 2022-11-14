@@ -10,86 +10,62 @@ const VenueBooking = () => {
   const [reservationDetails, setReservationDetails] = useState({
     ...location.state,
   });
+
+  console.log({ ...location.state });
   const userFromStore = useSelector((state) => state.user);
 
   const handleConfirmation = () => {
-    let venueSlots = {};
-    if (
-      reservationDetails.formattedReservationDate in
-      reservationDetails.venueDetails.venueSlots
-    ) {
-      venueSlots[reservationDetails.formattedReservationDate] =
-        reservationDetails.venueDetails.venueSlots[
-          reservationDetails.formattedReservationDate
-        ].map((val) => {
-          if (val in reservationDetails.selectedSlotList) {
-            return "reserved";
-          }
-          return "open";
-        });
-    } else {
-      venueSlots[reservationDetails.formattedReservationDate] = [
-        ...initialTimeSlot,
-      ];
-      venueSlots[reservationDetails.formattedReservationDate] = venueSlots[
-        reservationDetails.formattedReservationDate
-      ].map((val) => {
-        if (val in reservationDetails.selectedSlotList) {
-          return "reserved";
-        }
-        return "open";
-      });
-    }
+    const newSlots = reservationDetails.availableTimeSlot.map((val, index) => {
+      if (reservationDetails.selectedSlotList.includes(index)) {
+        return ["reserved", -1];
+      } else return [val[0], val[1]];
+    });
 
     const url = `${baseURL}/venuebooking`;
 
     let resSlots = "";
-    for (let [key, val] of reservationDetails.availableTimeSlot) {
+    for (let [key, val] of newSlots) {
       resSlots += key + "/" + val + ",";
     }
     resSlots = resSlots.slice(0, resSlots.length - 1);
-
-    const keyString = `${reservationDetails.formattedReservationDate}`;
 
     const venueSlotObject = {};
 
     venueSlotObject[reservationDetails.formattedReservationDate] = resSlots;
 
-    console.log(venueSlotObject);
-
-    // const requestOptions = {
-    //   method: "POST",
-    //   headers: { "Content-Type": "application/json" },
-    //   body: JSON.stringify({
-    //     activityName: reservationDetails.activityName,
-    //     activityDescription: reservationDetails.activityDescription,
-    //     activityCapacity: reservationDetails.activityCapacity,
-    //     activityLocation: reservationDetails.activityLocation,
-    //     activityCategory: reservationDetails.activityCategory,
-    //     activityAgeRange: reservationDetails.activityAgeRange,
-    //     activityCost: reservationDetails.activityCost,
-    //     activityCostAmount: reservationDetails.activityCostAmount,
-    //     activityVenueId: reservationDetails.venueDetails.venueId,
-    //     activityVenueCost:
-    //       reservationDetails.venueDetails.venueHrCost *
-    //       reservationDetails.selectedSlotList.length,
-    //     activityTime: JSON.stringify(reservationDetails.selectedSlotList),
-    //     activityDate: reservationDetails.formattedReservationDate,
-    //     activityBookingDate: new Date(),
-    //     venueSlots: venueSlotObject,
-    //     activityOrganizer: userFromStore.userName,
-    //     activityRemainingCapacity: reservationDetails.activityCapacity,
-    //   }),
-    // };
-    // fetch(url, requestOptions)
-    //   .then((response) => response.json())
-    //   .then((res) => {
-    //     if (res.status == "OK") {
-    //       console.log(res);
-    //       alert("Booking Sucessfull");
-    //       // navigate(`/activity-search`);
-    //     }
-    //   });
+    const requestOptions = {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        activityName: reservationDetails.activityName,
+        activityDescription: reservationDetails.activityDescription,
+        activityCapacity: reservationDetails.activityCapacity,
+        activityLocation: reservationDetails.activityLocation,
+        activityCategory: reservationDetails.activityCategory,
+        activityAgeRange: reservationDetails.activityAgeRange,
+        activityCost: reservationDetails.activityCost,
+        activityCostAmount: reservationDetails.activityCostAmount,
+        activityVenueId: reservationDetails.venueDetails.venueId,
+        activityVenueCost:
+          reservationDetails.venueDetails.venueHrCost *
+          reservationDetails.selectedSlotList.length,
+        activityTime: JSON.stringify(reservationDetails.selectedSlotList),
+        activityDate: reservationDetails.formattedReservationDate,
+        activityBookingDate: new Date(),
+        venueSlots: venueSlotObject,
+        activityOrganizer: userFromStore.userName,
+        activityRemainingCapacity: reservationDetails.activityCapacity,
+      }),
+    };
+    fetch(url, requestOptions)
+      .then((response) => response.json())
+      .then((res) => {
+        if (res.status == "OK") {
+          console.log(res);
+          alert("Booking Sucessfull");
+          navigate(`/activity-search`);
+        }
+      });
 
     console.log(
       JSON.stringify({
