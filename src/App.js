@@ -26,6 +26,7 @@ import ActivityDetails from "./ActivityDetails/ActivityDetails";
 import UserCalendar from "./UserCalendar/UserCalendar";
 import themeStyles from "./themeStyles";
 import Bookmarks from "./Bookmarks/Bookmarks";
+import VenueCreation from "./VenueCreation/VenueCreation";
 
 function App() {
   const themeFromStore = useSelector((state) => state.theme);
@@ -57,7 +58,9 @@ function App() {
           element={<ActivityDetails />}
         />
         <Route path="/calendar" element={<UserCalendar />} />
-        <Route path="/bookmarks" element={<Bookmarks/>}/>
+        <Route path="/bookmarks" element={<Bookmarks />} />
+
+        <Route path="/venue-creation" element={<VenueCreation />} />
       </Routes>
     </div>
   );
