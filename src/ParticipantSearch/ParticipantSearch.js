@@ -6,6 +6,7 @@ import { usCities, usStates } from "../constants/usaCityStates";
 import { setParticipant, clearParticipant } from "../redux/participant";
 import participantListMock from "../Mocks/userListMock";
 import baseURL from "../constants/constants";
+import { usaCityStates } from "../constants/usaCityStates";
 
 const ParticipantSearch = () => {
   const [searchKeyword, setSearchKeyword] = useState("");
@@ -14,6 +15,7 @@ const ParticipantSearch = () => {
 
   const participantFromStore = useSelector((state) => state.participant);
   const dispatch = useDispatch();
+  const [stateFilter, setStateFilter] = useState(null)
 
   const processSearch = async () => {
     if (searchKeyword === "" || searchKeyword === undefined)
@@ -179,6 +181,27 @@ const ParticipantSearch = () => {
             justifyContent: "space-around",
           }}
         >
+                    <Dropdown>
+            <DropdownButton
+              variant="success"
+              id="dropdown-basic"
+              onSelect={(e) => {
+                handleStateFilter(e);
+                setStateFilter(e)
+              }}
+              title="Select State"
+            >
+              <Dropdown.Menu style={{ maxHeight: "500px", overflow: "scroll" }}>
+                <Dropdown.Item eventKey={"Any"}>Any</Dropdown.Item>
+                {Object.keys(usaCityStates).map((ele, index) => (
+                  <Dropdown.Item eventKey={ele} key={index}>
+                    {ele}
+                  </Dropdown.Item>
+                ))}
+              </Dropdown.Menu>
+            </DropdownButton>
+          </Dropdown>
+
           <Dropdown>
             <DropdownButton
               variant="success"
@@ -192,30 +215,13 @@ const ParticipantSearch = () => {
                 style={{ maxHeight: "500px", overflowY: "scroll" }}
               >
                 <Dropdown.Item eventKey={"Any"}>Any</Dropdown.Item>
-                {usCities.map((ele, index) => (
+                {stateFilter !== null && usaCityStates[stateFilter]?.map((ele, index) => (
                   <Dropdown.Item eventKey={ele} key={index}>
                     {ele}
                   </Dropdown.Item>
                 ))}
-              </Dropdown.Menu>
-            </DropdownButton>
-          </Dropdown>
-          <Dropdown>
-            <DropdownButton
-              variant="success"
-              id="dropdown-basic"
-              onSelect={(e) => {
-                handleStateFilter(e);
-              }}
-              title="Select State"
-            >
-              <Dropdown.Menu style={{ maxHeight: "500px", overflow: "scroll" }}>
-                <Dropdown.Item eventKey={"Any"}>Any</Dropdown.Item>
-                {usStates.map((ele, index) => (
-                  <Dropdown.Item eventKey={ele} key={index}>
-                    {ele}
-                  </Dropdown.Item>
-                ))}
+                {stateFilter === null && <Dropdown.Item eventKey={"Any"}>Select state first</Dropdown.Item>}
+                 
               </Dropdown.Menu>
             </DropdownButton>
           </Dropdown>
