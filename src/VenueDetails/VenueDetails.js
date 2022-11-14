@@ -68,6 +68,7 @@ const newVenueSlots = [
   ["open", -1],
   ["open", -1],
 ];
+var days = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];
 
 const VenueDetails = () => {
   const [images, setImages] = React.useState([]);
@@ -133,7 +134,41 @@ const VenueDetails = () => {
   };
 
   const slotAddRemoveBtn = (index) => {
-    if (availableTimeSlot[index][0] === "open") {
+    if (
+      availableTimeSlot[index][0] === "open" &&
+      index <= 11 &&
+      index > venueDetails.venueAvailability[days[reservationDate.getDay()]][0]
+    ) {
+      if (selectedSlotList.includes(index)) {
+        return (
+          <button
+            className="btn btn-danger"
+            onClick={() => {
+              var removeIndex = selectedSlotList.indexOf(index);
+              if (removeIndex > -1) {
+                setSelectedSlotList(
+                  selectedSlotList.filter((val) => val != index)
+                );
+              }
+            }}
+          >
+            Remove Slot
+          </button>
+        );
+      } else {
+        return (
+          <button
+            className="btn btn-success"
+            onClick={() => setSelectedSlotList([...selectedSlotList, index])}
+          >
+            Add Slot
+          </button>
+        );
+      }
+    } else if (
+      index > 11 &&
+      index < venueDetails.venueAvailability[days[reservationDate.getDay()]][1]
+    ) {
       if (selectedSlotList.includes(index)) {
         return (
           <button
@@ -161,7 +196,7 @@ const VenueDetails = () => {
         );
       }
     } else {
-      return <b>Unavailable</b>;
+      return <b>Unavailable/Closed</b>;
     }
   };
 
@@ -186,6 +221,7 @@ const VenueDetails = () => {
     } else {
       await setAvailableTimeSlot([...newVenueSlots]);
     }
+    console.log(availableTimeSlot);
     setIsLoading(false);
   };
 
@@ -286,7 +322,8 @@ const VenueDetails = () => {
     if (venueBookmarks == null && activityBookmarks == null) {
       handleGetBookmarks();
     }
-  }, [venueDetails]);
+    console.log(selectedSlotList);
+  }, [venueDetails, selectedSlotList]);
 
   return (
     <div>
@@ -564,7 +601,7 @@ const VenueDetails = () => {
                                 title={
                                   activityAgeRange == null
                                     ? "Select Age Range"
-                                    : activityCategory
+                                    : activityAgeRange
                                 }
                               >
                                 <Dropdown.Item eventKey={"Any"}>
@@ -597,7 +634,7 @@ const VenueDetails = () => {
                                 title={
                                   activityCost == null
                                     ? "Select Cost"
-                                    : activityCategory
+                                    : activityCost
                                 }
                               >
                                 <Dropdown.Item eventKey={"Free"}>
