@@ -62,6 +62,7 @@ const VenueCreation = () => {
   const [fri, setFri] = useState([]);
   const [sat, setSat] = useState([]);
   const [sun, setSun] = useState([]);
+  const [venueImage, setVenueImage] = useState(null);
 
   const postRequest = () => {
     let url = `${baseURL}/registervenue`;
@@ -70,6 +71,7 @@ const VenueCreation = () => {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         ...venueDetails,
+        venueImage,
         venueAvailability: {
           mon: mon,
           tue: tue,
@@ -89,8 +91,27 @@ const VenueCreation = () => {
       .then((response) => response.json())
       .then((res) => {
         alert("Booking Sucessfull");
-        navigate(`/activity-search`);
+        navigate(`/venue-search`);
       });
+  };
+
+  const imageConverter = (file) => {
+    return new Promise((resolve, reject) => {
+      const fileReader = new FileReader();
+      fileReader.readAsDataURL(file);
+      fileReader.onload = () => {
+        resolve(fileReader.result);
+      };
+      fileReader.onerror = (error) => {
+        reject(error);
+      };
+    });
+  };
+
+  const handleVenueLayoutImage = async (e) => {
+    const file = e.target.files[0];
+    const base64 = await imageConverter(file);
+    setVenueImage(base64);
   };
 
   const handleSubmit = () => {
@@ -104,7 +125,8 @@ const VenueCreation = () => {
         venueDetails.venueCategory &&
         venueDetails.venueCity &&
         venueDetails.venueState &&
-        venueDetails.venueSlots
+        venueDetails.venueSlots &&
+        venueImage
     );
     if (
       venueDetails.venueHrCost &&
@@ -116,7 +138,8 @@ const VenueCreation = () => {
       venueDetails.venueCategory &&
       venueDetails.venueCity &&
       venueDetails.venueState &&
-      venueDetails.venueSlots
+      venueDetails.venueSlots &&
+      venueImage
     ) {
       if (
         mon.length == 2 &&
@@ -306,6 +329,19 @@ const VenueCreation = () => {
                 )}
               </div>
               <br />
+              <tr>
+                <th>Select Venue Layout Image</th>
+                <td>
+                  <input
+                    type="file"
+                    accept="image/png, image/jpeg"
+                    className="form-control"
+                    onChange={(e) => {
+                      handleVenueLayoutImage(e);
+                    }}
+                  ></input>
+                </td>
+              </tr>
             </div>
             <div style={{ width: "700px" }}>
               <div className="text-center">
@@ -577,6 +613,15 @@ const VenueCreation = () => {
                     </tr>
                   </tbody>
                 </table>
+                <div className="text-center">
+                  <h1>Venue Layout Image</h1>
+                  <img
+                    className="card-img-top"
+                    alt="Card Image"
+                    src={venueImage}
+                    style={{ width: "400px" }}
+                  />
+                </div>
               </div>
             </div>
           </div>
