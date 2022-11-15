@@ -22,7 +22,7 @@ const time24 = [
   "9 P.M.",
   "10 P.M.",
   "11 P.M.",
-  "12 P.M.",
+  "12 A.M.",
 ];
 
 export default time24;

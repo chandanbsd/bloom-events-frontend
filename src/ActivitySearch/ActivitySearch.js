@@ -11,7 +11,6 @@ import { Link } from "react-router-dom";
 import time24 from "../constants/time24";
 import { usaCityStates } from "../constants/usaCityStates";
 
-
 let dateObj = new Date();
 let today = [
   dateObj.getUTCFullYear(),
@@ -24,7 +23,7 @@ const ActivitySearch = () => {
   const [activityList, setActivityList] = useState([]);
   const [filteredActivityList, setFilteredActivityList] = useState([]);
   const [eventList, setEventList] = useState([]);
-  const [stateFilter, setStateFilter] = useState(null)
+  const [stateFilter, setStateFilter] = useState(null);
   const eventFromStore = useSelector((state) => state.event);
   const activityFromStore = useSelector((state) => state.activity);
   const dispatch = useDispatch();
@@ -42,7 +41,7 @@ const ActivitySearch = () => {
   };
 
   const handleCityFilter = (e) => {
-    console.log(activityList)
+    console.log(activityList);
     if (e === "Any") setFilteredActivityList([...activityList]);
     else {
       setFilteredActivityList(
@@ -167,15 +166,13 @@ const ActivitySearch = () => {
             justifyContent: "space-between",
           }}
         >
-
-
           <Dropdown>
             <DropdownButton
               variant="success"
               id="dropdown-basic"
               onSelect={(e) => {
                 handleStateFilter(e);
-                setStateFilter(e)
+                setStateFilter(e);
               }}
               title="Select State"
             >
@@ -203,13 +200,17 @@ const ActivitySearch = () => {
                 style={{ maxHeight: "500px", overflowY: "scroll" }}
               >
                 <Dropdown.Item eventKey={"Any"}>Any</Dropdown.Item>
-                {stateFilter !== null && usaCityStates[stateFilter]?.map((ele, index) => (
-                  <Dropdown.Item eventKey={ele} key={index}>
-                    {ele}
+                {stateFilter !== null &&
+                  usaCityStates[stateFilter]?.map((ele, index) => (
+                    <Dropdown.Item eventKey={ele} key={index}>
+                      {ele}
+                    </Dropdown.Item>
+                  ))}
+                {stateFilter === null && (
+                  <Dropdown.Item eventKey={"Any"}>
+                    Select state first
                   </Dropdown.Item>
-                ))}
-                {stateFilter === null && <Dropdown.Item eventKey={"Any"}>Select state first</Dropdown.Item>}
-                 
+                )}
               </Dropdown.Menu>
             </DropdownButton>
           </Dropdown>
@@ -262,7 +263,7 @@ const ActivitySearch = () => {
         </div>
       </div>
       {eventFromStore != undefined && activityFromStore != undefined && (
-        <div className="mx-auto mt-5" style={{ width: "50%" }}>
+        <div className="mx-auto mt-5" style={{ width: "90%" }}>
           {filteredActivityList.map((val, index) => {
             return (
               <div className="card mb-2 p-3" key={index}>
@@ -319,6 +320,14 @@ const ActivitySearch = () => {
                         "-" +
                         `${time24[Math.min.apply(Math, val.activityTime)]}`}
                     </p>
+                  </div>
+                  <div>
+                    <img
+                      className="card-img-top"
+                      alt="Card Image"
+                      src={val.activityImage}
+                      style={{ width: "400px" }}
+                    />
                   </div>
                 </div>
                 <div className="mx-auto">
