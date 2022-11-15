@@ -242,7 +242,7 @@ const VenueSearch = () => {
             </div>
           </div>
 
-          <div className="mx-auto mt-5" style={{ width: "50%" }}>
+          <div className="mx-auto mt-5" style={{ width: "95%" }}>
             {filteredEventList.map((val, index) => {
               console.log(val);
               return (
@@ -342,24 +342,42 @@ const VenueSearch = () => {
                   </div>
 
                   <div className="mx-auto">
-                    {val.venueOpen == "true" ? (
-                      <button className="btn btn-success">
-                        <Link
-                          to={{
-                            pathname: `venue-details/${val.venueId}`,
-                          }}
-                          style={{
-                            textDecoration: "none",
-                            color: "inherit",
-                          }}
-                        >
-                          Reserve Time
-                        </Link>
-                      </button>
+                    {val.venueOwner != userFromStore.userName ? (
+                      <>
+                        {val.venueOpen == "true" ? (
+                          <button className="btn btn-success">
+                            <Link
+                              to={{
+                                pathname: `venue-details/${val.venueId}`,
+                              }}
+                              style={{
+                                textDecoration: "none",
+                                color: "inherit",
+                              }}
+                            >
+                              Reserve Time
+                            </Link>
+                          </button>
+                        ) : (
+                          <button className="btn btn-warning m-2">
+                            Closed by Venue Owner
+                          </button>
+                        )}
+                      </>
                     ) : (
-                      <button className="btn btn-warning m-2">
-                        Closed by Venue Owner
-                      </button>
+                      <Link
+                        to={{
+                          pathname: `venue-details/${val.venueId}`,
+                        }}
+                        style={{
+                          textDecoration: "none",
+                          color: "inherit",
+                        }}
+                      >
+                        <button className="btn btn-success">
+                          View Details
+                        </button>
+                      </Link>
                     )}
                     {userFromStore != null &&
                       userFromStore.userName == val.venueOwner && (

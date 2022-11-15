@@ -370,7 +370,7 @@ const VenueDetails = () => {
           <h1 className="mx-auto" style={{ width: "fit-content" }}>
             Venue Name: {venueDetails.venueName}
           </h1>
-          <div className="mx-auto mt-5" style={{ width: "90%" }}>
+          <div className="mx-auto mt-5" style={{ width: "95%" }}>
             <div className="card mb-2 p-3">
               <div className="card-body d-flex justify-content-between">
                 <div>
@@ -555,6 +555,7 @@ const VenueDetails = () => {
               )}
 
               <br />
+
               <div className="mx-auto">
                 <h1> Confirm Booking</h1>
               </div>
