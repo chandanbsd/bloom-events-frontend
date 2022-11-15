@@ -33,6 +33,7 @@ const Bookmarks = () => {
 
         .then((res) => {
           if (res.status === "OK") {
+            console.log(res.body);
             setVenueBookmarks(res.body.favVenue);
             setActivityBookmarks(res.body.favActivity);
           } else alert("Unable to fetch bookmarks");

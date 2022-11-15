@@ -98,12 +98,12 @@ const VenueDetails = () => {
 
   const [isLoading, setIsLoading] = useState(false);
 
-  const [venueLayoutImage, setVenueLayoutImage] = useState(null);
-  const [anotherVenueImage, setAnotherVenueImage] = useState(null);
-  const fileReader = new FileReader();
+  const [activityImage, setActivityImage] = useState(null);
 
   const [venueBookmarks, setVenueBookmarks] = useState(null);
   const [activityBookmarks, setActivityBookmarks] = useState(null);
+
+  const [venueReview, setVenueReview] = useState(null);
 
   const bookingDetailsHandler = () => {
     if (
@@ -225,9 +225,23 @@ const VenueDetails = () => {
     setIsLoading(false);
   };
 
-  const handleVenueLayoutImage = (e) => {
-    let fileReader = new FileReader(e.target.files[0]);
-    setVenueLayoutImage(fileReader.result);
+  const imageConverter = (file) => {
+    return new Promise((resolve, reject) => {
+      const fileReader = new FileReader();
+      fileReader.readAsDataURL(file);
+      fileReader.onload = () => {
+        resolve(fileReader.result);
+      };
+      fileReader.onerror = (error) => {
+        reject(error);
+      };
+    });
+  };
+
+  const handleVenueLayoutImage = async (e) => {
+    const file = e.target.files[0];
+    const base64 = await imageConverter(file);
+    setActivityImage(base64);
   };
 
   const removeBookmarks = () => {
@@ -306,6 +320,24 @@ const VenueDetails = () => {
       });
   };
 
+  const handleVenueReviews = () => {
+    const url = `${baseURL}/venuereviews`;
+    const requestOptions = {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        venueId: venueDetails.venueId,
+      }),
+    };
+    fetch(url, requestOptions)
+      .then((response) => response.json())
+      .then((res) => {
+        setVenueReview([...res.body]);
+        console.log(res.body);
+      })
+      .catch((error) => console.log("API Connection Failed", error));
+  };
+
   useEffect(() => {
     if (venueDetails == null) {
       setVenueDetails({
@@ -317,6 +349,10 @@ const VenueDetails = () => {
           )
         ),
       });
+    }
+
+    if (venueDetails != null && venueReview == null) {
+      handleVenueReviews();
     }
 
     if (venueBookmarks == null && activityBookmarks == null) {
@@ -334,7 +370,7 @@ const VenueDetails = () => {
           <h1 className="mx-auto" style={{ width: "fit-content" }}>
             Venue Name: {venueDetails.venueName}
           </h1>
-          <div className="mx-auto mt-5" style={{ width: "90%" }}>
+          <div className="mx-auto mt-5" style={{ width: "95%" }}>
             <div className="card mb-2 p-3">
               <div className="card-body d-flex justify-content-between">
                 <div>
@@ -431,6 +467,14 @@ const VenueDetails = () => {
                   </div>
                 </div>
                 <div>
+                  <img
+                    className="card-img-top"
+                    alt="Card Image"
+                    src={venueDetails.venueImage}
+                    style={{ width: "400px" }}
+                  />
+                </div>
+                <div>
                   {venueBookmarks.includes(venueDetails.venueId) ? (
                     <button
                       className="btn btn-danger"
@@ -450,6 +494,7 @@ const VenueDetails = () => {
               <div className="mx-auto">
                 <Calendar onChange={handleDate} value={reservationDate} />
               </div>
+
               <br />
               <div className="mx-auto">
                 <h1>Select Time Slots</h1>
@@ -510,6 +555,7 @@ const VenueDetails = () => {
               )}
 
               <br />
+
               <div className="mx-auto">
                 <h1> Confirm Booking</h1>
               </div>
@@ -696,18 +742,6 @@ const VenueDetails = () => {
                         </tr>
 
                         <tr>
-                          <th>Select Another Venue Image</th>
-                          <td>
-                            <input
-                              type="file"
-                              accept="image/png, image/jpeg"
-                              className="form-control"
-                              // onChange={handleAnotherVenueImage}
-                            ></input>
-                          </td>
-                        </tr>
-
-                        <tr>
                           <td colSpan={2}>
                             <div className="text-center">
                               <button
@@ -742,6 +776,7 @@ const VenueDetails = () => {
                                       activityCost,
                                       activityDescription,
                                       activityCostAmount,
+                                      activityImage,
                                     }}
                                     style={{
                                       textDecoration: "none",
@@ -760,20 +795,40 @@ const VenueDetails = () => {
                       </tbody>
                     </table>
                   </div>
-                  <div style={{ width: "200px", height: "200px" }}>
-                    {venueLayoutImage && (
-                      <img src={fileReader.readAsDataURL(venueLayoutImage)} />
-                    )}
-                  </div>
-                  <div style={{ width: "200px", height: "200px" }}>
-                    {anotherVenueImage && (
-                      <img src={fileReader.readAsDataURL(anotherVenueImage)} />
+                  <div>
+                    {setActivityImage && (
+                      <img src={activityImage} style={{ width: "500px" }} />
                     )}
                   </div>
                 </div>
               ) : (
                 <div className="mx-auto">Please select a slot first</div>
               )}
+            </div>
+          </div>
+          <div>
+            <div
+              className="mx-auto mt-5"
+              style={{ minHeight: "400px", width: "50vw" }}
+            >
+              <div className="card mb-2 p-3">
+                <div className="mx-auto text-center">
+                  <h1 style={{ width: "50vw" }}>Reviews</h1>
+                </div>
+                {venueReview !== null && (
+                  <div className="card-body">
+                    {venueReview.map((val, index) => (
+                      <div key={index} className="card p-3 mb-1">
+                        <ul style={{ listStyleType: "none" }}>
+                          <li>Username: {val.userName}</li>
+                          <li>Rating: {val.rating}</li>
+                          <li>Review: {val.review}</li>
+                        </ul>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>
