@@ -98,9 +98,7 @@ const VenueDetails = () => {
 
   const [isLoading, setIsLoading] = useState(false);
 
-  const [venueLayoutImage, setVenueLayoutImage] = useState(null);
-  const [anotherVenueImage, setAnotherVenueImage] = useState(null);
-  const fileReader = new FileReader();
+  const [activityImage, setActivityImage] = useState(null);
 
   const [venueBookmarks, setVenueBookmarks] = useState(null);
   const [activityBookmarks, setActivityBookmarks] = useState(null);
@@ -227,9 +225,23 @@ const VenueDetails = () => {
     setIsLoading(false);
   };
 
-  const handleVenueLayoutImage = (e) => {
-    let fileReader = new FileReader(e.target.files[0]);
-    setVenueLayoutImage(fileReader.result);
+  const imageConverter = (file) => {
+    return new Promise((resolve, reject) => {
+      const fileReader = new FileReader();
+      fileReader.readAsDataURL(file);
+      fileReader.onload = () => {
+        resolve(fileReader.result);
+      };
+      fileReader.onerror = (error) => {
+        reject(error);
+      };
+    });
+  };
+
+  const handleVenueLayoutImage = async (e) => {
+    const file = e.target.files[0];
+    const base64 = await imageConverter(file);
+    setActivityImage(base64);
   };
 
   const removeBookmarks = () => {
@@ -720,18 +732,6 @@ const VenueDetails = () => {
                         </tr>
 
                         <tr>
-                          <th>Select Another Venue Image</th>
-                          <td>
-                            <input
-                              type="file"
-                              accept="image/png, image/jpeg"
-                              className="form-control"
-                              // onChange={handleAnotherVenueImage}
-                            ></input>
-                          </td>
-                        </tr>
-
-                        <tr>
                           <td colSpan={2}>
                             <div className="text-center">
                               <button
@@ -766,6 +766,7 @@ const VenueDetails = () => {
                                       activityCost,
                                       activityDescription,
                                       activityCostAmount,
+                                      activityImage,
                                     }}
                                     style={{
                                       textDecoration: "none",
@@ -784,14 +785,9 @@ const VenueDetails = () => {
                       </tbody>
                     </table>
                   </div>
-                  <div style={{ width: "200px", height: "200px" }}>
-                    {venueLayoutImage && (
-                      <img src={fileReader.readAsDataURL(venueLayoutImage)} />
-                    )}
-                  </div>
-                  <div style={{ width: "200px", height: "200px" }}>
-                    {anotherVenueImage && (
-                      <img src={fileReader.readAsDataURL(anotherVenueImage)} />
+                  <div>
+                    {setActivityImage && (
+                      <img src={activityImage} style={{ width: "500px" }} />
                     )}
                   </div>
                 </div>

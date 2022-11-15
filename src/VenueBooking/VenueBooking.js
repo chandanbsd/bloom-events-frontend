@@ -55,6 +55,7 @@ const VenueBooking = () => {
         venueSlots: venueSlotObject,
         activityOrganizer: userFromStore.userName,
         activityRemainingCapacity: reservationDetails.activityCapacity,
+        activityImage: reservationDetails.activityImage,
       }),
     };
     fetch(url, requestOptions)
@@ -87,6 +88,7 @@ const VenueBooking = () => {
         venueSlots: venueSlotObject,
         activityOrganizer: userFromStore.userName,
         activityRemainingCapacity: reservationDetails.activityCapacity,
+        activityImage: reservationDetails.activityImage,
       })
     );
   };
