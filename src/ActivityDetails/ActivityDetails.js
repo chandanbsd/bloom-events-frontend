@@ -142,8 +142,11 @@ const ActivityDetails = () => {
   const handleActivityReviews = () => {
     const url = `${baseURL}/returnreview`;
     const requestOptions = {
-      method: "GET",
+      method: "POST",
       headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        activityId: params.token,
+      }),
     };
 
     fetch(url, requestOptions)
@@ -248,6 +251,25 @@ const ActivityDetails = () => {
       });
   };
 
+  const deleteActivity = () => {
+    let url = `${baseURL}/delete_activity_organizer`;
+    let requestOptions = {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        activityId: activityDetails.activityId,
+      }),
+    };
+    fetch(url, requestOptions)
+      .then((response) => response.json())
+      .then((res) => {
+        if (res.status === "OK") {
+          window.location.reload();
+        } else {
+          alert("Deleteion Failed");
+        }
+      });
+  };
   useEffect(() => {
     if (activityReview === null) {
       handleActivityReviews();
@@ -316,8 +338,17 @@ const ActivityDetails = () => {
                     Remove from bookmarks
                   </button>
                 ) : (
-                  <button className="btn btn-primary" onClick={addBookmarks}>
-                    Add to bookmark
+                  <>
+                    <button className="btn btn-primary" onClick={addBookmarks}>
+                      Add to bookmark
+                    </button>
+                  </>
+                )}
+                <br />
+                {activityDetails.activityOrganizer ==
+                  userFromStore.userName && (
+                  <button className="btn btn-danger" onClick={deleteActivity}>
+                    Delete Activity
                   </button>
                 )}
               </div>
@@ -362,7 +393,11 @@ const ActivityDetails = () => {
                       {activityDetails.activityRemainingCapacity}
                     </p>
 
-                    {/* <img className="card-img-top" alt="Card Image" /> */}
+                    <img
+                      className="card-img-top"
+                      alt="Card Image"
+                      src={activityDetails.activityImage}
+                    />
                   </div>
                 </div>
 
@@ -526,6 +561,8 @@ const ActivityDetails = () => {
                     ))}
                   </div>
                 )}
+              </div>
+              {userFromStore.userName == activityDetails.activityOrganizer ? (
                 <div className="mx-auto mt-5" style={{ minHeight: "400px" }}>
                   <div className="card mb-2 p-3">
                     <div className="mx-auto text-center">
@@ -536,14 +573,18 @@ const ActivityDetails = () => {
                       {participantList !== null &&
                         participantList.emailList.map((val, index) => (
                           <div className="card p-3 mb-1" id={index} key={index}>
-                            <div>{participantList.emailList[index]}</div>
-                            <div>{participantList.userNameList[index]}</div>
+                            <div>
+                              Username: {participantList.userNameList[index]}
+                            </div>
+                            <div>Email: {participantList.emailList[index]}</div>
                           </div>
                         ))}
                     </div>
                   </div>
                 </div>
-              </div>
+              ) : (
+                <div></div>
+              )}
             </div>
           </div>
         </div>

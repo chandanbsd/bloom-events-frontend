@@ -92,10 +92,6 @@ const Navbar = () => {
             <Link to="participant-search" className="nav-item navbar-brand">
               <span>Participant Search</span>
             </Link>
-
-            <Link to="participant-search" className="nav-item navbar-brand">
-              <span>Participant Search</span>
-            </Link>
           </>
         )}
 
