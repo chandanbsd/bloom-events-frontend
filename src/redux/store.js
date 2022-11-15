@@ -8,10 +8,11 @@ import themeReducer from "./theme";
 import storage from "redux-persist/lib/storage";
 import { persistReducer, persistStore } from "redux-persist";
 import thunk from "redux-thunk";
+import localforage from "localforage";
 
 const persistConfig = {
   key: "root",
-  storage,
+  storage: localforage,
 };
 
 const appReducer = combineReducers({

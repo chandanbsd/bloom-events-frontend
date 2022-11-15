@@ -27,6 +27,7 @@ import UserCalendar from "./UserCalendar/UserCalendar";
 import themeStyles from "./themeStyles";
 import Bookmarks from "./Bookmarks/Bookmarks";
 import VenueCreation from "./VenueCreation/VenueCreation";
+import PaymentStripe from "./PaymentStripe/PaymentStripe";
 
 function App() {
   const themeFromStore = useSelector((state) => state.theme);
@@ -61,6 +62,7 @@ function App() {
         <Route path="/bookmarks" element={<Bookmarks />} />
 
         <Route path="/venue-creation" element={<VenueCreation />} />
+        <Route path="/payment-stripe" element={<PaymentStripe />} />
       </Routes>
     </div>
   );
