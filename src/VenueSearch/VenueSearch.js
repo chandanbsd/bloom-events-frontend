@@ -244,6 +244,7 @@ const VenueSearch = () => {
 
           <div className="mx-auto mt-5" style={{ width: "50%" }}>
             {filteredEventList.map((val, index) => {
+              console.log(val);
               return (
                 <div
                   className={
@@ -330,7 +331,16 @@ const VenueSearch = () => {
                         </table>
                       </div>
                     </div>
+                    <div>
+                      <img
+                        className="card-img-top"
+                        alt="Card Image"
+                        src={val.venueImage}
+                        style={{ width: "400px" }}
+                      />
+                    </div>
                   </div>
+
                   <div className="mx-auto">
                     {val.venueOpen == "true" ? (
                       <button className="btn btn-success">
@@ -351,33 +361,6 @@ const VenueSearch = () => {
                         Closed by Venue Owner
                       </button>
                     )}
-
-                    {/* {userFromStore != null &&
-                    val.venueAvailability.venueOpen == "false" ? (
-                      <button
-                        className="btn btn-primary m-2"
-                        onClick={() =>
-                          handleOpenClose(
-                            val.venueId,
-                            val.venueAvailability.venueOpen
-                          )
-                        }
-                      >
-                        Open Booking{" "}
-                      </button>
-                    ) : (
-                      <button
-                        className="btn btn-danger m-2"
-                        onClick={() =>
-                          handleOpenClose(
-                            val.venueId,
-                            val.venueAvailability.venueOpen
-                          )
-                        }
-                      >
-                        Close Bookings
-                      </button>
-                    )} */}
                     {userFromStore != null &&
                       userFromStore.userName == val.venueOwner && (
                         <>

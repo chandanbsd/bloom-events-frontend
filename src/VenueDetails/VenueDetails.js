@@ -467,6 +467,14 @@ const VenueDetails = () => {
                   </div>
                 </div>
                 <div>
+                  <img
+                    className="card-img-top"
+                    alt="Card Image"
+                    src={venueDetails.venueImage}
+                    style={{ width: "400px" }}
+                  />
+                </div>
+                <div>
                   {venueBookmarks.includes(venueDetails.venueId) ? (
                     <button
                       className="btn btn-danger"
@@ -486,6 +494,7 @@ const VenueDetails = () => {
               <div className="mx-auto">
                 <Calendar onChange={handleDate} value={reservationDate} />
               </div>
+
               <br />
               <div className="mx-auto">
                 <h1>Select Time Slots</h1>
