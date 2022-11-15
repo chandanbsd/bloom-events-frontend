@@ -1,4 +1,3 @@
-const baseURL = "https://bloomevents-sprint4.herokuapp.com/";
-// const baseURL = "http://bloom-events.vercel.app";
+const baseURL = "https://bloomevents-sprint4.herokuapp.com";
 
 export default baseURL;
