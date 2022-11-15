@@ -533,6 +533,8 @@ const ActivityDetails = () => {
                     ))}
                   </div>
                 )}
+              </div>
+              {userFromStore.userName == activityDetails.activityOrganizer ? (
                 <div className="mx-auto mt-5" style={{ minHeight: "400px" }}>
                   <div className="card mb-2 p-3">
                     <div className="mx-auto text-center">
@@ -543,14 +545,18 @@ const ActivityDetails = () => {
                       {participantList !== null &&
                         participantList.emailList.map((val, index) => (
                           <div className="card p-3 mb-1" id={index} key={index}>
-                            <div>{participantList.emailList[index]}</div>
-                            <div>{participantList.userNameList[index]}</div>
+                            <div>
+                              Username: {participantList.userNameList[index]}
+                            </div>
+                            <div>Email: {participantList.emailList[index]}</div>
                           </div>
                         ))}
                     </div>
                   </div>
                 </div>
-              </div>
+              ) : (
+                <div></div>
+              )}
             </div>
           </div>
         </div>
