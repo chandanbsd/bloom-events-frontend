@@ -5,6 +5,7 @@ import baseURL from "../constants/constants";
 import { setProfile } from "../redux/user";
 
 import initialTimeSlot from "../constants/initalTimeSlot";
+
 const VenueBooking = () => {
   const location = useLocation();
   const [reservationDetails, setReservationDetails] = useState({
@@ -139,6 +140,32 @@ const VenueBooking = () => {
             Cancel Booking
           </button>
         </div>
+      </div>
+      <div>
+        <section style={{ width: "500px" }} className="mx-auto mt-5">
+          <div className="card-body">
+            <img
+              src={reservationDetails.activityImage}
+              alt="The cover of Stubborn Attachments"
+              style={{ width: "500px" }}
+            />
+            <div className="description">
+              <h3>{reservationDetails.venueDetails.venueName}</h3>
+              <h5>
+                $
+                {reservationDetails.venueDetails.venueHrCost *
+                  reservationDetails.selectedSlotList.length}
+              </h5>
+            </div>
+          </div>
+
+          <a
+            href="https://buy.stripe.com/test_6oEdUy0XI9BK0UMaEE"
+            className="btn btn-primary"
+          >
+            Checkout
+          </a>
+        </section>
       </div>
     </div>
   );
