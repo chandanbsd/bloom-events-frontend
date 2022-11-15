@@ -251,6 +251,25 @@ const ActivityDetails = () => {
       });
   };
 
+  const deleteActivity = () => {
+    let url = `${baseURL}/delete_activity_organizer`;
+    let requestOptions = {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        activityId: activityDetails.activityId,
+      }),
+    };
+    fetch(url, requestOptions)
+      .then((response) => response.json())
+      .then((res) => {
+        if (res.status === "OK") {
+          window.location.reload();
+        } else {
+          alert("Deleteion Failed");
+        }
+      });
+  };
   useEffect(() => {
     if (activityReview === null) {
       handleActivityReviews();
@@ -319,8 +338,17 @@ const ActivityDetails = () => {
                     Remove from bookmarks
                   </button>
                 ) : (
-                  <button className="btn btn-primary" onClick={addBookmarks}>
-                    Add to bookmark
+                  <>
+                    <button className="btn btn-primary" onClick={addBookmarks}>
+                      Add to bookmark
+                    </button>
+                  </>
+                )}
+                <br />
+                {activityDetails.activityOrganizer ==
+                  userFromStore.userName && (
+                  <button className="btn btn-danger" onClick={deleteActivity}>
+                    Delete Activity
                   </button>
                 )}
               </div>
