@@ -105,6 +105,8 @@ const VenueDetails = () => {
   const [venueBookmarks, setVenueBookmarks] = useState(null);
   const [activityBookmarks, setActivityBookmarks] = useState(null);
 
+  const [venueReview, setVenueReview] = useState(null);
+
   const bookingDetailsHandler = () => {
     if (
       activityName !== null &&
@@ -306,6 +308,24 @@ const VenueDetails = () => {
       });
   };
 
+  const handleVenueReviews = () => {
+    const url = `${baseURL}/venuereviews`;
+    const requestOptions = {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        venueId: venueDetails.venueId,
+      }),
+    };
+    fetch(url, requestOptions)
+      .then((response) => response.json())
+      .then((res) => {
+        setVenueReview([...res.body]);
+        console.log(res.body);
+      })
+      .catch((error) => console.log("API Connection Failed", error));
+  };
+
   useEffect(() => {
     if (venueDetails == null) {
       setVenueDetails({
@@ -317,6 +337,10 @@ const VenueDetails = () => {
           )
         ),
       });
+    }
+
+    if (venueDetails != null && venueReview == null) {
+      handleVenueReviews();
     }
 
     if (venueBookmarks == null && activityBookmarks == null) {
@@ -774,6 +798,31 @@ const VenueDetails = () => {
               ) : (
                 <div className="mx-auto">Please select a slot first</div>
               )}
+            </div>
+          </div>
+          <div>
+            <div
+              className="mx-auto mt-5"
+              style={{ minHeight: "400px", width: "50vw" }}
+            >
+              <div className="card mb-2 p-3">
+                <div className="mx-auto text-center">
+                  <h1 style={{ width: "50vw" }}>Reviews</h1>
+                </div>
+                {venueReview !== null && (
+                  <div className="card-body">
+                    {venueReview.map((val, index) => (
+                      <div key={index} className="card p-3 mb-1">
+                        <ul style={{ listStyleType: "none" }}>
+                          <li>Username: {val.userName}</li>
+                          <li>Rating: {val.rating}</li>
+                          <li>Review: {val.review}</li>
+                        </ul>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>
