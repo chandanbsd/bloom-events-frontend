@@ -142,8 +142,11 @@ const ActivityDetails = () => {
   const handleActivityReviews = () => {
     const url = `${baseURL}/returnreview`;
     const requestOptions = {
-      method: "GET",
+      method: "POST",
       headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        activityId: params.token,
+      }),
     };
 
     fetch(url, requestOptions)
@@ -362,7 +365,11 @@ const ActivityDetails = () => {
                       {activityDetails.activityRemainingCapacity}
                     </p>
 
-                    {/* <img className="card-img-top" alt="Card Image" /> */}
+                    <img
+                      className="card-img-top"
+                      alt="Card Image"
+                      src={activityDetails.activityImage}
+                    />
                   </div>
                 </div>
 
