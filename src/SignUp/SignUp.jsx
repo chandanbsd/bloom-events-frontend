@@ -32,10 +32,7 @@ const SignUp = () => {
   const [loadingPage, setLoadingPage] = useState(true);
   const navigate = useNavigate();
   useEffect(() => {
-    if (signUpDetails.city === null && signUpDetails.state === null) {
-      signUpDetails.state = Object.keys(usaCityStates)[0];
-      signUpDetails.city = usaCityStates[signUpDetails.state][0];
-    }
+
     setLoadingPage(false);
   }, [signUpDetails]);
 
@@ -277,23 +274,18 @@ const SignUp = () => {
                 ...signUpDetails,
                 state: e.target.value,
               });
-
-              setSignUpDetails({
-                ...signUpDetails,
-                city: usaCityStates[e.target.value][0],
-              });
             }}
           >
-            {usStates.map((ele, index) => (
-              <option value={ele} key={index}>
-                {ele}
-              </option>
-            ))}
+             {usStates.map((ele, index) => (
+                    <option value={ele} key={index}>
+                      {ele}
+                    </option>
+                  ))}
           </select>
           <br />
         </div>
 
-        <div className="form-group">
+        {/* <div className="form-group">
           <label>Select City: </label>
           <select
             className="form-control"
@@ -310,7 +302,34 @@ const SignUp = () => {
               </option>
             ))}
           </select>
-        </div>
+        </div> */}
+
+        <div className="form-group">
+                <label>Select City: </label>
+                {signUpDetails.state != null ? (
+                  <select
+                    className="form-control"
+                    onChange={(e) => {
+                      setSignUpDetails({
+                        ...signUpDetails,
+                        city: e.target.value,
+                      });
+                    }}
+                  >
+                    {usaCityStates[signUpDetails.state].map(
+                      (ele, index) => {
+                        return (
+                          <option value={ele} key={index}>
+                            {ele}
+                          </option>
+                        );
+                      }
+                    )}
+                  </select>
+                ) : (
+                  <div>Select state first</div>
+                )}
+                </div>
         <br />
         <div className="form-group">
           <label>Select Age Range?</label>
