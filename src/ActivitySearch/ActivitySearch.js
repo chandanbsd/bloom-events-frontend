@@ -111,7 +111,7 @@ const ActivitySearch = () => {
           });
           dispatch(setEvent([...res.body]));
           setEventList(JSON.parse(JSON.stringify(eventFromStore.eventList)));
-        } else alert("Unable to fetch event venues");
+        } 
       });
 
     url = `${baseURL}/ra`;
@@ -132,7 +132,7 @@ const ActivitySearch = () => {
           setFilteredActivityList(
             JSON.parse(JSON.stringify(activityFromStore.activityList))
           );
-        } else alert("Unable to fetch activities");
+        }
       });
   }, []);
 

@@ -60,7 +60,7 @@ const UserCalendar = () => {
                     (val) => val.venueOwner == userFromStore.userName
                   )
                 );
-              } else alert("Unable to fetch event venues");
+              } 
             });
 
           url = `${baseURL}/ra`;
@@ -78,7 +78,7 @@ const UserCalendar = () => {
                     (val) => val.activityOrganizer == userFromStore.userName
                   )
                 );
-              } else alert("Unable to fetch activities");
+              } 
             });
         });
     }
@@ -266,17 +266,10 @@ const UserCalendar = () => {
                             }
                           });
                         })}
-
-                      <div>
-                        {" "}
-                        {[1, 2, 3].forEach((val) => {
-                          return "adgdgdsfgdfgdfgf";
-                        })}
-                      </div>
                     </tbody>
                   </table>
                 ) : (
-                  <h1> Loading</h1>
+                  <h1> No Current Bookings</h1>
                 )}
                 {}
               </div>

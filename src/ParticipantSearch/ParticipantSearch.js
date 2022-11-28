@@ -128,7 +128,7 @@ const ParticipantSearch = () => {
           setFilteredParticipantList(
             JSON.parse(JSON.stringify(participantFromStore.participantList))
           );
-        } else alert("Unable to fetch event venues");
+        } 
       })
       .catch((error) => console.log("Form submit error", error));
   }, []);
