@@ -5,7 +5,8 @@ import {
   useElements,
 } from "@stripe/react-stripe-js";
 import "./CheckoutForm.css";
-export default function CheckoutForm({ email, returnUrl }) {
+
+const CheckoutForm = ({ email, returnUrl }) => {
   const stripe = useStripe();
   const elements = useElements();
 
@@ -45,10 +46,7 @@ export default function CheckoutForm({ email, returnUrl }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     if (!stripe || !elements) {
-      // Stripe.js has not yet loaded.
-      // Make sure to disable form submission until Stripe.js has loaded.
       return;
     }
 
@@ -90,4 +88,6 @@ export default function CheckoutForm({ email, returnUrl }) {
       {message && <div id="payment-message">{message}</div>}
     </form>
   );
-}
+};
+
+export default CheckoutForm;
