@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { activity } from "../redux/activity";
@@ -6,6 +6,9 @@ import baseURL from "../constants/constants";
 import "react-calendar/dist/Calendar.css";
 import { clearActivity, setActivity } from "../redux/activity";
 import ReactStars from "react-rating-stars-component";
+import { Elements } from "@stripe/react-stripe-js";
+import CheckoutForm from "../StripePayment/CheckoutForm";
+import { StripeContext } from "../Context/StripeContext";
 
 const ActivityDetails = () => {
   const activityFromStore = useSelector((state) => state.activity);
@@ -29,11 +32,14 @@ const ActivityDetails = () => {
   const [activityBookmarks, setActivityBookmarks] = useState(null);
   const [venueBookmarks, setVenueBookmarks] = useState(null);
 
-  const [paymentCreds, setPaymentCreds] = useState({
-    cardNumber: null,
-    cvv: null,
-    expiry: null,
-  });
+  // const [paymentCreds, setPaymentCreds] = useState({
+  //   cardNumber: null,
+  //   cvv: null,
+  //   expiry: null,
+  // });
+
+  const { clientSecret, options, stripePromise } = useContext(StripeContext);
+  const urlParams = new URLSearchParams(window.location.search);
 
   const updateActivityStore = () => {
     const url = `${baseURL}/ra`;
@@ -97,6 +103,8 @@ const ActivityDetails = () => {
           );
       })
       .catch((error) => console.log("API Connection Failed", error));
+
+    updateActivityStore();
   };
 
   const handleReviewSubmit = () => {
@@ -137,6 +145,9 @@ const ActivityDetails = () => {
         } else alert("Failed to cancel registration for activity. Try again");
       })
       .catch((error) => console.log("API Connection Failed", error));
+
+    updateActivityStore();
+    window.location.reload();
   };
 
   const handleActivityReviews = () => {
@@ -407,7 +418,8 @@ const ActivityDetails = () => {
                       {!registeredActivities.includes(
                         activityDetails.activityId
                       ) ? (
-                        <div>
+                        <>
+                          {/* <div>
                           <div style={{ width: "500px" }} className="mx-auto">
                             <div>
                               Enter Card Number:{" "}
@@ -489,7 +501,57 @@ const ActivityDetails = () => {
                               ? "Confirm Booking"
                               : "Activity has reached maximum capacity"}
                           </button>
-                        </div>
+                        </div> */}
+
+                          <div className="mx-auto d-block text-center">
+                            {activityDetails.activityRemainingCapacity > 0 &&
+                            clientSecret ? (
+                              <>
+                                <Elements
+                                  options={options}
+                                  stripe={stripePromise}
+                                >
+                                  <CheckoutForm
+                                    email={userFromStore.email}
+                                    returnUrl={window.location.href}
+                                  />
+                                </Elements>
+
+                                {urlParams.get("redirect_status") ===
+                                  "succeeded" && (
+                                  <button
+                                    className={
+                                      "btn " +
+                                      (activityDetails.activityRemainingCapacity >
+                                      0
+                                        ? "btn-primary"
+                                        : "btn-danger")
+                                    }
+                                    onClick={() => {
+                                      handleActivityRegistration();
+                                    }}
+                                  >
+                                    {activityDetails.activityRemainingCapacity >
+                                    0
+                                      ? "Next"
+                                      : "Activity has reached maximum capacity"}
+                                  </button>
+                                )}
+                              </>
+                            ) : (
+                              <button
+                                className={
+                                  "btn " +
+                                  (activityDetails.activityRemainingCapacity > 0
+                                    ? "btn-primary"
+                                    : "btn-danger")
+                                }
+                              >
+                                Activity has reached maximum capacity
+                              </button>
+                            )}
+                          </div>
+                        </>
                       ) : (
                         <div>
                           <button
