@@ -871,7 +871,7 @@ const VenueDetails = () => {
                 {allowedUsers.length > 1 ? (
                   allowedUsers.includes(userFromStore.userName) && (
                     <div className="mt-5 mx-auto" style={{ width: "500px" }}>
-                      <h3>Review Activity</h3>
+                      <h3>Review Venue</h3>
                       <br></br>
                       <div className="form-group">
                         <label>Select Stars </label>
