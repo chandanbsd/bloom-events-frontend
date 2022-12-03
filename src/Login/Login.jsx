@@ -5,6 +5,7 @@ import { setProfile } from "../redux/user";
 import ReCAPTCHA from "react-google-recaptcha";
 import { useAuth0 } from "@auth0/auth0-react";
 import baseURL from "../constants/constants";
+import themeStyles from "../themeStyles";
 
 const Login = () => {
   const userFromStore = useSelector((state) => state.user);
@@ -20,6 +21,8 @@ const Login = () => {
   );
 
   const [passwordResetEmail, setPasswordResetEmail] = useState(null);
+
+  const themeFromStore = useSelector((state) => state.theme);
 
   useEffect(() => {
     if (
@@ -200,121 +203,126 @@ const Login = () => {
   };
   if (userFromStore.username == null) {
     return (
-      <div className="mx-auto" style={{ width: "500px" }}>
-        <h1 className="text-center">Login Page</h1>
-        <br />
-        <br />
-        <div className="form-group">
-          <label>Username: </label>
-          <input
-            type="text"
-            className="form-control"
-            onChange={(e) =>
-              setloginDetails({ ...loginDetails, userName: e.target.value })
-            }
-          />
+      <div
+        className={themeStyles[themeFromStore.value].body}
+        style={{ minHeight: "100vh" }}
+      >
+        <div className="mx-auto" style={{ width: "500px" }}>
+          <h1 className="text-center">Login Page</h1>
           <br />
-        </div>
-        <div className="form-group">
-          <label>Password: </label>
-          <input
-            type="password"
-            className="form-control"
-            onChange={(e) =>
-              setloginDetails({ ...loginDetails, password: e.target.value })
-            }
-          />
           <br />
-        </div>
-        <div className="d-flex justify-content-around">
-          <ReCAPTCHA
-            ref={recaptchaRef}
-            sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
-            onChange={onCaptchaChange}
-          />
-        </div>
-        <br />
-        <div
-          style={{ width: "500px" }}
-          className="form-group d-flex justify-content-around"
-        >
-          <button onClick={handleLogin} className="btn btn-success">
-            Login with Email
-          </button>
-        </div>
-        <hr
-          style={{
-            size: "20px",
-            height: "12px",
-            background: "blue",
-          }}
-        />
-        <br />
-        <br />
-        <div
-          style={{ width: "500px" }}
-          className="form-group d-flex justify-content-around"
-        >
-          <Link
-            to="special-login"
-            className="btn btn-primary"
-            onClick={() => {
-              localStorage.setItem("loginWithOAuth", JSON.stringify(true));
+          <div className="form-group">
+            <label>Username: </label>
+            <input
+              type="text"
+              className="form-control"
+              onChange={(e) =>
+                setloginDetails({ ...loginDetails, userName: e.target.value })
+              }
+            />
+            <br />
+          </div>
+          <div className="form-group">
+            <label>Password: </label>
+            <input
+              type="password"
+              className="form-control"
+              onChange={(e) =>
+                setloginDetails({ ...loginDetails, password: e.target.value })
+              }
+            />
+            <br />
+          </div>
+          <div className="d-flex justify-content-around">
+            <ReCAPTCHA
+              ref={recaptchaRef}
+              sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
+              onChange={onCaptchaChange}
+            />
+          </div>
+          <br />
+          <div
+            style={{ width: "500px" }}
+            className="form-group d-flex justify-content-around"
+          >
+            <button onClick={handleLogin} className="btn btn-success">
+              Login with Email
+            </button>
+          </div>
+          <hr
+            style={{
+              size: "20px",
+              height: "12px",
+              background: "blue",
             }}
-          >
-            Signin with OAuth
-          </Link>{" "}
-        </div>
-        <br />
-        <br />
-        <hr
-          style={{
-            size: "20px",
-            height: "12px",
-            background: "blue",
-          }}
-        />
-        <br />
-        <br />
-        <div
-          style={{ width: "500px" }}
-          className="form-group d-flex justify-content-around"
-        >
-          <Link to="signup" className="btn btn-primary">
-            Signup with Email
-          </Link>{" "}
-          <Link to="special-signup" className="btn btn-primary">
-            Signup with OAuth
-          </Link>{" "}
-        </div>
-        <br />
-        <br />
-        <hr
-          style={{
-            size: "20px",
-            height: "12px",
-            background: "blue",
-          }}
-        />
-
-        <br />
-
-        <div className="form-group">
-          <label>Email: </label>
-          <input
-            type="email"
-            className="form-control"
-            onChange={(e) => setPasswordResetEmail(e.target.value)}
           />
           <br />
-        </div>
-        <div className=" form-group d-flex justify-content-around">
-          <button
-            onClick={() => sendPasswordResetEmail()}
-            className="btn btn-danger"
+          <br />
+          <div
+            style={{ width: "500px" }}
+            className="form-group d-flex justify-content-around"
           >
-            Reset Password
-          </button>
+            <Link
+              to="special-login"
+              className="btn btn-primary"
+              onClick={() => {
+                localStorage.setItem("loginWithOAuth", JSON.stringify(true));
+              }}
+            >
+              Signin with OAuth
+            </Link>{" "}
+          </div>
+          <br />
+          <br />
+          <hr
+            style={{
+              size: "20px",
+              height: "12px",
+              background: "blue",
+            }}
+          />
+          <br />
+          <br />
+          <div
+            style={{ width: "500px" }}
+            className="form-group d-flex justify-content-around"
+          >
+            <Link to="signup" className="btn btn-primary">
+              Signup with Email
+            </Link>{" "}
+            <Link to="special-signup" className="btn btn-primary">
+              Signup with OAuth
+            </Link>{" "}
+          </div>
+          <br />
+          <br />
+          <hr
+            style={{
+              size: "20px",
+              height: "12px",
+              background: "blue",
+            }}
+          />
+
+          <br />
+
+          <div className="form-group">
+            <label>Email: </label>
+            <input
+              type="email"
+              className="form-control"
+              onChange={(e) => setPasswordResetEmail(e.target.value)}
+            />
+            <br />
+          </div>
+          <div className=" form-group d-flex justify-content-around">
+            <button
+              onClick={() => sendPasswordResetEmail()}
+              className="btn btn-danger"
+            >
+              Reset Password
+            </button>
+          </div>
         </div>
       </div>
     );
