@@ -135,9 +135,12 @@ const VenueSearch = () => {
   }, [filteredEventList]);
 
   return (
-    <>
+    <div
+      style={{ minHeight: "100vh" }}
+      className={themeStyles[themeFromStore.value].body}
+    >
       {filteredEventList != null ? (
-        <div className={themeStyles[themeFromStore.value].body}>
+        <div>
           <h1 className={"mx-auto text-center "}>
             {userFromStore?.isOwner == "true"
               ? "Manage Your Venues"
@@ -411,7 +414,7 @@ const VenueSearch = () => {
       ) : (
         <div>Loading</div>
       )}
-    </>
+    </div>
   );
 };
 

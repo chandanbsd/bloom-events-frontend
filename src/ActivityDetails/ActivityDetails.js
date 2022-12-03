@@ -332,7 +332,7 @@ const ActivityDetails = () => {
   ]);
 
   return (
-    <div>
+    <div style={{ minHeight: "100vh" }}>
       {activityDetails !== null &&
       venueDetails !== null &&
       registeredActivities !== null &&
