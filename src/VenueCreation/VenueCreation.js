@@ -353,16 +353,23 @@ const VenueCreation = () => {
               <div className="text-center">
                 <h5>Venue Availability</h5>
               </div>
-              <div className="card card-body">
+              <div
+                className={
+                  "card card-body " +
+                  themeStyles[themeFromStore.value].bodyHeavy +
+                  " " +
+                  themeStyles[themeFromStore.value].text
+                }
+              >
                 <table className="table">
-                  <thead>
+                  <thead className={themeStyles[themeFromStore.value].text}>
                     <tr>
                       <th scope="col">Day</th>
                       <th scope="col">Opening Time</th>
                       <th scope="col">Closing Time</th>
                     </tr>
                   </thead>
-                  <tbody>
+                  <tbody className={themeStyles[themeFromStore.value].text}>
                     <tr>
                       <th scope="row">Mon</th>
                       <td>
