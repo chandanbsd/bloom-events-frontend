@@ -6,6 +6,8 @@ import user, { setProfile } from "../redux/user";
 import { clearEvent, setEvent } from "../redux/event";
 import { setActivity } from "../redux/activity";
 import time24 from "../constants/time24";
+import themeStyles from "../themeStyles";
+
 const UserCalendar = () => {
   const userFromStore = useSelector((state) => state.user);
   const eventFromStore = useSelector((state) => state.event);
@@ -18,6 +20,8 @@ const UserCalendar = () => {
   const [activitiesParticipated, setActivitiesParticipated] = useState(null);
   const handleDate = (val) => {};
   let venueTemp;
+
+  const themeFromStore = useSelector((state) => state.theme);
 
   useEffect(() => {
     if (activitiesParticipated === null) {
@@ -60,7 +64,7 @@ const UserCalendar = () => {
                     (val) => val.venueOwner == userFromStore.userName
                   )
                 );
-              } else alert("Unable to fetch event venues");
+              }
             });
 
           url = `${baseURL}/ra`;
@@ -78,14 +82,17 @@ const UserCalendar = () => {
                     (val) => val.activityOrganizer == userFromStore.userName
                   )
                 );
-              } else alert("Unable to fetch activities");
+              }
             });
         });
     }
   }, [activitiesParticipated, activitiesOrganized, venuesOwned]);
 
   return (
-    <div>
+    <div
+      style={{ minHeight: "100vh" }}
+      className={themeStyles[themeFromStore.value].body}
+    >
       <br />
       <div
         className="mx-auto text-center pt-10 "
@@ -102,7 +109,12 @@ const UserCalendar = () => {
             <div style={{ width: "33%" }} className="mx-auto">
               <div className="mx-auto mt-5 ">
                 <div
-                  className="card mx-auto mb-2 p-3 text-center"
+                  className={
+                    "card mx-auto mb-2 p-3 text-center  " +
+                    themeStyles[themeFromStore.value].bodyHeavy +
+                    " " +
+                    themeStyles[themeFromStore.value].text
+                  }
                   style={{ minHeight: "300px" }}
                 >
                   <h3 className="mx-auto mt-5" style={{ width: "fit-content" }}>
@@ -112,7 +124,7 @@ const UserCalendar = () => {
 
                   {activitiesParticipated !== null ? (
                     <table className="table mx-auto">
-                      <tbody>
+                      <tbody className={themeStyles[themeFromStore.value].text}>
                         <tr>
                           <th>Activity Name</th>
                           <th>Time Duration</th>
@@ -160,7 +172,12 @@ const UserCalendar = () => {
             <div style={{ width: "33%" }} className="mx-auto">
               <div className="mx-auto mt-5 ">
                 <div
-                  className="card mx-auto mb-2 p-3 text-center"
+                  className={
+                    "card mx-auto mb-2 p-3 text-center   " +
+                    themeStyles[themeFromStore.value].bodyHeavy +
+                    " " +
+                    themeStyles[themeFromStore.value].text
+                  }
                   style={{ minHeight: "300px" }}
                 >
                   <div className="mx-auto">
@@ -175,7 +192,7 @@ const UserCalendar = () => {
 
                   {activitiesParticipated !== null ? (
                     <table className="table mx-auto">
-                      <tbody>
+                      <tbody className={themeStyles[themeFromStore.value].text}>
                         <tr>
                           <th>Activity Name</th>
                           <th>Time Duration</th>
@@ -222,7 +239,12 @@ const UserCalendar = () => {
           <div style={{ width: "33%" }} className="mx-auto">
             <div className="mx-auto mt-5 ">
               <div
-                className="card mx-auto mb-2 p-3 text-center"
+                className={
+                  "card mx-auto mb-2 p-3 text-center   " +
+                  themeStyles[themeFromStore.value].bodyHeavy +
+                  " " +
+                  themeStyles[themeFromStore.value].text
+                }
                 style={{ minHeight: "300px" }}
               >
                 <h3 className="mx-auto mt-5" style={{ width: "fit-content" }}>
@@ -235,7 +257,7 @@ const UserCalendar = () => {
                 venuesOwned != null &&
                 activitiesOrganized ? (
                   <table className="table mx-auto">
-                    <tbody>
+                    <tbody className={themeStyles[themeFromStore.value].text}>
                       <tr>
                         <th>Venue Name</th>
                         <th>Activity Name</th>
@@ -266,17 +288,10 @@ const UserCalendar = () => {
                             }
                           });
                         })}
-
-                      <div>
-                        {" "}
-                        {[1, 2, 3].forEach((val) => {
-                          return "adgdgdsfgdfgdfgf";
-                        })}
-                      </div>
                     </tbody>
                   </table>
                 ) : (
-                  <h1> Loading</h1>
+                  <h1> No Current Bookings</h1>
                 )}
                 {}
               </div>

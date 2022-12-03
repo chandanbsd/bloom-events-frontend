@@ -14,6 +14,9 @@ import "react-calendar/dist/Calendar.css";
 import { DropdownButton } from "react-bootstrap";
 import time24 from "../constants/time24";
 import bookmarksMock from "../Mocks/bookmarksMock";
+import ReactStars from "react-rating-stars-component";
+import themeStyles from "../themeStyles";
+
 const timeSlots = [
   "12 a.m. - 1 a.m.",
   "1 a.m. - 2 a.m.",
@@ -104,6 +107,46 @@ const VenueDetails = () => {
   const [activityBookmarks, setActivityBookmarks] = useState(null);
 
   const [venueReview, setVenueReview] = useState(null);
+
+  const [review, setReview] = useState("");
+  const [stars, setStars] = useState(0);
+
+  const [allowedUsers, setAllowedUsers] = useState([]);
+
+  const themeFromStore = useSelector((state) => state.theme);
+
+  const handleReviewSubmit = () => {
+    const url = `${baseURL}/venuereview`;
+    const requestOptions = {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        venueId: venueDetails.venueId,
+        userName: userFromStore.userName,
+        review: review,
+        rating: stars,
+      }),
+    };
+
+    fetch(url, requestOptions).then((response) => response.json());
+
+    handleVenueReviews();
+    window.location.reload();
+  };
+
+  const checkAllowedUsers = () => {
+    const url = `${baseURL}/getuser`;
+    const requestOptions = {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        venueId: venueDetails.venueId,
+      }),
+    };
+    fetch(url, requestOptions)
+      .then((response) => response.json())
+      .then((res) => setAllowedUsers(res.body[0]));
+  };
 
   const bookingDetailsHandler = () => {
     if (
@@ -221,7 +264,6 @@ const VenueDetails = () => {
     } else {
       await setAvailableTimeSlot([...newVenueSlots]);
     }
-    console.log(availableTimeSlot);
     setIsLoading(false);
   };
 
@@ -272,7 +314,6 @@ const VenueDetails = () => {
 
   const addBookmarks = () => {
     let newFavVenue = [...venueBookmarks];
-    console.log(venueBookmarks, newFavVenue);
     newFavVenue.push(venueDetails.venueId);
 
     newFavVenue = newFavVenue.sort((a, b) => a - b);
@@ -333,7 +374,6 @@ const VenueDetails = () => {
       .then((response) => response.json())
       .then((res) => {
         setVenueReview([...res.body]);
-        console.log(res.body);
       })
       .catch((error) => console.log("API Connection Failed", error));
   };
@@ -353,16 +393,16 @@ const VenueDetails = () => {
 
     if (venueDetails != null && venueReview == null) {
       handleVenueReviews();
+      checkAllowedUsers();
     }
 
     if (venueBookmarks == null && activityBookmarks == null) {
       handleGetBookmarks();
     }
-    console.log(selectedSlotList);
   }, [venueDetails, selectedSlotList]);
 
   return (
-    <div>
+    <div className={themeStyles[themeFromStore.value].body}>
       {venueDetails !== null &&
       venueBookmarks !== null &&
       activityBookmarks != null ? (
@@ -371,7 +411,14 @@ const VenueDetails = () => {
             Venue Name: {venueDetails.venueName}
           </h1>
           <div className="mx-auto mt-5" style={{ width: "95%" }}>
-            <div className="card mb-2 p-3">
+            <div
+              className={
+                "card mb-2 p-3 " +
+                themeStyles[themeFromStore.value].bodyHeavy +
+                " " +
+                themeStyles[themeFromStore.value].text
+              }
+            >
               <div className="card-body d-flex justify-content-between">
                 <div>
                   <p className="card-text">
@@ -398,10 +445,15 @@ const VenueDetails = () => {
 
                   {/* <img className="card-img-top" alt="Card Image" /> */}
                 </div>
-                <div className="align-self-center">
+                <div
+                  className={
+                    "align-self-center " +
+                    themeStyles[themeFromStore.value].text
+                  }
+                >
                   <div>
                     <table className="table">
-                      <tbody>
+                      <tbody className={themeStyles[themeFromStore.value].text}>
                         <tr>
                           <th>Day</th>
                           <th>Time</th>
@@ -505,7 +557,9 @@ const VenueDetails = () => {
                     <React.Fragment>
                       <div>
                         <table className="table" style={{ width: "500px" }}>
-                          <tbody>
+                          <tbody
+                            className={themeStyles[themeFromStore.value].text}
+                          >
                             <tr>
                               <th>Time</th>
                               <th>Availability</th>
@@ -524,7 +578,9 @@ const VenueDetails = () => {
                       </div>
                       <div>
                         <table className="table" style={{ width: "500px" }}>
-                          <tbody>
+                          <tbody
+                            className={themeStyles[themeFromStore.value].text}
+                          >
                             <tr>
                               <th>Time</th>
                               <th>Availability</th>
@@ -563,7 +619,7 @@ const VenueDetails = () => {
                 <div className="d-flex justify-content-between">
                   <div className="mx-auto" style={{ width: "500px" }}>
                     <table className="table" style={{ width: "500px" }}>
-                      <tbody>
+                      <tbody className={themeStyles[themeFromStore.value].text}>
                         <tr>
                           <th>Enter Activity Name:</th>
                           <td>
@@ -812,13 +868,62 @@ const VenueDetails = () => {
               style={{ minHeight: "400px", width: "50vw" }}
             >
               <div className="card mb-2 p-3">
+                {allowedUsers.length > 1 ? (
+                  allowedUsers.includes(userFromStore.userName) && (
+                    <div className="mt-5 mx-auto" style={{ width: "500px" }}>
+                      <h3>Review Venue</h3>
+                      <br></br>
+                      <div className="form-group">
+                        <label>Select Stars </label>
+
+                        <ReactStars
+                          count={5}
+                          onChange={setStars}
+                          size={24}
+                          activeColor="#ffd700"
+                          classNames={"mx-auto"}
+                        />
+
+                        <br />
+                      </div>
+                      <div className="form-group">
+                        <label>Enter Review: </label>
+                        <textarea
+                          type="text"
+                          className="form-control"
+                          onChange={(e) => setReview(e.target.value)}
+                        />
+                        <br />
+                      </div>
+                      <button
+                        className="btn btn-primary"
+                        onClick={handleReviewSubmit}
+                      >
+                        Submit Review
+                      </button>
+                    </div>
+                  )
+                ) : (
+                  <h4 style={{ textAlign: "center" }}>
+                    Only Paid Organizers can submit review
+                  </h4>
+                )}
+                <br />
                 <div className="mx-auto text-center">
                   <h1 style={{ width: "50vw" }}>Reviews</h1>
                 </div>
                 {venueReview !== null && (
                   <div className="card-body">
                     {venueReview.map((val, index) => (
-                      <div key={index} className="card p-3 mb-1">
+                      <div
+                        key={index}
+                        className={
+                          "card p-3 mb-1 " +
+                          themeStyles[themeFromStore.value].bodyHeavy +
+                          " " +
+                          themeStyles[themeFromStore.value].text
+                        }
+                      >
                         <ul style={{ listStyleType: "none" }}>
                           <li>Username: {val.userName}</li>
                           <li>Rating: {val.rating}</li>
