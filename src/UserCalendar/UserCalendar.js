@@ -239,7 +239,12 @@ const UserCalendar = () => {
           <div style={{ width: "33%" }} className="mx-auto">
             <div className="mx-auto mt-5 ">
               <div
-                className="card mx-auto mb-2 p-3 text-center"
+                className={
+                  "card mx-auto mb-2 p-3 text-center   " +
+                  themeStyles[themeFromStore.value].bodyHeavy +
+                  " " +
+                  themeStyles[themeFromStore.value].text
+                }
                 style={{ minHeight: "300px" }}
               >
                 <h3 className="mx-auto mt-5" style={{ width: "fit-content" }}>
@@ -252,7 +257,7 @@ const UserCalendar = () => {
                 venuesOwned != null &&
                 activitiesOrganized ? (
                   <table className="table mx-auto">
-                    <tbody>
+                    <tbody className={themeStyles[themeFromStore.value].text}>
                       <tr>
                         <th>Venue Name</th>
                         <th>Activity Name</th>
