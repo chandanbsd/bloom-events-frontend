@@ -13,7 +13,14 @@ const Home = () => {
   console.log(userFromStore);
 
   return (
-    <div className="mx-auto text-center">
+    <div
+      style={{ minHeight: "100vh" }}
+      className={
+        "mx-auto text-center " +
+        themeStyles[themeFromStore.value].body +
+        " text-center"
+      }
+    >
       {userFromStore === undefined ||
       userFromStore === null ||
       userFromStore.firstName === null ||
@@ -33,10 +40,7 @@ const Home = () => {
           />
         </div>
       ) : (
-        <div
-          className={themeStyles[themeFromStore.value].body + " text-center"}
-          style={{ height: "100vw" }}
-        >
+        <div>
           <h1>
             {userFromStore.isOwner == "true"
               ? "Hello Venue Owner"
