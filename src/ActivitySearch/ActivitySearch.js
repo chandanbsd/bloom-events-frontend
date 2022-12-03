@@ -10,6 +10,7 @@ import { clearEvent, setEvent } from "../redux/event";
 import { Link } from "react-router-dom";
 import time24 from "../constants/time24";
 import { usaCityStates } from "../constants/usaCityStates";
+import themeStyles from "../themeStyles";
 
 let dateObj = new Date();
 let today = [
@@ -27,6 +28,7 @@ const ActivitySearch = () => {
   const eventFromStore = useSelector((state) => state.event);
   const activityFromStore = useSelector((state) => state.activity);
   const dispatch = useDispatch();
+  const themeFromStore = useSelector((state) => state.theme);
 
   const processSearch = async () => {
     if (searchKeyword === "" || searchKeyword === undefined)
@@ -111,7 +113,7 @@ const ActivitySearch = () => {
           });
           dispatch(setEvent([...res.body]));
           setEventList(JSON.parse(JSON.stringify(eventFromStore.eventList)));
-        } 
+        }
       });
 
     url = `${baseURL}/ra`;
@@ -137,7 +139,10 @@ const ActivitySearch = () => {
   }, []);
 
   return (
-    <div>
+    <div
+      style={{ minHeight: "100vh" }}
+      className={themeStyles[themeFromStore.value].body}
+    >
       <h1 className="mx-auto text-center">Search Activities</h1>
       <div>
         <div style={{ display: "flex", width: "50%" }} className="mx-auto pt-5">
@@ -266,7 +271,15 @@ const ActivitySearch = () => {
         <div className="mx-auto mt-5" style={{ width: "90%" }}>
           {filteredActivityList.map((val, index) => {
             return (
-              <div className="card mb-2 p-3" key={index}>
+              <div
+                key={index}
+                className={
+                  "card mb-2 p-3 " +
+                  themeStyles[themeFromStore.value].bodyHeavy +
+                  " " +
+                  themeStyles[themeFromStore.value].text
+                }
+              >
                 <div className="card-body d-flex justify-content-around">
                   <div>
                     <h5 className="card-title">Name: {val.activityName}</h5>
