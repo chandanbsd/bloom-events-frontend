@@ -5,6 +5,7 @@ import { usaCityStates, usStates, usCities } from "../constants/usaCityStates";
 import time24 from "../constants/time24";
 import baseURL from "../constants/constants";
 import { useNavigate } from "react-router-dom";
+import themeStyles from "../themeStyles";
 
 const timeSlotNewInitial = [
   ["open", -1],
@@ -54,6 +55,8 @@ const VenueCreation = () => {
     venueState: null,
     venueSlots: resSlots,
   });
+
+  const themeFromStore = useSelector((state) => state.theme);
 
   const [mon, setMon] = useState([]);
   const [tue, setTue] = useState([]);
@@ -172,7 +175,10 @@ const VenueCreation = () => {
   }, [venueDetails]);
 
   return (
-    <>
+    <div
+      style={{ minHeight: "100vh" }}
+      className={themeStyles[themeFromStore.value].body}
+    >
       {userFromStore.isOwner ? (
         <div className="mx-auto" style={{ width: "90vw" }}>
           <div className="mx-auto text-center mb-2">
@@ -634,7 +640,7 @@ const VenueCreation = () => {
       ) : (
         <h1>Only Venue Owners can add venues</h1>
       )}
-    </>
+    </div>
   );
 };
 
