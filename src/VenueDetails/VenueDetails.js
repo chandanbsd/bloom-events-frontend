@@ -15,6 +15,8 @@ import { DropdownButton } from "react-bootstrap";
 import time24 from "../constants/time24";
 import bookmarksMock from "../Mocks/bookmarksMock";
 import ReactStars from "react-rating-stars-component";
+import themeStyles from "../themeStyles";
+
 const timeSlots = [
   "12 a.m. - 1 a.m.",
   "1 a.m. - 2 a.m.",
@@ -110,6 +112,8 @@ const VenueDetails = () => {
   const [stars, setStars] = useState(0);
 
   const [allowedUsers, setAllowedUsers] = useState([]);
+
+  const themeFromStore = useSelector((state) => state.theme);
 
   const handleReviewSubmit = () => {
     const url = `${baseURL}/venuereview`;
@@ -398,7 +402,7 @@ const VenueDetails = () => {
   }, [venueDetails, selectedSlotList]);
 
   return (
-    <div>
+    <div className={themeStyles[themeFromStore.value].body}>
       {venueDetails !== null &&
       venueBookmarks !== null &&
       activityBookmarks != null ? (
@@ -407,7 +411,14 @@ const VenueDetails = () => {
             Venue Name: {venueDetails.venueName}
           </h1>
           <div className="mx-auto mt-5" style={{ width: "95%" }}>
-            <div className="card mb-2 p-3">
+            <div
+              className={
+                "card mb-2 p-3 " +
+                themeStyles[themeFromStore.value].bodyHeavy +
+                " " +
+                themeStyles[themeFromStore.value].text
+              }
+            >
               <div className="card-body d-flex justify-content-between">
                 <div>
                   <p className="card-text">
@@ -434,10 +445,15 @@ const VenueDetails = () => {
 
                   {/* <img className="card-img-top" alt="Card Image" /> */}
                 </div>
-                <div className="align-self-center">
+                <div
+                  className={
+                    "align-self-center " +
+                    themeStyles[themeFromStore.value].text
+                  }
+                >
                   <div>
                     <table className="table">
-                      <tbody>
+                      <tbody className={themeStyles[themeFromStore.value].text}>
                         <tr>
                           <th>Day</th>
                           <th>Time</th>
@@ -541,7 +557,9 @@ const VenueDetails = () => {
                     <React.Fragment>
                       <div>
                         <table className="table" style={{ width: "500px" }}>
-                          <tbody>
+                          <tbody
+                            className={themeStyles[themeFromStore.value].text}
+                          >
                             <tr>
                               <th>Time</th>
                               <th>Availability</th>
@@ -560,7 +578,9 @@ const VenueDetails = () => {
                       </div>
                       <div>
                         <table className="table" style={{ width: "500px" }}>
-                          <tbody>
+                          <tbody
+                            className={themeStyles[themeFromStore.value].text}
+                          >
                             <tr>
                               <th>Time</th>
                               <th>Availability</th>
@@ -599,7 +619,7 @@ const VenueDetails = () => {
                 <div className="d-flex justify-content-between">
                   <div className="mx-auto" style={{ width: "500px" }}>
                     <table className="table" style={{ width: "500px" }}>
-                      <tbody>
+                      <tbody className={themeStyles[themeFromStore.value].text}>
                         <tr>
                           <th>Enter Activity Name:</th>
                           <td>
@@ -895,7 +915,15 @@ const VenueDetails = () => {
                 {venueReview !== null && (
                   <div className="card-body">
                     {venueReview.map((val, index) => (
-                      <div key={index} className="card p-3 mb-1">
+                      <div
+                        key={index}
+                        className={
+                          "card p-3 mb-1 " +
+                          themeStyles[themeFromStore.value].bodyHeavy +
+                          " " +
+                          themeStyles[themeFromStore.value].text
+                        }
+                      >
                         <ul style={{ listStyleType: "none" }}>
                           <li>Username: {val.userName}</li>
                           <li>Rating: {val.rating}</li>
