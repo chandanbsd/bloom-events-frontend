@@ -54,7 +54,6 @@ const VenueSearch = () => {
 
   const handleOpenClose = (venueId, venueOpen) => {
     let newOpen = venueOpen == "true" ? "false" : "true";
-    console.log(venueId, venueOpen, newOpen);
     const url = `${baseURL}/venueopenclose`;
     const requestOptions = {
       method: "POST",
@@ -86,7 +85,6 @@ const VenueSearch = () => {
     };
     fetch(url, requestOptions)
       .then((response) => response.json())
-
       .then((res) => {
         if (res.status === "OK") {
           res.body.forEach((val, index) => {
@@ -131,13 +129,18 @@ const VenueSearch = () => {
   };
 
   useEffect(() => {
-    if (filteredEventList == null) fetchVenueHandler();
+    if (filteredEventList == null) {
+      fetchVenueHandler();
+    }
   }, [filteredEventList]);
 
   return (
-    <>
+    <div
+      style={{ minHeight: "100vh" }}
+      className={themeStyles[themeFromStore.value].body}
+    >
       {filteredEventList != null ? (
-        <div className={themeStyles[themeFromStore.value].body}>
+        <div>
           <h1 className={"mx-auto text-center "}>
             {userFromStore?.isOwner == "true"
               ? "Manage Your Venues"
@@ -244,7 +247,6 @@ const VenueSearch = () => {
 
           <div className="mx-auto mt-5" style={{ width: "95%" }}>
             {filteredEventList.map((val, index) => {
-              console.log(val);
               return (
                 <div
                   className={
@@ -412,7 +414,7 @@ const VenueSearch = () => {
       ) : (
         <div>Loading</div>
       )}
-    </>
+    </div>
   );
 };
 
