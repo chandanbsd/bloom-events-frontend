@@ -7,6 +7,7 @@ import { setParticipant, clearParticipant } from "../redux/participant";
 import participantListMock from "../Mocks/userListMock";
 import baseURL from "../constants/constants";
 import { usaCityStates } from "../constants/usaCityStates";
+import themeStyles from "../themeStyles";
 
 const ParticipantSearch = () => {
   const [searchKeyword, setSearchKeyword] = useState("");
@@ -15,7 +16,8 @@ const ParticipantSearch = () => {
 
   const participantFromStore = useSelector((state) => state.participant);
   const dispatch = useDispatch();
-  const [stateFilter, setStateFilter] = useState(null)
+  const [stateFilter, setStateFilter] = useState(null);
+  const themeFromStore = useSelector((state) => state.theme);
 
   const processSearch = async () => {
     if (searchKeyword === "" || searchKeyword === undefined)
@@ -128,7 +130,7 @@ const ParticipantSearch = () => {
           setFilteredParticipantList(
             JSON.parse(JSON.stringify(participantFromStore.participantList))
           );
-        } else alert("Unable to fetch event venues");
+        }
       })
       .catch((error) => console.log("Form submit error", error));
   }, []);
@@ -144,7 +146,10 @@ const ParticipantSearch = () => {
   // };
 
   return (
-    <div>
+    <div
+      style={{ minHeight: "100vh" }}
+      className={themeStyles[themeFromStore.value].body}
+    >
       <h1 className="mx-auto text-center">Search Users</h1>
       <div>
         <div style={{ display: "flex", width: "50%" }} className="mx-auto pt-5">
@@ -181,13 +186,13 @@ const ParticipantSearch = () => {
             justifyContent: "space-around",
           }}
         >
-                    <Dropdown>
+          <Dropdown>
             <DropdownButton
               variant="success"
               id="dropdown-basic"
               onSelect={(e) => {
                 handleStateFilter(e);
-                setStateFilter(e)
+                setStateFilter(e);
               }}
               title="Select State"
             >
@@ -215,13 +220,17 @@ const ParticipantSearch = () => {
                 style={{ maxHeight: "500px", overflowY: "scroll" }}
               >
                 <Dropdown.Item eventKey={"Any"}>Any</Dropdown.Item>
-                {stateFilter !== null && usaCityStates[stateFilter]?.map((ele, index) => (
-                  <Dropdown.Item eventKey={ele} key={index}>
-                    {ele}
+                {stateFilter !== null &&
+                  usaCityStates[stateFilter]?.map((ele, index) => (
+                    <Dropdown.Item eventKey={ele} key={index}>
+                      {ele}
+                    </Dropdown.Item>
+                  ))}
+                {stateFilter === null && (
+                  <Dropdown.Item eventKey={"Any"}>
+                    Select state first
                   </Dropdown.Item>
-                ))}
-                {stateFilter === null && <Dropdown.Item eventKey={"Any"}>Select state first</Dropdown.Item>}
-                 
+                )}
               </Dropdown.Menu>
             </DropdownButton>
           </Dropdown>
@@ -311,7 +320,15 @@ const ParticipantSearch = () => {
       <div className="mx-auto mt-5" style={{ width: "50%" }}>
         {filteredParticipantList.map((val, index) => {
           return (
-            <div className="card mb-2 p-3" key={index}>
+            <div
+              className={
+                "card mb-2 p-3 " +
+                themeStyles[themeFromStore.value].bodyHeavy +
+                " " +
+                themeStyles[themeFromStore.value].text
+              }
+              key={index}
+            >
               <div className="card-body d-flex justify-content-around">
                 <div style={{ width: "60%" }}>
                   <h5 className="card-title">Username: {val.userName}</h5>
@@ -321,6 +338,8 @@ const ParticipantSearch = () => {
                   <p className="card-text">Bio: {val.bio}</p>
                   <p>Favorite Events: {val.categoryType}</p>
                   <p>Skill Level: {val.categoryLevel}</p>
+                </div>
+                <div>
                   <p>
                     Age Range:{" "}
                     {val.age === "A65"
@@ -335,9 +354,9 @@ const ParticipantSearch = () => {
 
                   <p>State: {val.state}</p>
                 </div>
-                <div>
+                {/* <div>
                   <img className="card-img-top" alt="Card Image" />
-                </div>
+                </div> */}
               </div>
             </div>
           );
