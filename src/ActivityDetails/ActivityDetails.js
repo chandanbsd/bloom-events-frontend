@@ -9,6 +9,7 @@ import ReactStars from "react-rating-stars-component";
 import { Elements } from "@stripe/react-stripe-js";
 import CheckoutForm from "../StripePayment/CheckoutForm";
 import { StripeContext } from "../Context/StripeContext";
+import themeStyles from "../themeStyles";
 
 const ActivityDetails = () => {
   const activityFromStore = useSelector((state) => state.activity);
@@ -31,6 +32,7 @@ const ActivityDetails = () => {
 
   const [activityBookmarks, setActivityBookmarks] = useState(null);
   const [venueBookmarks, setVenueBookmarks] = useState(null);
+  const themeFromStore = useSelector((state) => state.theme);
 
   // const [paymentCreds, setPaymentCreds] = useState({
   //   cardNumber: null,
@@ -332,40 +334,52 @@ const ActivityDetails = () => {
   ]);
 
   return (
-    <div style={{ minHeight: "100vh" }}>
+    <div className={themeStyles[themeFromStore.value].body}>
+      {activityDetails !== null &&
+        venueDetails !== null &&
+        registeredActivities !== null &&
+        activityBookmarks != null && (
+          <div className="mx-auto text-center">
+            <h1 style={{ width: "50vw" }}>
+              Activity Name: {activityDetails.activityName}
+            </h1>
+            <div>
+              {activityBookmarks.includes(activityDetails.activityId) ? (
+                <button className="btn btn-danger" onClick={removeBookmarks}>
+                  Remove from bookmarks
+                </button>
+              ) : (
+                <>
+                  <button className="btn btn-primary" onClick={addBookmarks}>
+                    Add to bookmark
+                  </button>
+                </>
+              )}
+              <br />
+              {activityDetails.activityOrganizer == userFromStore.userName && (
+                <button className="btn btn-danger" onClick={deleteActivity}>
+                  Delete Activity
+                </button>
+              )}
+            </div>
+          </div>
+        )}
       {activityDetails !== null &&
       venueDetails !== null &&
       registeredActivities !== null &&
       activityBookmarks != null ? (
         <div className="d-flex justify-content-between">
           <div>
-            <div className="mx-auto text-center">
-              <h1 style={{ width: "50vw" }}>
-                Activity Name: {activityDetails.activityName}
-              </h1>
-              <div>
-                {activityBookmarks.includes(activityDetails.activityId) ? (
-                  <button className="btn btn-danger" onClick={removeBookmarks}>
-                    Remove from bookmarks
-                  </button>
-                ) : (
-                  <>
-                    <button className="btn btn-primary" onClick={addBookmarks}>
-                      Add to bookmark
-                    </button>
-                  </>
-                )}
-                <br />
-                {activityDetails.activityOrganizer ==
-                  userFromStore.userName && (
-                  <button className="btn btn-danger" onClick={deleteActivity}>
-                    Delete Activity
-                  </button>
-                )}
-              </div>
-            </div>
             <div className="mx-auto mt-5">
-              <div className="card mb-2 p-3 " style={{ minHeight: "800px" }}>
+              <div
+                className={
+                  "card mb-2 p-3 " +
+                  themeStyles[themeFromStore.value].bodyHeavy +
+                  " " +
+                  themeStyles[themeFromStore.value].text
+                }
+                style={{ minHeight: "800px" }}
+              >
                 <div className="card-body d-flex justify-content-between">
                   <div>
                     <p className="card-text">
@@ -503,54 +517,58 @@ const ActivityDetails = () => {
                           </button>
                         </div> */}
 
-                          <div className="mx-auto d-block text-center">
-                            {activityDetails.activityRemainingCapacity > 0 &&
-                            clientSecret ? (
-                              <>
-                                <Elements
-                                  options={options}
-                                  stripe={stripePromise}
-                                >
-                                  <CheckoutForm
-                                    email={userFromStore.email}
-                                    returnUrl={window.location.href}
-                                  />
-                                </Elements>
-
-                                {urlParams.get("redirect_status") ===
-                                  "succeeded" && (
-                                  <button
-                                    className={
-                                      "btn " +
-                                      (activityDetails.activityRemainingCapacity >
-                                      0
-                                        ? "btn-primary"
-                                        : "btn-danger")
-                                    }
-                                    onClick={() => {
-                                      handleActivityRegistration();
-                                    }}
+                          {userFromStore.userName !=
+                            activityDetails.activityOrganizer && (
+                            <div className="mx-auto d-block text-center">
+                              {activityDetails.activityRemainingCapacity > 0 &&
+                              clientSecret ? (
+                                <>
+                                  <Elements
+                                    options={options}
+                                    stripe={stripePromise}
                                   >
-                                    {activityDetails.activityRemainingCapacity >
+                                    <CheckoutForm
+                                      email={userFromStore.email}
+                                      returnUrl={window.location.href}
+                                    />
+                                  </Elements>
+
+                                  {urlParams.get("redirect_status") ===
+                                    "succeeded" && (
+                                    <button
+                                      className={
+                                        "btn " +
+                                        (activityDetails.activityRemainingCapacity >
+                                        0
+                                          ? "btn-primary"
+                                          : "btn-danger")
+                                      }
+                                      onClick={() => {
+                                        handleActivityRegistration();
+                                      }}
+                                    >
+                                      {activityDetails.activityRemainingCapacity >
+                                      0
+                                        ? "Next"
+                                        : "Activity has reached maximum capacity"}
+                                    </button>
+                                  )}
+                                </>
+                              ) : (
+                                <button
+                                  className={
+                                    "btn " +
+                                    (activityDetails.activityRemainingCapacity >
                                     0
-                                      ? "Next"
-                                      : "Activity has reached maximum capacity"}
-                                  </button>
-                                )}
-                              </>
-                            ) : (
-                              <button
-                                className={
-                                  "btn " +
-                                  (activityDetails.activityRemainingCapacity > 0
-                                    ? "btn-primary"
-                                    : "btn-danger")
-                                }
-                              >
-                                Activity has reached maximum capacity
-                              </button>
-                            )}
-                          </div>
+                                      ? "btn-primary"
+                                      : "btn-danger")
+                                  }
+                                >
+                                  Activity has reached maximum capacity
+                                </button>
+                              )}
+                            </div>
+                          )}
                         </>
                       ) : (
                         <div>
@@ -613,7 +631,15 @@ const ActivityDetails = () => {
                 {activityReview !== null && (
                   <div className="card-body">
                     {activityReview.map((val, index) => (
-                      <div key={index} className="card p-3 mb-1">
+                      <div
+                        key={index}
+                        className={
+                          "card p-3 mb-1  " +
+                          themeStyles[themeFromStore.value].bodyHeavy +
+                          " " +
+                          themeStyles[themeFromStore.value].text
+                        }
+                      >
                         <ul style={{ listStyleType: "none" }}>
                           <li>Participant Username: {val.userName}</li>
                           <li>Rating: {val.rating}</li>
@@ -634,7 +660,16 @@ const ActivityDetails = () => {
                     <div className="card-body">
                       {participantList !== null &&
                         participantList.emailList.map((val, index) => (
-                          <div className="card p-3 mb-1" id={index} key={index}>
+                          <div
+                            className={
+                              "card p-3 mb-1 " +
+                              themeStyles[themeFromStore.value].bodyHeavy +
+                              " " +
+                              themeStyles[themeFromStore.value].text
+                            }
+                            id={index}
+                            key={index}
+                          >
                             <div>
                               Username: {participantList.userNameList[index]}
                             </div>
