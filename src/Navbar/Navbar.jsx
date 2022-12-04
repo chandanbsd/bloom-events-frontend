@@ -9,6 +9,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 import "react-toggle/style.css";
 import Toggle from "react-toggle";
 import themeStyles from "../themeStyles";
+import { firebaseAuthObj } from "../constants/firebase";
 
 const Navbar = () => {
   const userFromStore = useSelector((state) => state.user);
@@ -31,8 +32,9 @@ const Navbar = () => {
 
     navigate("/");
   };
-
+  
   const handleSpecialLogout = () => {
+    // auth().signOut();
     dispatch(
       setProfile({
         firstName: null,

@@ -16,6 +16,7 @@ import time24 from "../constants/time24";
 import bookmarksMock from "../Mocks/bookmarksMock";
 import ReactStars from "react-rating-stars-component";
 import themeStyles from "../themeStyles";
+import Chat from "../Chat/Chat";
 
 const timeSlots = [
   "12 a.m. - 1 a.m.",
@@ -935,6 +936,9 @@ const VenueDetails = () => {
                 )}
               </div>
             </div>
+          </div>
+          <div>
+            <Chat id={"venue" + params.token}/>
           </div>
         </div>
       ) : (
