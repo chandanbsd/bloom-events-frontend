@@ -10,6 +10,7 @@ import "react-toggle/style.css";
 import Toggle from "react-toggle";
 import themeStyles from "../themeStyles";
 import { firebaseAuthObj } from "../constants/firebase";
+import {  signOut } from "firebase/auth";
 
 const Navbar = () => {
   const userFromStore = useSelector((state) => state.user);
@@ -18,8 +19,8 @@ const Navbar = () => {
   const dispatch = useDispatch();
   const themeFromStore = useSelector((state) => state.theme);
   const [localTheme, setLocalTheme] = useState(null);
-  const handleLogout = () => {
-    dispatch(
+  const handleLogout = async () => {
+    await dispatch(
       setProfile({
         firstName: null,
         lastName: null,
@@ -29,8 +30,13 @@ const Navbar = () => {
         isOwner: null,
       })
     );
-
-    navigate("/");
+      signOut(firebaseAuthObj).then(()=> 
+      alert('Signed Out')
+    ).then(()=>    navigate("/")
+    ).catch((error) => 
+      alert('Failed to Sign Out', error.message())
+    );
+    // logout({ returnTo: window.location.origin });
   };
   
   const handleSpecialLogout = () => {
@@ -44,6 +50,11 @@ const Navbar = () => {
         password: null,
         isOwner: null,
       })
+    );
+    signOut(firebaseAuthObj).then(()=> 
+      alert('Signed Out')
+    ).catch((error) => 
+      alert('Failed to Sign Out', error.message())
     );
     logout({ returnTo: window.location.origin });
   };
