@@ -97,6 +97,8 @@ const VenueSearch = () => {
               valueArray = valueArray.map((val) => val.split("/"));
 
               res.body[index].venueSlots[key] = valueArray;
+
+
             }
           });
 
@@ -122,6 +124,9 @@ const VenueSearch = () => {
             setFilteredEventList(
               JSON.parse(JSON.stringify(eventFromStore.eventList))
             );
+
+            console.log(eventFromStore)
+
           }
         } else alert("Unable to fetch event venues");
       })

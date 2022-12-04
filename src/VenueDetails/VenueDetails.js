@@ -380,6 +380,8 @@ const VenueDetails = () => {
   };
 
   useEffect(() => {
+
+    console.log(venueDetails)
     if (venueDetails == null) {
       setVenueDetails({
         ...JSON.parse(
@@ -406,7 +408,7 @@ const VenueDetails = () => {
     <div className={themeStyles[themeFromStore.value].body}>
       {venueDetails !== null &&
       venueBookmarks !== null &&
-      activityBookmarks != null ? (
+      activityBookmarks != null? (
         <div>
           <h1 className="mx-auto" style={{ width: "fit-content" }}>
             Venue Name: {venueDetails.venueName}
@@ -461,6 +463,7 @@ const VenueDetails = () => {
                         </tr>
                         <tr>
                           <td>Monday</td>
+                          {console.log(typeof venueDetails.venueAvailability)}
                           <td>{`${
                             time24[venueDetails.venueAvailability.mon[0]]
                           } - ${
