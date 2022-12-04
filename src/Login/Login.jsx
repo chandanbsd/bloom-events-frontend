@@ -6,6 +6,8 @@ import ReCAPTCHA from "react-google-recaptcha";
 import { useAuth0 } from "@auth0/auth0-react";
 import baseURL from "../constants/constants";
 import themeStyles from "../themeStyles";
+import { firebaseAuthObj } from "../constants/firebase";
+import { signInWithEmailAndPassword } from "firebase/auth";
 
 const Login = () => {
   const userFromStore = useSelector((state) => state.user);
@@ -166,6 +168,14 @@ const Login = () => {
           else {
             dispatch(setProfile({ ...res.body }));
             navigate("/");
+
+            signInWithEmailAndPassword(firebaseAuthObj, res.email, res.password)
+            .then((userCredential) => {
+              alert("Welcome to Bloom Events")
+            })
+            .catch((error) => {
+              alert("Failed To Login User to Bloom Chat")
+            });
           }
         })
         .catch((error) => console.log("Form submit error", error));
