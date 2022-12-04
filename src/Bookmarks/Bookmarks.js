@@ -64,7 +64,7 @@ const Bookmarks = () => {
               }
             });
 
-            dispatch(setEvent([...res.body]));
+            dispatch(setEvent(JSON.parse(JSON.stringify(res.body))));
           } else alert("Unable to fetch event venues");
         })
         .then((res) =>

@@ -6,6 +6,7 @@ import { getDatabase, ref, onValue, set, push} from "firebase/database";
 
 const Chat = ({id}) => {
     const userFromStore = useSelector((state) => state.user);
+    
 
     const [userChatDetails, setUserChatDetails] = useState(null); 
 
@@ -152,6 +153,8 @@ const Chat = ({id}) => {
       ) : ( */}
       <div style={{ width: "50vw" }} className="mx-auto card p-5">
         <h2 className="text-center mb-5">Chat</h2>
+        {userFromStore.userName !== null ? 
+        <>
         <div ref={myRef} style={{minHeight: "500px", maxHeight: "500px", overflow: "scroll"}}>
           {chatState.loadingChats ? (
             <span className="sr-only">Loading...</span>
@@ -206,7 +209,7 @@ const Chat = ({id}) => {
               Send
             </button>
           </div>
-        </form>
+        </form></>: <h3 className="text-center">Please Login or Complete Payment To Chat </h3>}
       </div>
       {/* ) */}
     </>
