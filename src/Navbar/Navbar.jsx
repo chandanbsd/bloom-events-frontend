@@ -9,6 +9,8 @@ import { useAuth0 } from "@auth0/auth0-react";
 import "react-toggle/style.css";
 import Toggle from "react-toggle";
 import themeStyles from "../themeStyles";
+import { firebaseAuthObj } from "../constants/firebase";
+import {  signOut } from "firebase/auth";
 
 const Navbar = () => {
   const userFromStore = useSelector((state) => state.user);
@@ -17,7 +19,28 @@ const Navbar = () => {
   const dispatch = useDispatch();
   const themeFromStore = useSelector((state) => state.theme);
   const [localTheme, setLocalTheme] = useState(null);
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    await dispatch(
+      setProfile({
+        firstName: null,
+        lastName: null,
+        email: null,
+        userName: null,
+        password: null,
+        isOwner: null,
+      })
+    );
+      signOut(firebaseAuthObj).then(()=> 
+      alert('Signed Out')
+    ).then(()=>    navigate("/")
+    ).catch((error) => 
+      alert('Failed to Sign Out', error.message())
+    );
+    // logout({ returnTo: window.location.origin });
+  };
+  
+  const handleSpecialLogout = () => {
+    // auth().signOut();
     dispatch(
       setProfile({
         firstName: null,
@@ -28,20 +51,10 @@ const Navbar = () => {
         isOwner: null,
       })
     );
-
-    navigate("/");
-  };
-
-  const handleSpecialLogout = () => {
-    dispatch(
-      setProfile({
-        firstName: null,
-        lastName: null,
-        email: null,
-        userName: null,
-        password: null,
-        isOwner: null,
-      })
+    signOut(firebaseAuthObj).then(()=> 
+      alert('Signed Out')
+    ).catch((error) => 
+      alert('Failed to Sign Out', error.message())
     );
     logout({ returnTo: window.location.origin });
   };
