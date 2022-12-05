@@ -115,9 +115,8 @@ const VenueDetails = () => {
   const [allowedUsers, setAllowedUsers] = useState([]);
 
   const themeFromStore = useSelector((state) => state.theme);
-  
-  const [allowChatTrigger, setAllowChatTrigger] = useState(false);
 
+  const [allowChatTrigger, setAllowChatTrigger] = useState(false);
 
   const handleReviewSubmit = () => {
     const url = `${baseURL}/venuereview`;
@@ -377,16 +376,14 @@ const VenueDetails = () => {
     fetch(url, requestOptions)
       .then((response) => response.json())
       .then((res) => {
-        if (res.status == "OK"){
-        setVenueReview([...res.body]);
-        }
-        else {
-          setVenueReview([])
+        if (res.status == "OK") {
+          setVenueReview([...res.body]);
+        } else {
+          setVenueReview([]);
         }
       })
       .catch((error) => console.log("API Connection Failed", error));
   };
-
 
   const allowChat = () => {
     const url = `${baseURL}/organisercheck`;
@@ -395,7 +392,7 @@ const VenueDetails = () => {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         venueId: venueDetails.venueId,
-        userName: userFromStore.userName
+        userName: userFromStore.userName,
       }),
     };
 
@@ -405,16 +402,14 @@ const VenueDetails = () => {
         setAllowChatTrigger(res.body == "true" ? true : false);
       })
       .catch((error) => console.log("API Connection Failed", error));
-
-  }
+  };
 
   useEffect(() => {
-    
-    if(userFromStore.userName != null && venueDetails!=null){
-      allowChat()
+    if (userFromStore.userName != null && venueDetails != null) {
+      allowChat();
     }
 
-    console.log(venueDetails)
+    console.log(venueDetails);
     if (venueDetails == null) {
       setVenueDetails({
         ...JSON.parse(
@@ -441,7 +436,7 @@ const VenueDetails = () => {
     <div className={themeStyles[themeFromStore.value].body}>
       {venueDetails !== null &&
       venueBookmarks !== null &&
-      activityBookmarks != null? (
+      activityBookmarks != null ? (
         <div>
           <h1 className="mx-auto" style={{ width: "fit-content" }}>
             Venue Name: {venueDetails.venueName}
@@ -974,7 +969,17 @@ const VenueDetails = () => {
             </div>
           </div>
           <div>
-          {allowChatTrigger && <Chat id={"venue" + params.token}/>}
+            {allowChatTrigger ? (
+              <Chat id={"venue" + params.token} />
+            ) : (
+              <div
+                className="card text-center mx-auto"
+                style={{ width: "50vw" }}
+              >
+                {" "}
+                <h1>Login To Access Chat</h1>
+              </div>
+            )}
           </div>
         </div>
       ) : (

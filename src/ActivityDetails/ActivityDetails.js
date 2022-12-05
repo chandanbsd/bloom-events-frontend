@@ -168,10 +168,10 @@ const ActivityDetails = () => {
     fetch(url, requestOptions)
       .then((response) => response.json())
       .then((res) => {
-        if (res.status == "OK"){
-        setActivityReview([...res.body])}
-        else {
-          setActivityReview([])
+        if (res.status == "OK") {
+          setActivityReview([...res.body]);
+        } else {
+          setActivityReview([]);
         }
       })
       .catch((error) => console.log("API Connection Failed", error));
@@ -299,11 +299,9 @@ const ActivityDetails = () => {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         activityId: activityDetails.activityId,
-        userName: userFromStore.userName
+        userName: userFromStore.userName,
       }),
     };
-
-
 
     fetch(url, requestOptions)
       .then((response) => response.json())
@@ -311,15 +309,11 @@ const ActivityDetails = () => {
         setAllowChatTrigger(res.body == "true" ? true : false);
       })
       .catch((error) => console.log("API Connection Failed", error));
-
-      
-  }
-
+  };
 
   useEffect(() => {
-
-    if(userFromStore.userName != null && activityDetails!=null){
-      allowChat()
+    if (userFromStore.userName != null && activityDetails != null) {
+      allowChat();
     }
     if (activityReview === null) {
       handleActivityReviews();
@@ -406,72 +400,73 @@ const ActivityDetails = () => {
       registeredActivities !== null &&
       activityBookmarks != null ? (
         <>
-        <div className="d-flex justify-content-between">
-          <div>
-            <div className="mx-auto mt-5">
-              <div
-                className={
-                  "card mb-2 p-3 " +
-                  themeStyles[themeFromStore.value].bodyHeavy +
-                  " " +
-                  themeStyles[themeFromStore.value].text
-                }
-                style={{ minHeight: "800px" }}
-              >
-                <div className="card-body d-flex justify-content-between">
-                  <div>
-                    <p className="card-text">
-                      <b>Description:</b> {activityDetails.activityDescription}
-                    </p>
-                    <p className="card-text">
-                      <b>Capacity:</b> {activityDetails.activityCapacity}
-                    </p>
-                    <p className="card-text">
-                      <b>Location:</b> {activityDetails.activityLocation}
-                    </p>
-                    <p className="card-text">
-                      <b>Category:</b> {activityDetails.activityCategory}
-                    </p>
-                    <p className="card-text">
-                      <b>Age Range:</b> {activityDetails.activityAgeRange}
-                    </p>
-                    <p className="card-text">
-                      <b>Cost:</b> {activityDetails.activityCostAmount}
-                    </p>
-                    <p className="card-text">
-                      <b>Venue Name:</b> {venueDetails.venueName}
-                    </p>
-                    <p className="card-text">
-                      <b>Venue Address:</b> {venueDetails.venueAddress}
-                    </p>
-                    <p className="card-text">
-                      <b>City:</b> {venueDetails.venueCity}
-                    </p>
-                    <p className="card-text">
-                      <b>State:</b> {venueDetails.venueState}
-                    </p>
+          <div className="d-flex justify-content-between">
+            <div>
+              <div className="mx-auto mt-5">
+                <div
+                  className={
+                    "card mb-2 p-3 " +
+                    themeStyles[themeFromStore.value].bodyHeavy +
+                    " " +
+                    themeStyles[themeFromStore.value].text
+                  }
+                  style={{ minHeight: "800px" }}
+                >
+                  <div className="card-body d-flex justify-content-between">
+                    <div>
+                      <p className="card-text">
+                        <b>Description:</b>{" "}
+                        {activityDetails.activityDescription}
+                      </p>
+                      <p className="card-text">
+                        <b>Capacity:</b> {activityDetails.activityCapacity}
+                      </p>
+                      <p className="card-text">
+                        <b>Location:</b> {activityDetails.activityLocation}
+                      </p>
+                      <p className="card-text">
+                        <b>Category:</b> {activityDetails.activityCategory}
+                      </p>
+                      <p className="card-text">
+                        <b>Age Range:</b> {activityDetails.activityAgeRange}
+                      </p>
+                      <p className="card-text">
+                        <b>Cost:</b> {activityDetails.activityCostAmount}
+                      </p>
+                      <p className="card-text">
+                        <b>Venue Name:</b> {venueDetails.venueName}
+                      </p>
+                      <p className="card-text">
+                        <b>Venue Address:</b> {venueDetails.venueAddress}
+                      </p>
+                      <p className="card-text">
+                        <b>City:</b> {venueDetails.venueCity}
+                      </p>
+                      <p className="card-text">
+                        <b>State:</b> {venueDetails.venueState}
+                      </p>
 
-                    <p className="card-text">
-                      <b>Remaining Capacity:</b>{" "}
-                      {activityDetails.activityRemainingCapacity}
-                    </p>
+                      <p className="card-text">
+                        <b>Remaining Capacity:</b>{" "}
+                        {activityDetails.activityRemainingCapacity}
+                      </p>
 
-                    <img
-                      className="card-img-top"
-                      alt="Card Image"
-                      src={activityDetails.activityImage}
-                    />
+                      <img
+                        className="card-img-top"
+                        alt="Card Image"
+                        src={activityDetails.activityImage}
+                      />
+                    </div>
                   </div>
-                </div>
 
-                <div>
-                  <div colSpan={2}>
-                    <div className="text-center">
-                      {!registeredActivities.includes(
-                        activityDetails.activityId
-                      ) ? (
-                        <>
-                          {/* <div>
+                  <div>
+                    <div colSpan={2}>
+                      <div className="text-center">
+                        {!registeredActivities.includes(
+                          activityDetails.activityId
+                        ) ? (
+                          <>
+                            {/* <div>
                           <div style={{ width: "500px" }} className="mx-auto">
                             <div>
                               Enter Card Number:{" "}
@@ -555,114 +550,161 @@ const ActivityDetails = () => {
                           </button>
                         </div> */}
 
-                          {userFromStore.userName !=
-                            activityDetails.activityOrganizer && (
-                            <div className="mx-auto d-block text-center">
-                              {activityDetails.activityRemainingCapacity > 0 &&
-                              clientSecret ? (
-                                <>
-                                  <Elements
-                                    options={options}
-                                    stripe={stripePromise}
-                                  >
-                                    <CheckoutForm
-                                      email={userFromStore.email}
-                                      returnUrl={window.location.href}
-                                    />
-                                  </Elements>
-
-                                  {urlParams.get("redirect_status") ===
-                                    "succeeded" && (
-                                    <button
-                                      className={
-                                        "btn " +
-                                        (activityDetails.activityRemainingCapacity >
-                                        0
-                                          ? "btn-primary"
-                                          : "btn-danger")
-                                      }
-                                      onClick={() => {
-                                        handleActivityRegistration();
-                                      }}
+                            {userFromStore.userName !=
+                              activityDetails.activityOrganizer && (
+                              <div className="mx-auto d-block text-center">
+                                {activityDetails.activityRemainingCapacity >
+                                  0 && clientSecret ? (
+                                  <>
+                                    <Elements
+                                      options={options}
+                                      stripe={stripePromise}
                                     >
-                                      {activityDetails.activityRemainingCapacity >
+                                      <CheckoutForm
+                                        email={userFromStore.email}
+                                        returnUrl={window.location.href}
+                                      />
+                                    </Elements>
+
+                                    {urlParams.get("redirect_status") ===
+                                      "succeeded" && (
+                                      <button
+                                        className={
+                                          "btn " +
+                                          (activityDetails.activityRemainingCapacity >
+                                          0
+                                            ? "btn-primary"
+                                            : "btn-danger")
+                                        }
+                                        onClick={() => {
+                                          handleActivityRegistration();
+                                        }}
+                                      >
+                                        {activityDetails.activityRemainingCapacity >
+                                        0
+                                          ? "Next"
+                                          : "Activity has reached maximum capacity"}
+                                      </button>
+                                    )}
+                                  </>
+                                ) : (
+                                  <button
+                                    className={
+                                      "btn " +
+                                      (activityDetails.activityRemainingCapacity >
                                       0
-                                        ? "Next"
-                                        : "Activity has reached maximum capacity"}
-                                    </button>
-                                  )}
-                                </>
-                              ) : (
-                                <button
-                                  className={
-                                    "btn " +
-                                    (activityDetails.activityRemainingCapacity >
-                                    0
-                                      ? "btn-primary"
-                                      : "btn-danger")
-                                  }
-                                >
-                                  Activity has reached maximum capacity
-                                </button>
-                              )}
-                            </div>
-                          )}
-                        </>
-                      ) : (
-                        <div>
-                          <button
-                            className="btn btn-danger"
-                            onClick={handleActivityCancellation}
-                          >
-                            Cancel Registration
-                          </button>
-                          <div
-                            className="mt-5 mx-auto"
-                            style={{ width: "500px" }}
-                          >
-                            <h3>Review Activity</h3>
-                            <br></br>
-                            <div className="form-group">
-                              <label>Select Stars </label>
-
-                              <ReactStars
-                                count={5}
-                                onChange={setStars}
-                                size={24}
-                                activeColor="#ffd700"
-                                classNames={"mx-auto"}
-                              />
-
-                              <br />
-                            </div>
-                            <div className="form-group">
-                              <label>Enter Review: </label>
-                              <textarea
-                                type="text"
-                                className="form-control"
-                                onChange={(e) => setReview(e.target.value)}
-                              />
-                              <br />
-                            </div>
+                                        ? "btn-primary"
+                                        : "btn-danger")
+                                    }
+                                  >
+                                    Activity has reached maximum capacity
+                                  </button>
+                                )}
+                              </div>
+                            )}
+                          </>
+                        ) : (
+                          <div>
                             <button
-                              className="btn btn-primary"
-                              onClick={handleReviewSubmit}
+                              className="btn btn-danger"
+                              onClick={handleActivityCancellation}
                             >
-                              Submit Review
+                              Cancel Registration
                             </button>
+                            {/* <div
+                              className="mt-5 mx-auto"
+                              style={{ width: "500px" }}
+                            >
+                              <h3>Review Activity</h3>
+                              <br></br>
+                              <div className="form-group">
+                                <label>Select Stars </label>
+
+                                <ReactStars
+                                  count={5}
+                                  onChange={setStars}
+                                  size={24}
+                                  activeColor="#ffd700"
+                                  classNames={"mx-auto"}
+                                />
+
+                                <br />
+                              </div>
+                              <div className="form-group">
+                                <label>Enter Review: </label>
+                                <textarea
+                                  type="text"
+                                  className="form-control"
+                                  onChange={(e) => setReview(e.target.value)}
+                                />
+                                <br />
+                              </div>
+                              <button
+                                className="btn btn-primary"
+                                onClick={handleReviewSubmit}
+                              >
+                                Submit Review
+                              </button>
+                            </div> */}
                           </div>
-                        </div>
-                      )}
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
 
-          <div>
-            <div className="mx-auto mt-5" style={{ minHeight: "400px" }}>
+            <div className="mx-auto mt-5" style={{ height: "400px" }}>
               <div className="card mb-2 p-3">
+                <div>
+                  {/* <button
+                      className="btn btn-danger"
+                      onClick={handleActivityCancellation}
+                    >
+                      Cancel Registration
+                    </button> */}
+                  {userFromStore.userName ==
+                  activityDetails.activityOrganizer ? (
+                    <div className="mt-5 mx-auto" style={{ width: "500px" }}>
+                      <h3>Review Activity</h3>
+                      <br></br>
+                      <div className="form-group">
+                        <label>Select Stars </label>
+
+                        <ReactStars
+                          count={5}
+                          onChange={setStars}
+                          size={24}
+                          activeColor="#ffd700"
+                          classNames={"mx-auto"}
+                        />
+
+                        <br />
+                      </div>
+                      <div className="form-group">
+                        <label>Enter Review: </label>
+                        <textarea
+                          type="text"
+                          className="form-control"
+                          onChange={(e) => setReview(e.target.value)}
+                        />
+                        <br />
+                      </div>
+                      <button
+                        className="btn btn-primary"
+                        onClick={handleReviewSubmit}
+                      >
+                        Submit Review
+                      </button>
+                    </div>
+                  ) : (
+                    <h1 className="text-center mb-5">
+                      {" "}
+                      Only Registered users can submit Review
+                    </h1>
+                  )}
+                </div>
                 <div className="mx-auto text-center">
                   <h1 style={{ width: "50vw" }}>Reviews</h1>
                 </div>
@@ -722,11 +764,49 @@ const ActivityDetails = () => {
               )}
             </div>
           </div>
-        </div>
-        <div>
-            {allowChatTrigger && <Chat id={"activity" + params.token}/>}
+          <div>
+            {allowChatTrigger ? (
+              <div className="d-flex justify-content-between">
+                <Chat id={"activity" + params.token} />
+                <div className="mx-auto " style={{ minHeight: "400px" }}>
+                  <div className="card mb-2 p-3">
+                    <div className="mx-auto text-center">
+                      <h1 style={{ width: "50vw" }}>Participant List</h1>
+                    </div>
+
+                    <div className="card-body">
+                      {participantList !== null &&
+                        participantList.emailList.map((val, index) => (
+                          <div
+                            className={
+                              "card p-3 mb-1 " +
+                              themeStyles[themeFromStore.value].bodyHeavy +
+                              " " +
+                              themeStyles[themeFromStore.value].text
+                            }
+                            id={index}
+                            key={index}
+                          >
+                            <div>
+                              Username: {participantList.userNameList[index]}
+                            </div>
+                            <div>Email: {participantList.emailList[index]}</div>
+                          </div>
+                        ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div
+                className="card text-center mx-auto"
+                style={{ width: "50vw" }}
+              >
+                <h1>Login To Access Chat</h1>
+              </div>
+            )}
           </div>
-          </>
+        </>
       ) : (
         <div> Loading</div>
       )}
