@@ -764,48 +764,45 @@ const ActivityDetails = () => {
               )}
             </div>
           </div>
-          <div>
-            {allowChatTrigger ? (
-              <div className="d-flex justify-content-between">
-                <Chat id={"activity" + params.token} />
-                <div className="mx-auto " style={{ minHeight: "400px" }}>
-                  <div className="card mb-2 p-3">
-                    <div className="mx-auto text-center">
-                      <h1 style={{ width: "50vw" }}>Participant List</h1>
-                    </div>
 
-                    <div className="card-body">
-                      {participantList !== null &&
-                        participantList.emailList.map((val, index) => (
-                          <div
-                            className={
-                              "card p-3 mb-1 " +
-                              themeStyles[themeFromStore.value].bodyHeavy +
-                              " " +
-                              themeStyles[themeFromStore.value].text
-                            }
-                            id={index}
-                            key={index}
-                          >
-                            <div>
-                              Username: {participantList.userNameList[index]}
-                            </div>
-                            <div>Email: {participantList.emailList[index]}</div>
-                          </div>
-                        ))}
-                    </div>
-                  </div>
+          {allowChatTrigger ? (
+            <div className="d-flex justify-content-between">
+              <Chat id={"activity" + params.token} />
+              <div className="card mb-2 p-3" style={{ minHeight: "500px" }}>
+                <div className="mx-auto text-center">
+                  <h1 style={{ width: "50vw" }}>Participant List</h1>
+                </div>
+
+                <div className="card-body">
+                  {participantList !== null &&
+                    participantList.emailList.map((val, index) => (
+                      <div
+                        className={
+                          "card p-3 mb-1 " +
+                          themeStyles[themeFromStore.value].bodyHeavy +
+                          " " +
+                          themeStyles[themeFromStore.value].text
+                        }
+                        id={index}
+                        key={index}
+                      >
+                        <div>
+                          Username: {participantList.userNameList[index]}
+                        </div>
+                        <div>Email: {participantList.emailList[index]}</div>
+                      </div>
+                    ))}
                 </div>
               </div>
-            ) : (
-              <div
-                className="card text-center mx-auto"
-                style={{ width: "50vw" }}
-              >
-                <h1>Login To Access Chat</h1>
-              </div>
-            )}
-          </div>
+            </div>
+          ) : (
+            <div
+              className="card text-center mx-auto "
+              style={{ width: "50vw" }}
+            >
+              <h1>Login To Access Chat</h1>
+            </div>
+          )}
         </>
       ) : (
         <div> Loading</div>
