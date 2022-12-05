@@ -6,6 +6,8 @@ import baseURL from "../constants/constants";
 import { useNavigate } from "react-router-dom";
 import { usCities, usStates, usaCityStates } from "../constants/usaCityStates";
 import themeStyles from "../themeStyles";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { firebaseAuthObj } from "../constants/firebase";
 
 const SignUp = () => {
   const user = useSelector((state) => state.user);
@@ -80,10 +82,20 @@ const SignUp = () => {
       fetch(url, requestOptions)
         .then((res) => res.json())
         .then((res) => {
+          console.log(res)
           if (res.status === "OK") {
             dispatch(setProfile({ ...signUpDetails }));
+            createUserWithEmailAndPassword(firebaseAuthObj, signUpDetails.email, signUpDetails.password)
+            .then((userCredential) => {
+              alert("Welcome to Bloom Events")
+            })
+            .catch((error) => {
+              alert("Failed To Signup User to Bloom Chat")
+            });
+
             navigate("/");
           } else {
+            
             alert("Update Failed");
           }
         })
