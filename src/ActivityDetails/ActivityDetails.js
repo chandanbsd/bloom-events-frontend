@@ -167,7 +167,13 @@ const ActivityDetails = () => {
 
     fetch(url, requestOptions)
       .then((response) => response.json())
-      .then((res) => setActivityReview([...res.body]))
+      .then((res) => {
+        if (res.status == "OK"){
+        setActivityReview([...res.body])}
+        else {
+          setActivityReview([])
+        }
+      })
       .catch((error) => console.log("API Connection Failed", error));
   };
 

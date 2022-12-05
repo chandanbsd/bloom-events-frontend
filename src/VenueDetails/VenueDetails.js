@@ -377,7 +377,12 @@ const VenueDetails = () => {
     fetch(url, requestOptions)
       .then((response) => response.json())
       .then((res) => {
+        if (res.status == "OK"){
         setVenueReview([...res.body]);
+        }
+        else {
+          setVenueReview([])
+        }
       })
       .catch((error) => console.log("API Connection Failed", error));
   };
