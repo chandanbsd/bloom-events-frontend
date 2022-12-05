@@ -115,6 +115,9 @@ const VenueDetails = () => {
   const [allowedUsers, setAllowedUsers] = useState([]);
 
   const themeFromStore = useSelector((state) => state.theme);
+  
+  const [allowChatTrigger, setAllowChatTrigger] = useState(false);
+
 
   const handleReviewSubmit = () => {
     const url = `${baseURL}/venuereview`;
@@ -379,7 +382,32 @@ const VenueDetails = () => {
       .catch((error) => console.log("API Connection Failed", error));
   };
 
+
+  const allowChat = () => {
+    const url = `${baseURL}/organisercheck`;
+    const requestOptions = {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        venueId: venueDetails.venueId,
+        userName: userFromStore.userName
+      }),
+    };
+
+    fetch(url, requestOptions)
+      .then((response) => response.json())
+      .then((res) => {
+        setAllowChatTrigger(res.body == "true" ? true : false);
+      })
+      .catch((error) => console.log("API Connection Failed", error));
+
+  }
+
   useEffect(() => {
+    
+    if(userFromStore.userName != null && venueDetails!=null){
+      allowChat()
+    }
 
     console.log(venueDetails)
     if (venueDetails == null) {
@@ -402,7 +430,7 @@ const VenueDetails = () => {
     if (venueBookmarks == null && activityBookmarks == null) {
       handleGetBookmarks();
     }
-  }, [venueDetails, selectedSlotList]);
+  }, [venueDetails, selectedSlotList, allowChatTrigger]);
 
   return (
     <div className={themeStyles[themeFromStore.value].body}>
@@ -941,7 +969,7 @@ const VenueDetails = () => {
             </div>
           </div>
           <div>
-            <Chat id={"venue" + params.token}/>
+          {allowChatTrigger && <Chat id={"venue" + params.token}/>}
           </div>
         </div>
       ) : (

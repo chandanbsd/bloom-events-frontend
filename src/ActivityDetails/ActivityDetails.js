@@ -10,6 +10,7 @@ import { Elements } from "@stripe/react-stripe-js";
 import CheckoutForm from "../StripePayment/CheckoutForm";
 import { StripeContext } from "../Context/StripeContext";
 import themeStyles from "../themeStyles";
+import Chat from "../Chat/Chat";
 
 const ActivityDetails = () => {
   const activityFromStore = useSelector((state) => state.activity);
@@ -42,6 +43,8 @@ const ActivityDetails = () => {
 
   const { clientSecret, options, stripePromise } = useContext(StripeContext);
   const urlParams = new URLSearchParams(window.location.search);
+
+  const [allowChatTrigger, setAllowChatTrigger] = useState(false);
 
   const updateActivityStore = () => {
     const url = `${baseURL}/ra`;
@@ -238,7 +241,6 @@ const ActivityDetails = () => {
 
   const addBookmarks = () => {
     let newFavActivity = [...activityBookmarks];
-    console.log(activityBookmarks, newFavActivity);
     newFavActivity.push(activityDetails.activityId);
 
     newFavActivity = newFavActivity.sort((a, b) => a - b);
@@ -283,7 +285,36 @@ const ActivityDetails = () => {
         }
       });
   };
+
+  const allowChat = () => {
+    const url = `${baseURL}/participantcheck`;
+    const requestOptions = {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        activityId: activityDetails.activityId,
+        userName: userFromStore.userName
+      }),
+    };
+
+
+
+    fetch(url, requestOptions)
+      .then((response) => response.json())
+      .then((res) => {
+        setAllowChatTrigger(res.body == "true" ? true : false);
+      })
+      .catch((error) => console.log("API Connection Failed", error));
+
+      
+  }
+
+
   useEffect(() => {
+
+    if(userFromStore.userName != null && activityDetails!=null){
+      allowChat()
+    }
     if (activityReview === null) {
       handleActivityReviews();
     }
@@ -368,6 +399,7 @@ const ActivityDetails = () => {
       venueDetails !== null &&
       registeredActivities !== null &&
       activityBookmarks != null ? (
+        <>
         <div className="d-flex justify-content-between">
           <div>
             <div className="mx-auto mt-5">
@@ -685,6 +717,10 @@ const ActivityDetails = () => {
             </div>
           </div>
         </div>
+        <div>
+            {allowChatTrigger && <Chat id={"activity" + params.token}/>}
+          </div>
+          </>
       ) : (
         <div> Loading</div>
       )}
