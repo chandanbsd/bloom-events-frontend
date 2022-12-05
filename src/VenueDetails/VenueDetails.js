@@ -16,6 +16,7 @@ import time24 from "../constants/time24";
 import bookmarksMock from "../Mocks/bookmarksMock";
 import ReactStars from "react-rating-stars-component";
 import themeStyles from "../themeStyles";
+import Chat from "../Chat/Chat";
 
 const timeSlots = [
   "12 a.m. - 1 a.m.",
@@ -114,6 +115,9 @@ const VenueDetails = () => {
   const [allowedUsers, setAllowedUsers] = useState([]);
 
   const themeFromStore = useSelector((state) => state.theme);
+  
+  const [allowChatTrigger, setAllowChatTrigger] = useState(false);
+
 
   const handleReviewSubmit = () => {
     const url = `${baseURL}/venuereview`;
@@ -378,7 +382,34 @@ const VenueDetails = () => {
       .catch((error) => console.log("API Connection Failed", error));
   };
 
+
+  const allowChat = () => {
+    const url = `${baseURL}/organisercheck`;
+    const requestOptions = {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        venueId: venueDetails.venueId,
+        userName: userFromStore.userName
+      }),
+    };
+
+    fetch(url, requestOptions)
+      .then((response) => response.json())
+      .then((res) => {
+        setAllowChatTrigger(res.body == "true" ? true : false);
+      })
+      .catch((error) => console.log("API Connection Failed", error));
+
+  }
+
   useEffect(() => {
+    
+    if(userFromStore.userName != null && venueDetails!=null){
+      allowChat()
+    }
+
+    console.log(venueDetails)
     if (venueDetails == null) {
       setVenueDetails({
         ...JSON.parse(
@@ -399,13 +430,13 @@ const VenueDetails = () => {
     if (venueBookmarks == null && activityBookmarks == null) {
       handleGetBookmarks();
     }
-  }, [venueDetails, selectedSlotList]);
+  }, [venueDetails, selectedSlotList, allowChatTrigger]);
 
   return (
     <div className={themeStyles[themeFromStore.value].body}>
       {venueDetails !== null &&
       venueBookmarks !== null &&
-      activityBookmarks != null ? (
+      activityBookmarks != null? (
         <div>
           <h1 className="mx-auto" style={{ width: "fit-content" }}>
             Venue Name: {venueDetails.venueName}
@@ -460,6 +491,7 @@ const VenueDetails = () => {
                         </tr>
                         <tr>
                           <td>Monday</td>
+                          {console.log(typeof venueDetails.venueAvailability)}
                           <td>{`${
                             time24[venueDetails.venueAvailability.mon[0]]
                           } - ${
@@ -935,6 +967,9 @@ const VenueDetails = () => {
                 )}
               </div>
             </div>
+          </div>
+          <div>
+          {allowChatTrigger && <Chat id={"venue" + params.token}/>}
           </div>
         </div>
       ) : (
