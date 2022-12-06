@@ -10,7 +10,7 @@ import "react-toggle/style.css";
 import Toggle from "react-toggle";
 import themeStyles from "../themeStyles";
 import { firebaseAuthObj } from "../constants/firebase";
-import {  signOut } from "firebase/auth";
+import { signOut } from "firebase/auth";
 
 const Navbar = () => {
   const userFromStore = useSelector((state) => state.user);
@@ -30,15 +30,13 @@ const Navbar = () => {
         isOwner: null,
       })
     );
-      signOut(firebaseAuthObj).then(()=> 
-      alert('Signed Out')
-    ).then(()=>    navigate("/")
-    ).catch((error) => 
-      alert('Failed to Sign Out', error.message())
-    );
+    signOut(firebaseAuthObj)
+      .then(() => alert("Signed Out"))
+      .then(() => navigate("/"))
+      .catch((error) => alert("Failed to Sign Out", error.message()));
     // logout({ returnTo: window.location.origin });
   };
-  
+
   const handleSpecialLogout = () => {
     // auth().signOut();
     dispatch(
@@ -51,11 +49,9 @@ const Navbar = () => {
         isOwner: null,
       })
     );
-    signOut(firebaseAuthObj).then(()=> 
-      alert('Signed Out')
-    ).catch((error) => 
-      alert('Failed to Sign Out', error.message())
-    );
+    signOut(firebaseAuthObj)
+      .then(() => alert("Signed Out"))
+      .catch((error) => alert("Failed to Sign Out", error.message()));
     logout({ returnTo: window.location.origin });
   };
 

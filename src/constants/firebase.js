@@ -1,13 +1,12 @@
-import { initializeApp } from "firebase/app"
+import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getDatabase } from "firebase/database";
-import {  onAuthStateChanged } from "firebase/auth";
-
+import { onAuthStateChanged } from "firebase/auth";
 
 const firebaseConfig = {
   apiKey: "***REMOVED***",
   authDomain: "***REMOVED***",
-  databaseURL: "***REMOVED***"
+  databaseURL: "***REMOVED***",
 };
 
 const firebaseApp = initializeApp(firebaseConfig);
@@ -25,8 +24,7 @@ onAuthStateChanged(firebaseAuthObj, (user) => {
     // User is signed out
     // ...
   }
-})
-
+});
 
 // const signup = (email, password) => {
 //   return auth().createUserWithEmailAndPassword(email, password);
