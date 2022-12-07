@@ -106,7 +106,7 @@ const Navbar = () => {
 
         {userFromStore.userName === null ? (
           <React.Fragment>
-            <Link to="login" className="nav-item navbar-brand">
+            <Link to="login" reloadDocument className="nav-item navbar-brand">
               Login
             </Link>
           </React.Fragment>

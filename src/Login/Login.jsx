@@ -280,6 +280,7 @@ const Login = () => {
               onClick={() => {
                 localStorage.setItem("loginWithOAuth", JSON.stringify(true));
               }}
+              reloadDocument
             >
               Signin with OAuth
             </Link>{" "}
@@ -299,10 +300,10 @@ const Login = () => {
             style={{ width: "500px" }}
             className="form-group d-flex justify-content-around"
           >
-            <Link to="signup" className="btn btn-primary">
+            <Link to="signup" reloadDocument className="btn btn-primary">
               Signup with Email
             </Link>{" "}
-            <Link to="special-signup" className="btn btn-primary">
+            <Link to="special-signup" reloadDocument className="btn btn-primary">
               Signup with OAuth
             </Link>{" "}
           </div>
