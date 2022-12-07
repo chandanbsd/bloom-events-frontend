@@ -4,9 +4,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { setProfile } from "../redux/user";
 import baseURL from "../constants/constants";
 import { useNavigate } from "react-router-dom";
-import { usCities, usStates } from "../constants/usaCityStates";
+import { usaCityStates, usCities, usStates } from "../constants/usaCityStates";
 import { useAuth0 } from "@auth0/auth0-react";
 import themeStyles from "../themeStyles";
+import { firebaseAuthObj } from "../constants/firebase";
+import { createUserWithEmailAndPassword } from "firebase/auth";
 
 const SpecialSignup = () => {
   const userFromStore = useSelector((state) => state.user);
@@ -56,6 +58,7 @@ const SpecialSignup = () => {
       );
 
       console.log("saved to local storage");
+
 
       loginWithRedirect();
     }
@@ -204,43 +207,19 @@ const SpecialSignup = () => {
             <br />
           </div>
 
-          <div className="form-group">
-            <label>Select City?</label>
-            <select
-              className="form-control"
-              onChange={(e) =>
-                setSignUpDetails({
-                  ...specialSignUpDetails,
-                  city: e.target.value,
-                })
-              }
-            >
-              <option value={undefined} defaultValue>
-                Choose an option
-              </option>
-              {usCities.map((ele, index) => (
-                <option value={ele} key={index}>
-                  {ele}
-                </option>
-              ))}
-            </select>
-            <br />
-          </div>
+          
 
           <div className="form-group">
-            <label>Select State?</label>
+            <label>Se lect State: </label>
             <select
               className="form-control"
-              onChange={(e) =>
+              onChange={(e) => {
                 setSignUpDetails({
                   ...specialSignUpDetails,
                   state: e.target.value,
-                })
-              }
+                });
+              }}
             >
-              <option value={undefined} defaultValue>
-                Choose an option
-              </option>
               {usStates.map((ele, index) => (
                 <option value={ele} key={index}>
                   {ele}
@@ -250,6 +229,31 @@ const SpecialSignup = () => {
             <br />
           </div>
 
+          <div className="form-group">
+            <label>Select City: </label>
+            {specialSignUpDetails.state != null ? (
+              <select
+                className="form-control"
+                onChange={(e) => {
+                  setSignUpDetails({
+                    ...specialSignUpDetails,
+                    city: e.target.value,
+                  });
+                }}
+              >
+                {usaCityStates[specialSignUpDetails.state].map((ele, index) => {
+                  return (
+                    <option value={ele} key={index}>
+                      {ele}
+                    </option>
+                  );
+                })}
+              </select>
+            ) : (
+              <div>Select state first</div>
+            )}
+          </div>
+          <br/>
           <div className="form-group">
             <label>Select Age Range?</label>
             <select
@@ -279,12 +283,12 @@ const SpecialSignup = () => {
               onChange={onCaptchaChange}
             />
           </div>
-          <div className=" form-group d-flex justify-content-around">
+          <div className=" form-group d-flex justify-content-around pb-5">
             <button
               onClick={() => handleSpecialSignUp()}
-              className="btn btn-info"
+              className="btn btn-info mt-2"
             >
-              Login/Signup With OAuth
+              Signup With OAuth
             </button>
           </div>
         </div>

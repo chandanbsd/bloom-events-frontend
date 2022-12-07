@@ -7,7 +7,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 import baseURL from "../constants/constants";
 import themeStyles from "../themeStyles";
 import { firebaseAuthObj } from "../constants/firebase";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
 
 const Login = () => {
   const userFromStore = useSelector((state) => state.user);
@@ -50,8 +50,16 @@ const Login = () => {
             alert("Please Signup First");
             localStorage.removeItem("loginWithOAuth");
           } else {
-            dispatch(setProfile({ ...res.body }));
-            localStorage.removeItem("loginWithOAuth");
+            signInWithEmailAndPassword(firebaseAuthObj, res.body.email, "test123")
+              .then((userCredential) => {
+                alert("Welcome to Bloom Events")
+              }).then(()=> {            dispatch(setProfile({ ...res.body }));
+              localStorage.removeItem("loginWithOAuth");})
+              .catch((error) => {
+                console.log(error)
+                alert("Failed To Login User to Bloom Chat")
+              });
+
           }
         });
     } else {
@@ -82,6 +90,9 @@ const Login = () => {
             state: specialLoginDetails.state,
           }),
         };
+
+
+
 
         console.log(
           JSON.stringify({
@@ -130,13 +141,32 @@ const Login = () => {
               localStorage.removeItem("specialLoginDetails");
               logout({ returnTo: window.location.origin });
             }
+            else {
+              
+              // signInWithEmailAndPassword(firebaseAuthObj, res.body.email, "test123")
+              // .then((userCredential) => {
+              //   alert("Welcome to Bloom Events")
+              // }).then(()=> navigate("/"))
+              // .catch((error) => {
+              //   console.log(error)
+              //   alert("Failed To Login User to Bloom Chat")
+              // });
+            }
             return res;
           })
           .then((res) => {
-            console.log("From Backend:", res);
-            dispatch(setProfile({ ...res.body }));
-            localStorage.removeItem("specialLoginDetails");
-            navigate("/");
+            createUserWithEmailAndPassword(firebaseAuthObj, res.body.email, "test123")
+              .then((userCredential) => {
+                alert("Welcome to Bloom Events")
+              }).then(()=> { console.log("From Backend:", res);
+              dispatch(setProfile({ ...res.body }));
+              localStorage.removeItem("specialLoginDetails");
+              navigate("/");})
+              .catch((error) => {
+                alert("Failed To Signup User to Bloom Chat")
+              });
+
+           
           })
           .catch((error) => console.log("Form submit error", error));
       }
