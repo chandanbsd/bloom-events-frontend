@@ -478,90 +478,6 @@ const ActivityDetails = () => {
                           activityDetails.activityId
                         ) ? (
                           <>
-                            {/* <div>
-                          <div style={{ width: "500px" }} className="mx-auto">
-                            <div>
-                              Enter Card Number:{" "}
-                              <input
-                                type={"text"}
-                                className="form-control"
-                                maxLength={16}
-                                style={{
-                                  width: "50%",
-                                  display: "inline-block",
-                                }}
-                                onChange={(e) => {
-                                  setPaymentCreds({
-                                    ...paymentCreds,
-                                    cardNumber: e.target.value,
-                                  });
-                                }}
-                              ></input>
-                            </div>
-                            <br />
-                            <div>
-                              Enter Card Expiry:{" "}
-                              <input
-                                type={"month"}
-                                className="form-control"
-                                style={{
-                                  width: "50%",
-                                  display: "inline-block",
-                                }}
-                                onChange={(e) => {
-                                  setPaymentCreds({
-                                    ...paymentCreds,
-                                    expiry: e.target.value,
-                                  });
-                                }}
-                              ></input>
-                            </div>
-                            <br />
-                            <div>
-                              Enter Card CVV:{" "}
-                              <input
-                                type={"password"}
-                                className="form-control"
-                                maxLength={3}
-                                style={{
-                                  width: "50%",
-                                  display: "inline-block",
-                                }}
-                                onChange={(e) => {
-                                  setPaymentCreds({
-                                    ...paymentCreds,
-                                    cvv: e.target.value,
-                                  });
-                                }}
-                              ></input>
-                            </div>
-                          </div>
-                          <br />
-                          <button
-                            className={
-                              "btn " +
-                              (activityDetails.activityRemainingCapacity > 0
-                                ? "btn-primary"
-                                : "btn-danger")
-                            }
-                            onClick={() => {
-                              if (
-                                paymentCreds.cardNumber !== null &&
-                                paymentCreds.cvv !== null &&
-                                paymentCreds.expiry != null
-                              )
-                                handleActivityRegistration();
-                              else {
-                                alert("Please fill all payment details");
-                              }
-                            }}
-                          >
-                            {activityDetails.activityRemainingCapacity > 0
-                              ? "Confirm Booking"
-                              : "Activity has reached maximum capacity"}
-                          </button>
-                        </div> */}
-
                             {userFromStore.userName !=
                               activityDetails.activityOrganizer && (
                               <div className="mx-auto d-block text-center">
@@ -623,41 +539,6 @@ const ActivityDetails = () => {
                             >
                               Cancel Registration
                             </button>
-                            {/* <div
-                              className="mt-5 mx-auto"
-                              style={{ width: "500px" }}
-                            >
-                              <h3>Review Activity</h3>
-                              <br></br>
-                              <div className="form-group">
-                                <label>Select Stars </label>
-
-                                <ReactStars
-                                  count={5}
-                                  onChange={setStars}
-                                  size={24}
-                                  activeColor="#ffd700"
-                                  classNames={"mx-auto"}
-                                />
-
-                                <br />
-                              </div>
-                              <div className="form-group">
-                                <label>Enter Review: </label>
-                                <textarea
-                                  type="text"
-                                  className="form-control"
-                                  onChange={(e) => setReview(e.target.value)}
-                                />
-                                <br />
-                              </div>
-                              <button
-                                className="btn btn-primary"
-                                onClick={handleReviewSubmit}
-                              >
-                                Submit Review
-                              </button>
-                            </div> */}
                           </div>
                         )}
                       </div>
@@ -670,12 +551,6 @@ const ActivityDetails = () => {
             <div className="mx-auto mt-5">
               <div className="card mb-2 p-3">
                 <div>
-                  {/* <button
-                      className="btn btn-danger"
-                      onClick={handleActivityCancellation}
-                    >
-                      Cancel Registration
-                    </button> */}
                   {userFromStore.userName !=
                     activityDetails.activityOrganizer &&
                   participantList !== null &&
