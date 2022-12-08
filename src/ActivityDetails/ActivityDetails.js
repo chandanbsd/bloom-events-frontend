@@ -124,10 +124,22 @@ const ActivityDetails = () => {
         rating: stars,
       }),
     };
-    fetch(url, requestOptions).then((response) => response.json());
+    console.log(
+      JSON.stringify({
+        activityId: activityDetails.activityId,
+        userName: userFromStore.userName,
+        review: review,
+        rating: stars,
+      })
+    );
+    fetch(url, requestOptions)
+      .then((response) => response.json())
+      .then(() => {
+        handleActivityReviews();
+      })
+      .then(() => window.location.reload());
 
-    handleActivityReviews();
-    window.location.reload();
+    // window.location.reload();
   };
 
   const handleActivityCancellation = () => {
@@ -371,7 +383,7 @@ const ActivityDetails = () => {
         registeredActivities !== null &&
         activityBookmarks != null && (
           <div className="mx-auto text-center">
-            <h1 style={{ width: "50vw" }}>
+            <h1 className="text-center mx-auto">
               Activity Name: {activityDetails.activityName}
             </h1>
             <div>
@@ -551,58 +563,57 @@ const ActivityDetails = () => {
                         </div> */}
 
                             {userFromStore.userName !=
-                              activityDetails.activityOrganizer ||
-                              (allowChatTrigger && (
-                                <div className="mx-auto d-block text-center">
-                                  {activityDetails.activityRemainingCapacity >
-                                    0 && clientSecret ? (
-                                    <>
-                                      <Elements
-                                        options={options}
-                                        stripe={stripePromise}
-                                      >
-                                        <CheckoutForm
-                                          email={userFromStore.email}
-                                          returnUrl={window.location.href}
-                                        />
-                                      </Elements>
-
-                                      {urlParams.get("redirect_status") ===
-                                        "succeeded" && (
-                                        <button
-                                          className={
-                                            "btn " +
-                                            (activityDetails.activityRemainingCapacity >
-                                            0
-                                              ? "btn-primary"
-                                              : "btn-danger")
-                                          }
-                                          onClick={() => {
-                                            handleActivityRegistration();
-                                          }}
-                                        >
-                                          {activityDetails.activityRemainingCapacity >
-                                          0
-                                            ? "Next"
-                                            : "Activity has reached maximum capacity"}
-                                        </button>
-                                      )}
-                                    </>
-                                  ) : (
-                                    <button
-                                      className={
-                                        "btn " +
-                                        (activityDetails.activityRemainingCapacity >
-                                        0
-                                          ? "btn-primary"
-                                          : "btn-danger")
-                                      }
+                              activityDetails.activityOrganizer && (
+                              <div className="mx-auto d-block text-center">
+                                {activityDetails.activityRemainingCapacity >
+                                  0 && clientSecret ? (
+                                  <>
+                                    <Elements
+                                      options={options}
+                                      stripe={stripePromise}
                                     >
-                                      Activity has reached maximum capacity
-                                    </button>
-                                  )}
-                                </div>
-                              ))}
+                                      <CheckoutForm
+                                        email={userFromStore.email}
+                                        returnUrl={window.location.href}
+                                      />
+                                    </Elements>
+
+                                    {urlParams.get("redirect_status") ===
+                                      "succeeded" && (
+                                      <button
+                                        className={
+                                          "btn " +
+                                          (activityDetails.activityRemainingCapacity >
+                                          0
+                                            ? "btn-primary"
+                                            : "btn-danger")
+                                        }
+                                        onClick={() => {
+                                          handleActivityRegistration();
+                                        }}
+                                      >
+                                        {activityDetails.activityRemainingCapacity >
+                                        0
+                                          ? "Next"
+                                          : "Activity has reached maximum capacity"}
+                                      </button>
+                                    )}
+                                  </>
+                                ) : (
+                                  <button
+                                    className={
+                                      "btn " +
+                                      (activityDetails.activityRemainingCapacity >
+                                      0
+                                        ? "btn-primary"
+                                        : "btn-danger")
+                                    }
+                                  >
+                                    Activity has reached maximum capacity
+                                  </button>
+                                )}
+                              </div>
+                            )}
                           </>
                         ) : (
                           <div>
@@ -656,7 +667,7 @@ const ActivityDetails = () => {
               </div>
             </div>
 
-            <div className="mx-auto mt-5" style={{ height: "400px" }}>
+            <div className="mx-auto mt-5">
               <div className="card mb-2 p-3">
                 <div>
                   {/* <button
@@ -665,8 +676,12 @@ const ActivityDetails = () => {
                     >
                       Cancel Registration
                     </button> */}
-                  {userFromStore.userName ==
-                  activityDetails.activityOrganizer ? (
+                  {userFromStore.userName !=
+                    activityDetails.activityOrganizer &&
+                  participantList !== null &&
+                  participantList.userNameList.includes(
+                    userFromStore.userName
+                  ) ? (
                     <div className="mt-5 mx-auto" style={{ width: "500px" }}>
                       <h3>Review Activity</h3>
                       <br></br>
@@ -694,7 +709,9 @@ const ActivityDetails = () => {
                       </div>
                       <button
                         className="btn btn-primary"
-                        onClick={handleReviewSubmit}
+                        onClick={() => {
+                          handleReviewSubmit();
+                        }}
                       >
                         Submit Review
                       </button>
@@ -731,38 +748,6 @@ const ActivityDetails = () => {
                   </div>
                 )}
               </div>
-              {userFromStore.userName == activityDetails.activityOrganizer ? (
-                <div className="mx-auto mt-5" style={{ minHeight: "400px" }}>
-                  <div className="card mb-2 p-3">
-                    <div className="mx-auto text-center">
-                      <h1 style={{ width: "50vw" }}>Participant List</h1>
-                    </div>
-
-                    <div className="card-body">
-                      {participantList !== null &&
-                        participantList.emailList.map((val, index) => (
-                          <div
-                            className={
-                              "card p-3 mb-1 " +
-                              themeStyles[themeFromStore.value].bodyHeavy +
-                              " " +
-                              themeStyles[themeFromStore.value].text
-                            }
-                            id={index}
-                            key={index}
-                          >
-                            <div>
-                              Username: {participantList.userNameList[index]}
-                            </div>
-                            <div>Email: {participantList.emailList[index]}</div>
-                          </div>
-                        ))}
-                    </div>
-                  </div>
-                </div>
-              ) : (
-                <div></div>
-              )}
             </div>
           </div>
 
