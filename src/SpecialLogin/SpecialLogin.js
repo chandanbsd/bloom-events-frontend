@@ -5,6 +5,8 @@ import { setProfile } from "../redux/user";
 import ReCAPTCHA from "react-google-recaptcha";
 import { useAuth0 } from "@auth0/auth0-react";
 import baseURL from "../constants/constants";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { firebaseAuthObj } from "../constants/firebase";
 
 const SpecialLogin = () => {
   const userFromStore = useSelector((state) => state.user);

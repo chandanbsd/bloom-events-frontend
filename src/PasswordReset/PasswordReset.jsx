@@ -8,7 +8,6 @@ const PasswordReset = () => {
   const params = useParams();
 
   useEffect(() => {
-    console.log(params.token);
   }, []);
 
   const passwordReset = () => {

@@ -5,6 +5,7 @@ import activity, { clearActivity, setActivity } from "../redux/activity";
 import { clearEvent, setEvent } from "../redux/event";
 import { Link } from "react-router-dom";
 import { setUser } from "../redux/user";
+import themeStyles from "../themeStyles";
 
 const Bookmarks = () => {
   const eventFromStore = useSelector((state) => state.event);
@@ -16,7 +17,7 @@ const Bookmarks = () => {
   const [filteredActivityList, setFilteredActivityList] = useState(null);
   const activityFromStore = useSelector((state) => state.activity);
   const [fetchComplete, setFetchComplete] = useState(0);
-
+  const themeFromStore = useSelector((state) => state.theme);
   useEffect(() => {
     if (venueBookmarks == null && activityBookmarks == null) {
       let url = `${baseURL}/getbookmark`;
@@ -33,10 +34,9 @@ const Bookmarks = () => {
 
         .then((res) => {
           if (res.status === "OK") {
-            console.log(res.body);
             setVenueBookmarks(res.body.favVenue);
             setActivityBookmarks(res.body.favActivity);
-          } else alert("Unable to fetch bookmarks");
+          }
           return true;
         });
     }
@@ -65,7 +65,7 @@ const Bookmarks = () => {
             });
 
             dispatch(setEvent(JSON.parse(JSON.stringify(res.body))));
-          } else alert("Unable to fetch event venues");
+          } else setFilteredEventList([]);
         })
         .then((res) =>
           setFilteredEventList(
@@ -94,7 +94,10 @@ const Bookmarks = () => {
                 (ele) => activityBookmarks.includes(ele.activityId)
               )
             );
-          } else alert("Unable to fetch activities");
+          }
+          else{
+            setFilteredActivityList([])
+          }
         });
     }
   }, [
@@ -105,16 +108,20 @@ const Bookmarks = () => {
   ]);
 
   return (
-    <div>
+    <div className={"pt-5 " + themeStyles[themeFromStore.value].body} style={{minHeight:"100vh"}}>
       {venueBookmarks !== null &&
       activityBookmarks !== null &&
       filteredActivityList != null &&
       filteredEventList != null ? (
-        <div>
-          <div className="card mb-2 p-3 mx-auto mt-2" style={{ width: "50%" }}>
-            <div className="align-self-center" style={{ width: "100%" }}>
+        <div >
+          <div className={"card mb-2 p-3 mx-auto "+
+                            themeStyles[themeFromStore.value].bodyHeavy +
+                            " " +
+                            themeStyles[themeFromStore.value].text} style={{ width: "50%" }}>
+            <div className="text-center" style={{ width: "100%" }}>
               <h1>Bookmarked Venues</h1>
-              <table className="table">
+              <table className={"table " +
+                            themeStyles[themeFromStore.value].text}>
                 <tbody>
                   <tr>
                     <th>Venue Name</th>
@@ -146,10 +153,14 @@ const Bookmarks = () => {
               </table>
             </div>
           </div>
-          <div className="card mb-2 p-3 mx-auto" style={{ width: "50%" }}>
-            <div className="align-self-center" style={{ width: "100%" }}>
+          <div className={"card mb-2 p-3 mx-auto "+
+                            themeStyles[themeFromStore.value].bodyHeavy +
+                            " " +
+                            themeStyles[themeFromStore.value].text} style={{ width: "50%" }}>
+            <div className="text-center" style={{ width: "100%" }}>
               <h1>Bookmarked Activities</h1>
-              <table className="table">
+              <table className={"table " +
+                            themeStyles[themeFromStore.value].text}>
                 <tbody>
                   <tr>
                     <th>Activity Name</th>

@@ -35,12 +35,6 @@ const ActivityDetails = () => {
   const [venueBookmarks, setVenueBookmarks] = useState(null);
   const themeFromStore = useSelector((state) => state.theme);
 
-  // const [paymentCreds, setPaymentCreds] = useState({
-  //   cardNumber: null,
-  //   cvv: null,
-  //   expiry: null,
-  // });
-
   const { clientSecret, options, stripePromise } = useContext(StripeContext);
   const urlParams = new URLSearchParams(window.location.search);
 
@@ -124,10 +118,22 @@ const ActivityDetails = () => {
         rating: stars,
       }),
     };
-    fetch(url, requestOptions).then((response) => response.json());
+    console.log(
+      JSON.stringify({
+        activityId: activityDetails.activityId,
+        userName: userFromStore.userName,
+        review: review,
+        rating: stars,
+      })
+    );
+    fetch(url, requestOptions)
+      .then((response) => response.json())
+      .then(() => {
+        handleActivityReviews();
+      })
+      .then(() => window.location.reload());
 
-    handleActivityReviews();
-    window.location.reload();
+    // window.location.reload();
   };
 
   const handleActivityCancellation = () => {
@@ -371,7 +377,7 @@ const ActivityDetails = () => {
         registeredActivities !== null &&
         activityBookmarks != null && (
           <div className="mx-auto text-center">
-            <h1 style={{ width: "50vw" }}>
+            <h1 className="text-center mx-auto">
               Activity Name: {activityDetails.activityName}
             </h1>
             <div>
@@ -466,90 +472,6 @@ const ActivityDetails = () => {
                           activityDetails.activityId
                         ) ? (
                           <>
-                            {/* <div>
-                          <div style={{ width: "500px" }} className="mx-auto">
-                            <div>
-                              Enter Card Number:{" "}
-                              <input
-                                type={"text"}
-                                className="form-control"
-                                maxLength={16}
-                                style={{
-                                  width: "50%",
-                                  display: "inline-block",
-                                }}
-                                onChange={(e) => {
-                                  setPaymentCreds({
-                                    ...paymentCreds,
-                                    cardNumber: e.target.value,
-                                  });
-                                }}
-                              ></input>
-                            </div>
-                            <br />
-                            <div>
-                              Enter Card Expiry:{" "}
-                              <input
-                                type={"month"}
-                                className="form-control"
-                                style={{
-                                  width: "50%",
-                                  display: "inline-block",
-                                }}
-                                onChange={(e) => {
-                                  setPaymentCreds({
-                                    ...paymentCreds,
-                                    expiry: e.target.value,
-                                  });
-                                }}
-                              ></input>
-                            </div>
-                            <br />
-                            <div>
-                              Enter Card CVV:{" "}
-                              <input
-                                type={"password"}
-                                className="form-control"
-                                maxLength={3}
-                                style={{
-                                  width: "50%",
-                                  display: "inline-block",
-                                }}
-                                onChange={(e) => {
-                                  setPaymentCreds({
-                                    ...paymentCreds,
-                                    cvv: e.target.value,
-                                  });
-                                }}
-                              ></input>
-                            </div>
-                          </div>
-                          <br />
-                          <button
-                            className={
-                              "btn " +
-                              (activityDetails.activityRemainingCapacity > 0
-                                ? "btn-primary"
-                                : "btn-danger")
-                            }
-                            onClick={() => {
-                              if (
-                                paymentCreds.cardNumber !== null &&
-                                paymentCreds.cvv !== null &&
-                                paymentCreds.expiry != null
-                              )
-                                handleActivityRegistration();
-                              else {
-                                alert("Please fill all payment details");
-                              }
-                            }}
-                          >
-                            {activityDetails.activityRemainingCapacity > 0
-                              ? "Confirm Booking"
-                              : "Activity has reached maximum capacity"}
-                          </button>
-                        </div> */}
-
                             {userFromStore.userName !=
                               activityDetails.activityOrganizer && (
                               <div className="mx-auto d-block text-center">
@@ -611,41 +533,6 @@ const ActivityDetails = () => {
                             >
                               Cancel Registration
                             </button>
-                            {/* <div
-                              className="mt-5 mx-auto"
-                              style={{ width: "500px" }}
-                            >
-                              <h3>Review Activity</h3>
-                              <br></br>
-                              <div className="form-group">
-                                <label>Select Stars </label>
-
-                                <ReactStars
-                                  count={5}
-                                  onChange={setStars}
-                                  size={24}
-                                  activeColor="#ffd700"
-                                  classNames={"mx-auto"}
-                                />
-
-                                <br />
-                              </div>
-                              <div className="form-group">
-                                <label>Enter Review: </label>
-                                <textarea
-                                  type="text"
-                                  className="form-control"
-                                  onChange={(e) => setReview(e.target.value)}
-                                />
-                                <br />
-                              </div>
-                              <button
-                                className="btn btn-primary"
-                                onClick={handleReviewSubmit}
-                              >
-                                Submit Review
-                              </button>
-                            </div> */}
                           </div>
                         )}
                       </div>
@@ -655,17 +542,15 @@ const ActivityDetails = () => {
               </div>
             </div>
 
-            <div className="mx-auto mt-5" style={{ height: "400px" }}>
+            <div className="mx-auto mt-5">
               <div className="card mb-2 p-3">
                 <div>
-                  {/* <button
-                      className="btn btn-danger"
-                      onClick={handleActivityCancellation}
-                    >
-                      Cancel Registration
-                    </button> */}
-                  {userFromStore.userName ==
-                  activityDetails.activityOrganizer ? (
+                  {userFromStore.userName !=
+                    activityDetails.activityOrganizer &&
+                  participantList !== null &&
+                  participantList.userNameList.includes(
+                    userFromStore.userName
+                  ) ? (
                     <div className="mt-5 mx-auto" style={{ width: "500px" }}>
                       <h3>Review Activity</h3>
                       <br></br>
@@ -693,7 +578,9 @@ const ActivityDetails = () => {
                       </div>
                       <button
                         className="btn btn-primary"
-                        onClick={handleReviewSubmit}
+                        onClick={() => {
+                          handleReviewSubmit();
+                        }}
                       >
                         Submit Review
                       </button>
@@ -730,38 +617,6 @@ const ActivityDetails = () => {
                   </div>
                 )}
               </div>
-              {userFromStore.userName == activityDetails.activityOrganizer ? (
-                <div className="mx-auto mt-5" style={{ minHeight: "400px" }}>
-                  <div className="card mb-2 p-3">
-                    <div className="mx-auto text-center">
-                      <h1 style={{ width: "50vw" }}>Participant List</h1>
-                    </div>
-
-                    <div className="card-body">
-                      {participantList !== null &&
-                        participantList.emailList.map((val, index) => (
-                          <div
-                            className={
-                              "card p-3 mb-1 " +
-                              themeStyles[themeFromStore.value].bodyHeavy +
-                              " " +
-                              themeStyles[themeFromStore.value].text
-                            }
-                            id={index}
-                            key={index}
-                          >
-                            <div>
-                              Username: {participantList.userNameList[index]}
-                            </div>
-                            <div>Email: {participantList.emailList[index]}</div>
-                          </div>
-                        ))}
-                    </div>
-                  </div>
-                </div>
-              ) : (
-                <div></div>
-              )}
             </div>
           </div>
 

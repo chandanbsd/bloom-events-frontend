@@ -19,13 +19,6 @@ const Chat = ({id}) => {
     loadingChats: true,
   });
 
-  // const [loginState, setLoginState] = useState({
-  //   authenticated: false,
-  //   loading: true,
-  // });
-
- 
-
   const myRef = useRef();
 
   useEffect(() => {
@@ -35,37 +28,11 @@ const Chat = ({id}) => {
             setChatState({...chatState, user:{uid: user.uid, email: user.email}});
         } else return null
       })}
-    // try {
-    //   await signin("chbangal@iu.edu", "test123");
-    // } catch (error) {
-    //   setChatState({ error: error.message });
-    // }
 
     if (chatState.loadingChats == true) {
       getChats();
     }
-
-    // if (loginState.loading == true) {
-    //   handleLogin();
-    // }
   }, [chatState]);
-
-  // const handleLogin = async () => {
-  //   auth().onAuthStateChanged((user) => {
-  //     if (user) {
-  //       console.log(user);
-  //       setLoginState({
-  //         authenticated: true,
-  //         loading: false,
-  //       });
-  //     } else {
-  //       setLoginState({
-  //         authenticated: false,
-  //         loading: false,
-  //       });
-  //     }
-  //   });
-  // };
 
   const getChats = async () => {
     const chatArea = myRef.current;
@@ -76,7 +43,6 @@ const Chat = ({id}) => {
       const chatRef = await ref(firebaseDatabaseObj, id);      
       
       onValue(chatRef, (snapshot) => {
-        console.log(snapshot.val())
         let chats = [];
         let tempChat=snapshot.val();
 
@@ -88,11 +54,6 @@ const Chat = ({id}) => {
           });
         });
 
-          // chats.push({
-          //   ...tempChat,
-          //   content: tempChat.sender + ": " + tempChat.content,
-          // });
-  
 
         chats.sort((a, b) => a.timestamp - b.timestamp);
         chatArea.scrollBy(0, chatArea.scrollHeight);
@@ -119,7 +80,6 @@ const Chat = ({id}) => {
     event.preventDefault();
     setChatState({ ...chatState, writeError: null });
     const chatArea = myRef.current;
-    console.log(chatState.content)
     try {
        push(ref(firebaseDatabaseObj, id), {
         content: chatState.content,
@@ -130,10 +90,8 @@ const Chat = ({id}) => {
 
       setChatState({ ...chatState, content: "" });
       getChats()
-    //   chatArea.scrollBy(0, chatArea.scrollHeight);
     } catch (error) {
         alert("Failed to send message to Bloom Chat")
-        console.log(error)
       setChatState({ ...chatState, writeError: error.message });
     }
   };
@@ -148,9 +106,7 @@ const Chat = ({id}) => {
 
   return (
     <>
-      {/* {loginState.loading == true ? (
-        <h1 className="text-center">Only Registered users can chat</h1>
-      ) : ( */}
+
       <div style={{ width: "50vw" }} className="mx-auto card p-5">
         <h2 className="text-center mb-5">Chat</h2>
         {userFromStore.userName !== null ? 
