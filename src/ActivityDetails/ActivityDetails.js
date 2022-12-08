@@ -551,57 +551,58 @@ const ActivityDetails = () => {
                         </div> */}
 
                             {userFromStore.userName !=
-                              activityDetails.activityOrganizer && (
-                              <div className="mx-auto d-block text-center">
-                                {activityDetails.activityRemainingCapacity >
-                                  0 && clientSecret ? (
-                                  <>
-                                    <Elements
-                                      options={options}
-                                      stripe={stripePromise}
-                                    >
-                                      <CheckoutForm
-                                        email={userFromStore.email}
-                                        returnUrl={window.location.href}
-                                      />
-                                    </Elements>
-
-                                    {urlParams.get("redirect_status") ===
-                                      "succeeded" && (
-                                      <button
-                                        className={
-                                          "btn " +
-                                          (activityDetails.activityRemainingCapacity >
-                                          0
-                                            ? "btn-primary"
-                                            : "btn-danger")
-                                        }
-                                        onClick={() => {
-                                          handleActivityRegistration();
-                                        }}
+                              activityDetails.activityOrganizer ||
+                              (allowChatTrigger && (
+                                <div className="mx-auto d-block text-center">
+                                  {activityDetails.activityRemainingCapacity >
+                                    0 && clientSecret ? (
+                                    <>
+                                      <Elements
+                                        options={options}
+                                        stripe={stripePromise}
                                       >
-                                        {activityDetails.activityRemainingCapacity >
+                                        <CheckoutForm
+                                          email={userFromStore.email}
+                                          returnUrl={window.location.href}
+                                        />
+                                      </Elements>
+
+                                      {urlParams.get("redirect_status") ===
+                                        "succeeded" && (
+                                        <button
+                                          className={
+                                            "btn " +
+                                            (activityDetails.activityRemainingCapacity >
+                                            0
+                                              ? "btn-primary"
+                                              : "btn-danger")
+                                          }
+                                          onClick={() => {
+                                            handleActivityRegistration();
+                                          }}
+                                        >
+                                          {activityDetails.activityRemainingCapacity >
+                                          0
+                                            ? "Next"
+                                            : "Activity has reached maximum capacity"}
+                                        </button>
+                                      )}
+                                    </>
+                                  ) : (
+                                    <button
+                                      className={
+                                        "btn " +
+                                        (activityDetails.activityRemainingCapacity >
                                         0
-                                          ? "Next"
-                                          : "Activity has reached maximum capacity"}
-                                      </button>
-                                    )}
-                                  </>
-                                ) : (
-                                  <button
-                                    className={
-                                      "btn " +
-                                      (activityDetails.activityRemainingCapacity >
-                                      0
-                                        ? "btn-primary"
-                                        : "btn-danger")
-                                    }
-                                  >
-                                    Activity has reached maximum capacity
-                                  </button>
-                                )}
-                              </div>
-                            )}
+                                          ? "btn-primary"
+                                          : "btn-danger")
+                                      }
+                                    >
+                                      Activity has reached maximum capacity
+                                    </button>
+                                  )}
+                                </div>
+                              ))}
                           </>
                         ) : (
                           <div>
