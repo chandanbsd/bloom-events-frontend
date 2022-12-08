@@ -573,7 +573,8 @@ const VenueDetails = () => {
                   )}
                 </div>
               </div>
-
+{(userFromStore.userName !== venueDetails.venueOwner) && (userFromStore.userName != null) &&
+          <>
               <h1 className="mx-auto">Reserve Venue</h1>
               <div className="mx-auto">
                 <Calendar onChange={handleDate} value={reservationDate} />
@@ -892,15 +893,18 @@ const VenueDetails = () => {
               ) : (
                 <div className="mx-auto">Please select a slot first</div>
               )}
+              </>}
             </div>
           </div>
+        
           <div>
             <div
               className="mx-auto mt-5"
               style={{ minHeight: "400px", width: "50vw" }}
             >
               <div className="card mb-2 p-3">
-                {allowedUsers.length > 1 ? (
+                {(userFromStore.userName !== venueDetails.venueOwner) && (userFromStore.userName != null) &&
+  allowedUsers != null && allowedUsers!= undefined && allowedUsers.length > 1 ? (
                   allowedUsers.includes(userFromStore.userName) && (
                     <div className="mt-5 mx-auto" style={{ width: "500px" }}>
                       <h3>Review Venue</h3>
