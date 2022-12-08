@@ -9,6 +9,8 @@ import initialTimeSlot from "../constants/initalTimeSlot";
 import CheckoutForm from "../StripePayment/CheckoutForm";
 import { Elements } from "@stripe/react-stripe-js";
 import themeStyles from "../themeStyles";
+import localForage from 'localforage';
+
 
 const VenueBooking = () => {
   const location = useLocation();
@@ -103,15 +105,15 @@ const VenueBooking = () => {
   useEffect(() => {
     if (location.state == undefined) {
       setReservationDetails(
-        JSON.parse(localStorage.getItem("venue-details-local"))
+        JSON.parse(localForage.getItem("venue-details-local"))
       );
-      console.log(localStorage.getItem("venue-details-local"));
+      console.log(localForage.getItem("venue-details-local"));
     } else {
-      localStorage.setItem(
+      localForage.setItem(
         "venue-details-local",
         JSON.stringify({ ...location.state })
       );
-      console.log(localStorage.getItem("venue-details-local"));
+      console.log(localForage.getItem("venue-details-local"));
       setReservationDetails({ ...location.state });
     }
   }, []);

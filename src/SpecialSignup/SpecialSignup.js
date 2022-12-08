@@ -210,7 +210,7 @@ const SpecialSignup = () => {
           
 
           <div className="form-group">
-            <label>Se lect State: </label>
+            <label>Select State: </label>
             <select
               className="form-control"
               onChange={(e) => {
@@ -231,7 +231,7 @@ const SpecialSignup = () => {
 
           <div className="form-group">
             <label>Select City: </label>
-            {specialSignUpDetails.state != null ? (
+            {specialSignUpDetails!==null && specialSignUpDetails.state != null ? (
               <select
                 className="form-control"
                 onChange={(e) => {
