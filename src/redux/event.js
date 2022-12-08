@@ -9,7 +9,6 @@ export const eventSlice = createSlice({
   reducers: {
     setEvent: (state, action) => {
       state.eventList = JSON.parse(JSON.stringify(action.payload));
-      // state.value += 1;
     },
 
     clearEvent: () => {},

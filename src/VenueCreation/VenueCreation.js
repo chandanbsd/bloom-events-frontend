@@ -118,19 +118,7 @@ const VenueCreation = () => {
   };
 
   const handleSubmit = () => {
-    console.log(
-      venueDetails.venueHrCost &&
-        venueDetails.venueAddress &&
-        venueDetails.venueName &&
-        venueDetails.venueOpen &&
-        venueDetails.venueOwner &&
-        venueDetails.venueDescription &&
-        venueDetails.venueCategory &&
-        venueDetails.venueCity &&
-        venueDetails.venueState &&
-        venueDetails.venueSlots &&
-        venueImage
-    );
+
     if (
       venueDetails.venueHrCost &&
       venueDetails.venueAddress &&
@@ -171,7 +159,6 @@ const VenueCreation = () => {
   };
 
   useEffect(() => {
-    console.log(venueDetails);
   }, [venueDetails]);
 
   return (

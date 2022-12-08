@@ -10,7 +10,6 @@ const Home = () => {
   const userFromStore = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const themeFromStore = useSelector((state) => state.theme);
-  console.log(userFromStore);
 
   return (
     <div
@@ -21,12 +20,16 @@ const Home = () => {
         " text-center"
       }
     >
-      {userFromStore === undefined ||
-      userFromStore === null ||
-      userFromStore.firstName === null ||
-      userFromStore.firstName === undefined ? (
+
         <div className={themeStyles[themeFromStore.value].body}>
-          <h1>Home Page</h1>
+          
+          <div>
+          <h1>
+            {userFromStore.isOwner == "true"
+              ? "Hello Venue Owner"
+              : "Hello Event Participants"}
+          </h1>
+        </div>
           <h2>Welcome to bloom events</h2>
           <p>
             We plan to be the No. 1 destination to search and reserve venue in
@@ -39,15 +42,7 @@ const Home = () => {
             style={{ width: "50%" }}
           />
         </div>
-      ) : (
-        <div>
-          <h1>
-            {userFromStore.isOwner == "true"
-              ? "Hello Venue Owner"
-              : "Hello Event Participants"}
-          </h1>
-        </div>
-      )}
+      
     </div>
   );
 };

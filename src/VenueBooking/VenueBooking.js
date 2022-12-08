@@ -9,6 +9,7 @@ import initialTimeSlot from "../constants/initalTimeSlot";
 import CheckoutForm from "../StripePayment/CheckoutForm";
 import { Elements } from "@stripe/react-stripe-js";
 import themeStyles from "../themeStyles";
+import localforage from "localforage";
 
 const VenueBooking = () => {
   const location = useLocation();
@@ -17,82 +18,81 @@ const VenueBooking = () => {
   const userFromStore = useSelector((state) => state.user);
   const urlParams = new URLSearchParams(window.location.search);
   const handleConfirmation = () => {
-    const newSlots = reservationDetails.availableTimeSlot.map((val, index) => {
-      if (reservationDetails.selectedSlotList.includes(index)) {
-        return ["reserved", -1];
-      } else return [val[0], val[1]];
-    });
-
-    const url = `${baseURL}/venuebooking`;
-
-    let resSlots = "";
-    for (let [key, val] of newSlots) {
-      resSlots += key + "/" + val + ",";
-    }
-    resSlots = resSlots.slice(0, resSlots.length - 1);
-
-    const venueSlotObject = {};
-
-    venueSlotObject[reservationDetails.formattedReservationDate] = resSlots;
-
-    const requestOptions = {
-      method: "POST",
+    let url = `${baseURL}/ra`;
+    let requestOptions = {
+      method: "GET",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        activityName: reservationDetails.activityName,
-        activityDescription: reservationDetails.activityDescription,
-        activityCapacity: reservationDetails.activityCapacity,
-        activityLocation: reservationDetails.activityLocation,
-        activityCategory: reservationDetails.activityCategory,
-        activityAgeRange: reservationDetails.activityAgeRange,
-        activityCost: reservationDetails.activityCost,
-        activityCostAmount: reservationDetails.activityCostAmount,
-        activityVenueId: reservationDetails.venueDetails.venueId,
-        activityVenueCost:
-          reservationDetails.venueDetails.venueHrCost *
-          reservationDetails.selectedSlotList.length,
-        activityTime: JSON.stringify(reservationDetails.selectedSlotList),
-        activityDate: reservationDetails.formattedReservationDate,
-        activityBookingDate: new Date(),
-        venueSlots: venueSlotObject,
-        activityOrganizer: userFromStore.userName,
-        activityRemainingCapacity: reservationDetails.activityCapacity,
-        activityImage: reservationDetails.activityImage,
-      }),
     };
+
+    let potentialActivityId;
     fetch(url, requestOptions)
       .then((response) => response.json())
-      .then((res) => {
-        if (res.status == "OK") {
-          console.log(res);
-          alert("Booking Sucessfull");
-          navigate(`/venue-search`);
-        }
-      });
 
-    console.log(
-      JSON.stringify({
-        activityName: reservationDetails.activityName,
-        activityDescription: reservationDetails.activityDescription,
-        activityCapacity: reservationDetails.activityCapacity,
-        activityLocation: reservationDetails.activityLocation,
-        activityCategory: reservationDetails.activityCategory,
-        activityAgeRange: reservationDetails.activityAgeRange,
-        activityCost: reservationDetails.activityCost,
-        activityCostAmount: reservationDetails.activityCostAmount,
-        activityVenueId: reservationDetails.venueDetails.venueId,
-        activityVenueCost:
-          reservationDetails.venueDetails.venueHrCost *
-          reservationDetails.selectedSlotList.length,
-        activityTime: JSON.stringify(reservationDetails.selectedSlotList),
-        activityDate: reservationDetails.formattedReservationDate,
-        activityBookingDate: new Date(),
-        venueSlots: venueSlotObject,
-        activityOrganizer: userFromStore.userName,
-        activityRemainingCapacity: reservationDetails.activityCapacity,
-        activityImage: reservationDetails.activityImage,
+      .then((res) => {
+        if (res.status === "OK") {
+          potentialActivityId = res.body.length;
+        } else {
+          if (res.body == undefined) {
+            potentialActivityId = 0;
+          }
+        }
       })
-    );
+      .then(() => {
+        alert(potentialActivityId);
+        const newSlots = reservationDetails.availableTimeSlot.map(
+          (val, index) => {
+            if (reservationDetails.selectedSlotList.includes(index)) {
+              return ["reserved", potentialActivityId];
+            } else return [val[0], val[1]];
+          }
+        );
+
+        url = `${baseURL}/venuebooking`;
+
+        let resSlots = "";
+        for (let [key, val] of newSlots) {
+          resSlots += key + "/" + val + ",";
+        }
+        resSlots = resSlots.slice(0, resSlots.length - 1);
+
+        const venueSlotObject = {};
+
+        venueSlotObject[reservationDetails.formattedReservationDate] = resSlots;
+
+        requestOptions = {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            activityName: reservationDetails.activityName,
+            activityDescription: reservationDetails.activityDescription,
+            activityCapacity: reservationDetails.activityCapacity,
+            activityLocation: reservationDetails.activityLocation,
+            activityCategory: reservationDetails.activityCategory,
+            activityAgeRange: reservationDetails.activityAgeRange,
+            activityCost: reservationDetails.activityCost,
+            activityCostAmount: reservationDetails.activityCostAmount,
+            activityVenueId: reservationDetails.venueDetails.venueId,
+            activityVenueCost:
+              reservationDetails.venueDetails.venueHrCost *
+              reservationDetails.selectedSlotList.length,
+            activityTime: JSON.stringify(reservationDetails.selectedSlotList),
+            activityDate: reservationDetails.formattedReservationDate,
+            activityBookingDate: new Date(),
+            venueSlots: venueSlotObject,
+            activityOrganizer: userFromStore.userName,
+            activityRemainingCapacity: reservationDetails.activityCapacity,
+            activityImage: reservationDetails.activityImage,
+          }),
+        };
+        fetch(url, requestOptions)
+          .then((response) => response.json())
+          .then((res) => {
+            if (res.status == "OK") {
+              alert("Booking Sucessfull");
+              navigate(`/venue-search`);
+            }
+          });
+      });
   };
 
   const navigate = useNavigate();
@@ -101,17 +101,19 @@ const VenueBooking = () => {
   const themeFromStore = useSelector((state) => state.theme);
 
   useEffect(() => {
+    console.log(location.state);
     if (location.state == undefined) {
-      setReservationDetails(
-        JSON.parse(localStorage.getItem("venue-details-local"))
-      );
-      console.log(localStorage.getItem("venue-details-local"));
+      // setReservationDetails(
+      //   JSON.parse(localforage.getItem("venue-details-local"))
+      // );
+      localforage.getItem("venue-details-local", function (err, value) {
+        setReservationDetails(JSON.parse(value));
+      });
     } else {
-      localStorage.setItem(
+      localforage.setItem(
         "venue-details-local",
         JSON.stringify({ ...location.state })
       );
-      console.log(localStorage.getItem("venue-details-local"));
       setReservationDetails({ ...location.state });
     }
   }, []);
