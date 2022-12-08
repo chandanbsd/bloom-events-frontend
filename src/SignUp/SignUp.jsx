@@ -83,17 +83,20 @@ const SignUp = () => {
         .then((res) => {
           if (res.status === "OK") {
             dispatch(setProfile({ ...signUpDetails }));
-            createUserWithEmailAndPassword(firebaseAuthObj, signUpDetails.email, signUpDetails.password)
-            .then((userCredential) => {
-              alert("Welcome to Bloom Events")
-            })
-            .catch((error) => {
-              alert("Failed To Signup User to Bloom Chat")
-            });
+            createUserWithEmailAndPassword(
+              firebaseAuthObj,
+              signUpDetails.email,
+              signUpDetails.password
+            )
+              .then((userCredential) => {
+                alert("Welcome to Bloom Events");
+              })
+              .catch((error) => {
+                alert("Failed To Signup User to Bloom Chat");
+              });
 
             navigate("/");
           } else {
-            
             alert("Update Failed");
           }
         })
@@ -297,25 +300,6 @@ const SignUp = () => {
             </select>
             <br />
           </div>
-
-          {/* <div className="form-group">
-          <label>Select City: </label>
-          <select
-            className="form-control"
-            onChange={(e) => {
-              setSignUpDetails({
-                ...signUpDetails,
-                city: e.target.value,
-              });
-            }}
-          >
-            {usaCityStates[signUpDetails.state].map((ele, index) => (
-              <option value={ele} key={index}>
-                {ele}
-              </option>
-            ))}
-          </select>
-        </div> */}
 
           <div className="form-group">
             <label>Select City: </label>

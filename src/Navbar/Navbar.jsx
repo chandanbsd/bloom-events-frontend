@@ -35,11 +35,9 @@ const Navbar = () => {
       .then(() => alert("Signed Out"))
       .then(() => navigate("/"))
       .catch((error) => alert("Failed to Sign Out", error.message()));
-    // logout({ returnTo: window.location.origin });
   };
 
   const handleSpecialLogout = () => {
-    // auth().signOut();
     dispatch(
       setProfile({
         firstName: null,

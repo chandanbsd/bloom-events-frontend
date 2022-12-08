@@ -35,12 +35,6 @@ const ActivityDetails = () => {
   const [venueBookmarks, setVenueBookmarks] = useState(null);
   const themeFromStore = useSelector((state) => state.theme);
 
-  // const [paymentCreds, setPaymentCreds] = useState({
-  //   cardNumber: null,
-  //   cvv: null,
-  //   expiry: null,
-  // });
-
   const { clientSecret, options, stripePromise } = useContext(StripeContext);
   const urlParams = new URLSearchParams(window.location.search);
 

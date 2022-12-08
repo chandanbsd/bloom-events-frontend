@@ -116,12 +116,6 @@ const ParticipantSearch = () => {
 
       .then((res) => {
         if (res.status === "OK") {
-          // res.body.forEach((val) => {
-          //   val.venueAvailability = JSON.parse(
-          //     val.venueAvailability.replace(/'/g, '"')
-          //   );
-          // });
-
           dispatch(setParticipant([...res.body]));
           setParticipantList(
             JSON.parse(JSON.stringify(participantFromStore.participantList))
@@ -133,16 +127,6 @@ const ParticipantSearch = () => {
       })
       .catch((error) => console.log("Form submit error", error));
   }, []);
-
-  // window.onload = async () => {
-  //   await dispatch(setParticipant([...participantListMock]));
-  //   await setParticipantList(
-  //     JSON.parse(JSON.stringify(participantFromStore.participantList))
-  //   );
-  //   await setFilteredParticipantList(
-  //     JSON.parse(JSON.stringify(participantFromStore.participantList))
-  //   );
-  // };
 
   return (
     <div

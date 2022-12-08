@@ -8,5 +8,3 @@ export const backendApi = createApi({
     }),
   }),
 });
-
-// export const { userGetUserDetailsFromLogin } =   ;
