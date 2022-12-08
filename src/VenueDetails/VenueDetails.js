@@ -4,7 +4,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { clearEvent, setEvent } from "../redux/event";
 import baseURL from "../constants/constants";
 import venueListMock from "../Mocks/venueListMock";
-// import venueListMock from "../Mocks/venueDetailsMock";
 import { Wrapper, Status } from "@googlemaps/react-wrapper";
 import ImageUploading from "react-images-uploading";
 

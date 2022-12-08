@@ -45,11 +45,3 @@ export const store = configureStore({
 });
 
 export const persistor = persistStore(store);
-
-// export default store = configureStore({
-//   reducer: {
-//     user: userReducer,
-//     [backendApi.reducerPath]: backendApi.reducer,
-//     persistedReducer: persistedReducer,
-//   },
-// });
