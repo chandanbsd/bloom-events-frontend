@@ -75,30 +75,30 @@ const Navbar = () => {
         }
         style={{ backgroundColor: "#e3f2fd" }}
       >
-        <Link to="/" className="nav-item navbar-brand">
+        <Link to="/" reloadDocument className="nav-item navbar-brand">
           <span>Bloom Events Home</span>
         </Link>
         {userFromStore && userFromStore.isOwner == "true" ? (
           <>
-            <Link to="venue-creation" className="nav-item navbar-brand">
+            <Link to="venue-creation" reloadDocument className="btn btn-primary nav-item navbar-brand">
               <span>Add Venue</span>
             </Link>
-            <Link to="venue-search" className="nav-item navbar-brand">
+            <Link to="venue-search" reloadDocument className=" btn btn-primary nav-item navbar-brand">
               <span>Manage Venue</span>
             </Link>
-            <Link to="/calendar" className="nav-item navbar-brand">
+            <Link to="/calendar" reloadDocument className="btn btn-primary nav-item navbar-brand">
               <span>View Bookings</span>
             </Link>
           </>
         ) : (
           <>
-            <Link to="venue-search" className="nav-item navbar-brand">
+            <Link to="venue-search" reloadDocument className="btn btn-primary btn btn-primary nav-item navbar-brand">
               <span>Venue Search</span>
             </Link>
-            <Link to="activity-search" className="nav-item navbar-brand">
+            <Link to="activity-search" reloadDocument className="btn btn-primary nav-item navbar-brand">
               <span>Activity Search</span>
             </Link>
-            <Link to="participant-search" className="nav-item navbar-brand">
+            <Link to="participant-search" reloadDocument className="btn btn-primary nav-item navbar-brand">
               <span>Participant Search</span>
             </Link>
           </>
@@ -106,42 +106,41 @@ const Navbar = () => {
 
         {userFromStore.userName === null ? (
           <React.Fragment>
-            <Link to="login" reloadDocument className="nav-item navbar-brand">
+            <Link to="login" reloadDocument className="btn btn-primary nav-item navbar-brand">
               Login
             </Link>
           </React.Fragment>
         ) : (
           <React.Fragment>
-            <Dropdown>
-              <Dropdown.Toggle variant="success" id="dropdown-basic">
-                {`Hello, ${userFromStore.firstName}`}
-              </Dropdown.Toggle>
 
-              <Dropdown.Menu>
-                <Link to="../profile" className="dropdown-item">
-                  Profile
-                </Link>
-                <Link to="../calendar" className="dropdown-item">
+
+       
+            
+                {userFromStore.isOwner != "true" && <Link to="../calendar" reloadDocument className="nav-item navbar-brand">
                   Calendar
-                </Link>
-                <Link to="../bookmarks" className="dropdown-item">
+                </Link>}
+                <Link to="../bookmarks" reloadDocument className="btn btn-primary nav-item navbar-brand">
                   Bookmarks
                 </Link>
+
+                <Link to="../profile" className="btn btn-success nav-item navbar-brand">
+                {`Hello, ${userFromStore.firstName}`}
+                </Link>
+                
                 {isAuthenticated === false ? (
-                  <Link to="/" onClick={handleLogout} className="dropdown-item">
+                  <Link to="/" onClick={handleLogout} reloadDocument className="btn btn-danger nav-item navbar-brand">
                     Logout
                   </Link>
                 ) : (
                   <button
                     onClick={handleSpecialLogout}
-                    className="dropdown-item"
+                    className="nav-item navbar-brand"
                   >
                     LogOut
                   </button>
                 )}
-              </Dropdown.Menu>
-            </Dropdown>
-          </React.Fragment>
+ 
+           </React.Fragment>
         )}
         <span className="nav-item">
           <label htmlFor="theme-toggle">Dark Mode</label>
