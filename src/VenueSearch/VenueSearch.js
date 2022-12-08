@@ -361,6 +361,8 @@ const VenueSearch = () => {
                                 textDecoration: "none",
                                 color: "inherit",
                               }}
+
+                              reloadDocument
                             >
                               Reserve Time
                             </Link>
@@ -380,6 +382,8 @@ const VenueSearch = () => {
                           textDecoration: "none",
                           color: "inherit",
                         }}
+
+                        reloadDocument
                       >
                         <button className="btn btn-success">
                           View Details

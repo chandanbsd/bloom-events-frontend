@@ -30,6 +30,8 @@ const Navbar = () => {
         isOwner: null,
       })
     );
+
+
     signOut(firebaseAuthObj)
       .then(() => alert("Signed Out"))
       .then(() => navigate("/"))
@@ -51,8 +53,9 @@ const Navbar = () => {
     );
     signOut(firebaseAuthObj)
       .then(() => alert("Signed Out"))
+      .then(()=> logout({ returnTo: window.location.origin }))
       .catch((error) => alert("Failed to Sign Out", error.message()));
-    logout({ returnTo: window.location.origin });
+    
   };
 
   const handleThemeChange = async () => {
@@ -83,7 +86,7 @@ const Navbar = () => {
             <Link to="venue-creation" reloadDocument className="btn btn-primary nav-item navbar-brand">
               <span>Add Venue</span>
             </Link>
-            <Link to="venue-search" reloadDocument className=" btn btn-primary nav-item navbar-brand">
+            <Link to="venue-search" reloadDocument className="btn btn-primary nav-item navbar-brand">
               <span>Manage Venue</span>
             </Link>
             <Link to="/calendar" reloadDocument className="btn btn-primary nav-item navbar-brand">
@@ -114,9 +117,9 @@ const Navbar = () => {
           <React.Fragment>
 
 
-       
+       {console.log(userFromStore)}
             
-                {userFromStore.isOwner != "true" && <Link to="../calendar" reloadDocument className="nav-item navbar-brand">
+                {userFromStore.isOwner != "true" && <Link to="../calendar" reloadDocument className="btn btn-primary nav-item navbar-brand">
                   Calendar
                 </Link>}
                 <Link to="../bookmarks" reloadDocument className="btn btn-primary nav-item navbar-brand">
@@ -126,17 +129,17 @@ const Navbar = () => {
                 <Link to="../profile" className="btn btn-success nav-item navbar-brand">
                 {`Hello, ${userFromStore.firstName}`}
                 </Link>
-                
+
                 {isAuthenticated === false ? (
-                  <Link to="/" onClick={handleLogout} reloadDocument className="btn btn-danger nav-item navbar-brand">
+                  <Link to="/" onClick={handleLogout}  className="btn btn-danger nav-item navbar-brand">
                     Logout
                   </Link>
                 ) : (
                   <button
                     onClick={handleSpecialLogout}
-                    className="nav-item navbar-brand"
+                    className="btn btn-danger nav-item navbar-brand"
                   >
-                    LogOut
+                    Logout
                   </button>
                 )}
  
