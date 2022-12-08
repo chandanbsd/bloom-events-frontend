@@ -125,7 +125,6 @@ const VenueSearch = () => {
               JSON.parse(JSON.stringify(eventFromStore.eventList))
             );
 
-            console.log(eventFromStore)
 
           }
         } else alert("Unable to fetch event venues");

@@ -117,7 +117,6 @@ const Navbar = () => {
           <React.Fragment>
 
 
-       {console.log(userFromStore)}
             
                 {userFromStore.isOwner != "true" && <Link to="../calendar" reloadDocument className="btn btn-primary nav-item navbar-brand">
                   Calendar

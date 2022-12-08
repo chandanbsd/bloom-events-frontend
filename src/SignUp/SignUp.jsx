@@ -72,7 +72,6 @@ const SignUp = () => {
     } else if (signUpDetails.state === null) {
       alert("Choose your state");
     } else {
-      console.log(JSON.stringify(signUpDetails));
       const url = `${baseURL}/register`;
       const requestOptions = {
         method: "POST",
@@ -82,7 +81,6 @@ const SignUp = () => {
       fetch(url, requestOptions)
         .then((res) => res.json())
         .then((res) => {
-          console.log(res)
           if (res.status === "OK") {
             dispatch(setProfile({ ...signUpDetails }));
             createUserWithEmailAndPassword(firebaseAuthObj, signUpDetails.email, signUpDetails.password)

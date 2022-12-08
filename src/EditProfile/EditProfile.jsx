@@ -16,8 +16,6 @@ const EditProfile = () => {
   });
   const navigate = useNavigate();
   useEffect(() => {
-    console.log("Profile Details");
-    console.log(profileDetails);
   }, [profileDetails]);
 
   const handleSignUp = () => {
@@ -83,7 +81,6 @@ const EditProfile = () => {
       fetch(url, requestOptions)
         .then((response) => response.json())
         .then((res) => {
-          console.log("From backend", res.status, res.body);
           if (res.status === "OK") {
             alert("Profile Update Sucessfull");
             dispatch(setProfile({ ...res.body }));

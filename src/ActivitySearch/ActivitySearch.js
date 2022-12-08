@@ -43,7 +43,6 @@ const ActivitySearch = () => {
   };
 
   const handleCityFilter = (e) => {
-    console.log(activityList);
     if (e === "Any") setFilteredActivityList([...activityList]);
     else {
       setFilteredActivityList(
@@ -105,7 +104,6 @@ const ActivitySearch = () => {
       .then((response) => response.json())
       .then((res) => {
         if (res.status === "OK") {
-          console.log(res.body);
           res.body.forEach((val) => {
             val.venueAvailability = JSON.parse(
               val.venueAvailability.replace(/'/g, '"')

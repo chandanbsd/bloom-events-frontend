@@ -10,7 +10,6 @@ const Home = () => {
   const userFromStore = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const themeFromStore = useSelector((state) => state.theme);
-  console.log(userFromStore);
 
   return (
     <div

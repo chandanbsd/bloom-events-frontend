@@ -409,7 +409,6 @@ const VenueDetails = () => {
       allowChat();
     }
 
-    console.log(venueDetails);
     if (venueDetails == null) {
       setVenueDetails({
         ...JSON.parse(
@@ -491,7 +490,6 @@ const VenueDetails = () => {
                         </tr>
                         <tr>
                           <td>Monday</td>
-                          {console.log(typeof venueDetails.venueAvailability)}
                           <td>{`${
                             time24[venueDetails.venueAvailability.mon[0]]
                           } - ${

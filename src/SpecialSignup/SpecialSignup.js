@@ -50,14 +50,12 @@ const SpecialSignup = () => {
     } else if (specialSignUpDetails.state === undefined) {
       alert("Choose your state");
     } else {
-      console.log(JSON.stringify(specialSignUpDetails));
       localStorage.removeItem("specialLoginDetails");
       localStorage.setItem(
         "specialLoginDetails",
         JSON.stringify(specialSignUpDetails)
       );
 
-      console.log("saved to local storage");
 
 
       loginWithRedirect();
