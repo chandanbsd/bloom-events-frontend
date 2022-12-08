@@ -9,7 +9,6 @@ export const participantSlice = createSlice({
   reducers: {
     setParticipant: (state, action) => {
       state.participantList = JSON.parse(JSON.stringify(action.payload));
-      // state.value += 1;
     },
 
     clearParticipant: () => {},

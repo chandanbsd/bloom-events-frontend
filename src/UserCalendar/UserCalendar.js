@@ -265,7 +265,6 @@ const UserCalendar = () => {
                       </tr>
                       {activitiesParticipated != null &&
                         activitiesOrganized != null &&
-                        true &&
                         venuesOwned !== null &&
                         venuesOwned.map((val) => {
                           return val.venueSlots?.[
@@ -275,7 +274,7 @@ const UserCalendar = () => {
                           ]?.map(([val1, val2], index) => {
                             if (val2 != "-1") {
                               return (
-                                <tr>
+                                <tr key={index}>
                                   <td>{val.venueName}</td>
                                   <td>
                                     {activityFromStore.activityList

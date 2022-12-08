@@ -72,7 +72,6 @@ const SignUp = () => {
     } else if (signUpDetails.state === null) {
       alert("Choose your state");
     } else {
-      console.log(JSON.stringify(signUpDetails));
       const url = `${baseURL}/register`;
       const requestOptions = {
         method: "POST",
@@ -82,20 +81,22 @@ const SignUp = () => {
       fetch(url, requestOptions)
         .then((res) => res.json())
         .then((res) => {
-          console.log(res)
           if (res.status === "OK") {
             dispatch(setProfile({ ...signUpDetails }));
-            createUserWithEmailAndPassword(firebaseAuthObj, signUpDetails.email, signUpDetails.password)
-            .then((userCredential) => {
-              alert("Welcome to Bloom Events")
-            })
-            .catch((error) => {
-              alert("Failed To Signup User to Bloom Chat")
-            });
+            createUserWithEmailAndPassword(
+              firebaseAuthObj,
+              signUpDetails.email,
+              signUpDetails.password
+            )
+              .then((userCredential) => {
+                alert("Welcome to Bloom Events");
+              })
+              .catch((error) => {
+                alert("Failed To Signup User to Bloom Chat");
+              });
 
             navigate("/");
           } else {
-            
             alert("Update Failed");
           }
         })
@@ -299,25 +300,6 @@ const SignUp = () => {
             </select>
             <br />
           </div>
-
-          {/* <div className="form-group">
-          <label>Select City: </label>
-          <select
-            className="form-control"
-            onChange={(e) => {
-              setSignUpDetails({
-                ...signUpDetails,
-                city: e.target.value,
-              });
-            }}
-          >
-            {usaCityStates[signUpDetails.state].map((ele, index) => (
-              <option value={ele} key={index}>
-                {ele}
-              </option>
-            ))}
-          </select>
-        </div> */}
 
           <div className="form-group">
             <label>Select City: </label>

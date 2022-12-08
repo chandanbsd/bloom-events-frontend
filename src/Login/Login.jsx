@@ -7,7 +7,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 import baseURL from "../constants/constants";
 import themeStyles from "../themeStyles";
 import { firebaseAuthObj } from "../constants/firebase";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
 
 const Login = () => {
   const userFromStore = useSelector((state) => state.user);
@@ -31,7 +31,6 @@ const Login = () => {
       user !== undefined &&
       localStorage.getItem("loginWithOAuth") === "true"
     ) {
-      console.log(user);
       const url = `${baseURL}/speciallogin`;
       const requestOptions = {
         method: "POST",
@@ -50,8 +49,15 @@ const Login = () => {
             alert("Please Signup First");
             localStorage.removeItem("loginWithOAuth");
           } else {
-            dispatch(setProfile({ ...res.body }));
-            localStorage.removeItem("loginWithOAuth");
+            signInWithEmailAndPassword(firebaseAuthObj, res.body.email, "test123")
+              .then((userCredential) => {
+                alert("Welcome to Bloom Events")
+              }).then(()=> {            dispatch(setProfile({ ...res.body }));
+              localStorage.removeItem("loginWithOAuth");})
+              .catch((error) => {
+                alert("Failed To Login User to Bloom Chat")
+              });
+
           }
         });
     } else {
@@ -60,7 +66,6 @@ const Login = () => {
         user !== undefined &&
         specialLoginDetails !== null
       ) {
-        console.log(JSON.parse(localStorage.getItem("specialLoginDetails")));
         const url = `${baseURL}/specialregister`;
         const requestOptions = {
           method: "POST",
@@ -83,24 +88,9 @@ const Login = () => {
           }),
         };
 
-        console.log(
-          JSON.stringify({
-            firstName: user.given_name,
-            lastName: user.family_name,
-            email: user.email,
-            password: null,
-            userName: specialLoginDetails.userName,
-            isOwner: specialLoginDetails.isOwner,
-            age: specialLoginDetails.age,
-            gender: specialLoginDetails.gender,
-            isAvailable: specialLoginDetails.isAvailable,
-            bio: specialLoginDetails.bio,
-            categoryType: specialLoginDetails.categoryType,
-            categoryLevel: specialLoginDetails.categoryLevel,
-            city: specialLoginDetails.city,
-            state: specialLoginDetails.state,
-          })
-        );
+
+
+
 
         fetch(url, requestOptions)
           .then((res) => {
@@ -108,7 +98,6 @@ const Login = () => {
           })
           .then((res) => {
             if (res.status === "FAIL") {
-              console.log(specialLoginDetails);
               alert("Reenter Username, try 0Auth again");
               dispatch(
                 setProfile({
@@ -130,13 +119,25 @@ const Login = () => {
               localStorage.removeItem("specialLoginDetails");
               logout({ returnTo: window.location.origin });
             }
+            else {
+              
+
+            }
             return res;
           })
           .then((res) => {
-            console.log("From Backend:", res);
-            dispatch(setProfile({ ...res.body }));
-            localStorage.removeItem("specialLoginDetails");
-            navigate("/");
+            createUserWithEmailAndPassword(firebaseAuthObj, res.body.email, "test123")
+              .then((userCredential) => {
+                alert("Welcome to Bloom Events")
+              }).then(()=> { 
+              dispatch(setProfile({ ...res.body }));
+              localStorage.removeItem("specialLoginDetails");
+              navigate("/");})
+              .catch((error) => {
+                alert("Failed To Signup User to Bloom Chat")
+              });
+
+           
           })
           .catch((error) => console.log("Form submit error", error));
       }
@@ -154,7 +155,6 @@ const Login = () => {
       alert("Captcha Failed, Please try again");
     } else {
       const url = `${baseURL}/login`;
-      console.log(url);
       const requestOptions = {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -167,13 +167,11 @@ const Login = () => {
             alert("Login Failed: Check Username and Password");
           else {
             dispatch(setProfile({ ...res.body }));
-            console.log(res)
             signInWithEmailAndPassword(firebaseAuthObj, res.body.email, loginDetails.password)
             .then((userCredential) => {
               alert("Welcome to Bloom Events")
             }).then(()=> navigate("/"))
             .catch((error) => {
-              console.log(error)
               alert("Failed To Login User to Bloom Chat")
             });
             
@@ -280,6 +278,7 @@ const Login = () => {
               onClick={() => {
                 localStorage.setItem("loginWithOAuth", JSON.stringify(true));
               }}
+              reloadDocument
             >
               Signin with OAuth
             </Link>{" "}
@@ -299,10 +298,10 @@ const Login = () => {
             style={{ width: "500px" }}
             className="form-group d-flex justify-content-around"
           >
-            <Link to="signup" className="btn btn-primary">
+            <Link to="signup" reloadDocument className="btn btn-primary">
               Signup with Email
             </Link>{" "}
-            <Link to="special-signup" className="btn btn-primary">
+            <Link to="special-signup" reloadDocument className="btn btn-primary">
               Signup with OAuth
             </Link>{" "}
           </div>
