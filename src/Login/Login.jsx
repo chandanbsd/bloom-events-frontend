@@ -31,7 +31,6 @@ const Login = () => {
       user !== undefined &&
       localStorage.getItem("loginWithOAuth") === "true"
     ) {
-      console.log(user);
       const url = `${baseURL}/speciallogin`;
       const requestOptions = {
         method: "POST",
@@ -56,7 +55,6 @@ const Login = () => {
               }).then(()=> {            dispatch(setProfile({ ...res.body }));
               localStorage.removeItem("loginWithOAuth");})
               .catch((error) => {
-                console.log(error)
                 alert("Failed To Login User to Bloom Chat")
               });
 
@@ -68,7 +66,6 @@ const Login = () => {
         user !== undefined &&
         specialLoginDetails !== null
       ) {
-        console.log(JSON.parse(localStorage.getItem("specialLoginDetails")));
         const url = `${baseURL}/specialregister`;
         const requestOptions = {
           method: "POST",
@@ -94,24 +91,6 @@ const Login = () => {
 
 
 
-        console.log(
-          JSON.stringify({
-            firstName: user.given_name,
-            lastName: user.family_name,
-            email: user.email,
-            password: null,
-            userName: specialLoginDetails.userName,
-            isOwner: specialLoginDetails.isOwner,
-            age: specialLoginDetails.age,
-            gender: specialLoginDetails.gender,
-            isAvailable: specialLoginDetails.isAvailable,
-            bio: specialLoginDetails.bio,
-            categoryType: specialLoginDetails.categoryType,
-            categoryLevel: specialLoginDetails.categoryLevel,
-            city: specialLoginDetails.city,
-            state: specialLoginDetails.state,
-          })
-        );
 
         fetch(url, requestOptions)
           .then((res) => {
@@ -119,7 +98,6 @@ const Login = () => {
           })
           .then((res) => {
             if (res.status === "FAIL") {
-              console.log(specialLoginDetails);
               alert("Reenter Username, try 0Auth again");
               dispatch(
                 setProfile({
@@ -143,14 +121,7 @@ const Login = () => {
             }
             else {
               
-              // signInWithEmailAndPassword(firebaseAuthObj, res.body.email, "test123")
-              // .then((userCredential) => {
-              //   alert("Welcome to Bloom Events")
-              // }).then(()=> navigate("/"))
-              // .catch((error) => {
-              //   console.log(error)
-              //   alert("Failed To Login User to Bloom Chat")
-              // });
+
             }
             return res;
           })
@@ -158,7 +129,7 @@ const Login = () => {
             createUserWithEmailAndPassword(firebaseAuthObj, res.body.email, "test123")
               .then((userCredential) => {
                 alert("Welcome to Bloom Events")
-              }).then(()=> { console.log("From Backend:", res);
+              }).then(()=> { 
               dispatch(setProfile({ ...res.body }));
               localStorage.removeItem("specialLoginDetails");
               navigate("/");})
@@ -184,7 +155,6 @@ const Login = () => {
       alert("Captcha Failed, Please try again");
     } else {
       const url = `${baseURL}/login`;
-      console.log(url);
       const requestOptions = {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -197,13 +167,11 @@ const Login = () => {
             alert("Login Failed: Check Username and Password");
           else {
             dispatch(setProfile({ ...res.body }));
-            console.log(res)
             signInWithEmailAndPassword(firebaseAuthObj, res.body.email, loginDetails.password)
             .then((userCredential) => {
               alert("Welcome to Bloom Events")
             }).then(()=> navigate("/"))
             .catch((error) => {
-              console.log(error)
               alert("Failed To Login User to Bloom Chat")
             });
             

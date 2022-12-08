@@ -115,7 +115,6 @@ const ParticipantSearch = () => {
       .then((response) => response.json())
 
       .then((res) => {
-        console.log(res);
         if (res.status === "OK") {
           // res.body.forEach((val) => {
           //   val.venueAvailability = JSON.parse(

@@ -66,35 +66,12 @@ const VenueBooking = () => {
       .then((response) => response.json())
       .then((res) => {
         if (res.status == "OK") {
-          console.log(res);
           alert("Booking Sucessfull");
           navigate(`/venue-search`);
         }
       });
 
-    console.log(
-      JSON.stringify({
-        activityName: reservationDetails.activityName,
-        activityDescription: reservationDetails.activityDescription,
-        activityCapacity: reservationDetails.activityCapacity,
-        activityLocation: reservationDetails.activityLocation,
-        activityCategory: reservationDetails.activityCategory,
-        activityAgeRange: reservationDetails.activityAgeRange,
-        activityCost: reservationDetails.activityCost,
-        activityCostAmount: reservationDetails.activityCostAmount,
-        activityVenueId: reservationDetails.venueDetails.venueId,
-        activityVenueCost:
-          reservationDetails.venueDetails.venueHrCost *
-          reservationDetails.selectedSlotList.length,
-        activityTime: JSON.stringify(reservationDetails.selectedSlotList),
-        activityDate: reservationDetails.formattedReservationDate,
-        activityBookingDate: new Date(),
-        venueSlots: venueSlotObject,
-        activityOrganizer: userFromStore.userName,
-        activityRemainingCapacity: reservationDetails.activityCapacity,
-        activityImage: reservationDetails.activityImage,
-      })
-    );
+
   };
 
   const navigate = useNavigate();
@@ -107,13 +84,11 @@ const VenueBooking = () => {
       setReservationDetails(
         JSON.parse(localForage.getItem("venue-details-local"))
       );
-      console.log(localForage.getItem("venue-details-local"));
     } else {
       localForage.setItem(
         "venue-details-local",
         JSON.stringify({ ...location.state })
       );
-      console.log(localForage.getItem("venue-details-local"));
       setReservationDetails({ ...location.state });
     }
   }, []);
