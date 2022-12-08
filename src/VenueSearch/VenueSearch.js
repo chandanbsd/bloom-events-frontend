@@ -9,6 +9,7 @@ import { Link } from "react-router-dom";
 import time24 from "../constants/time24";
 import themeStyles from "../themeStyles";
 import { usaCityStates } from "../constants/usaCityStates";
+import { isCompositeComponent } from "react-dom/test-utils";
 const VenueSearch = () => {
   const [searchKeyword, setSearchKeyword] = useState("");
   const [eventList, setEventList] = useState([]);
@@ -68,11 +69,10 @@ const VenueSearch = () => {
       .then((response) => response.json())
       .then((res) => {
         if (res.status == "OK") {
-          alert("Update Successfull");
+          alert("Venue Update Successfull");
           fetchVenueHandler();
-          window.location.reload();
         } else {
-          alert("Update Failed");
+          alert("Venue Update Failed");
         }
       });
   };
@@ -97,8 +97,6 @@ const VenueSearch = () => {
               valueArray = valueArray.map((val) => val.split("/"));
 
               res.body[index].venueSlots[key] = valueArray;
-
-
             }
           });
 
@@ -124,12 +122,10 @@ const VenueSearch = () => {
             setFilteredEventList(
               JSON.parse(JSON.stringify(eventFromStore.eventList))
             );
-
-            console.log(eventFromStore)
-
           }
         } else alert("Unable to fetch event venues");
       })
+
       .catch((error) => console.log("Form submit error", error));
   };
 
@@ -341,7 +337,7 @@ const VenueSearch = () => {
                     <div>
                       <img
                         className="card-img-top"
-                        alt="Card Image"
+                        alt="Card"
                         src={val.venueImage}
                         style={{ width: "400px" }}
                       />
@@ -361,8 +357,9 @@ const VenueSearch = () => {
                                 textDecoration: "none",
                                 color: "inherit",
                               }}
+                              reloadDocument
                             >
-                              Reserve Time
+                              Book Venue
                             </Link>
                           </button>
                         ) : (
@@ -380,6 +377,7 @@ const VenueSearch = () => {
                           textDecoration: "none",
                           color: "inherit",
                         }}
+                        reloadDocument
                       >
                         <button className="btn btn-success">
                           View Details
@@ -392,20 +390,20 @@ const VenueSearch = () => {
                           {val.venueOpen == "false" ? (
                             <button
                               className="btn btn-primary m-2"
-                              onClick={() => {
-                                handleOpenClose(val.venueId, val.venueOpen);
-                              }}
+                              onClick={() =>
+                                handleOpenClose(val.venueId, val.venueOpen)
+                              }
                             >
-                              Open Booking{" "}
+                              Open Venue for Bookings{" "}
                             </button>
                           ) : (
                             <button
                               className="btn btn-danger m-2"
-                              onClick={() => {
-                                handleOpenClose(val.venueId, val.venueOpen);
-                              }}
+                              onClick={() =>
+                                handleOpenClose(val.venueId, val.venueOpen)
+                              }
                             >
-                              Close Bookings
+                              Close Venue for Bookings
                             </button>
                           )}
                         </>
