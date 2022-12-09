@@ -87,7 +87,7 @@ const SignUp = () => {
         .then((res) => res.json())
         .then((res) => {
           if (res.status === "OK") {
-            dispatch(setProfile({ ...signUpDetails }));
+            // dispatch(setProfile({ ...signUpDetails }));
             createUserWithEmailAndPassword(
               firebaseAuthObj,
               signUpDetails.email,
