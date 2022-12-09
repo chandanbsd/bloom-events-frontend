@@ -1,14 +1,14 @@
 const themeStyles = {
   dark: {
     body: "bg-secondary",
-    navbar: "navbar-dark bg-dark",
+    navbar: "navbar-custom",
     text: "text-white",
     bodyHeavy: "bg-black",
   },
 
   light: {
-    body: "bg-white",
-    navbar: "navbar-light",
+    body: "background-custom",
+    navbar: "navbar-custom",
     text: "text-dark",
     bodyHeavy: "bg-white",
   },

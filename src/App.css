@@ -1,1 +1,9 @@
 /* CSS for App.js */
+
+.background-custom {
+  background: #ebf2fa;
+}
+
+.navbar-custom {
+  background-color: #74c69d;
+}

@@ -11,6 +11,7 @@ import Toggle from "react-toggle";
 import themeStyles from "../themeStyles";
 import { firebaseAuthObj } from "../constants/firebase";
 import { signOut } from "firebase/auth";
+import { faSun } from "react-icons/fa";
 
 const Navbar = () => {
   const userFromStore = useSelector((state) => state.user);
@@ -72,7 +73,7 @@ const Navbar = () => {
           "navbar flex-column flex-sm-row navbar " +
           themeStyles[themeFromStore.value].navbar
         }
-        style={{ backgroundColor: "#e3f2fd" }}
+        style={{ paddingLeft: "20px", paddingRight: "20px" }}
       >
         <Link to="/" reloadDocument className="nav-item navbar-brand">
           <span>Bloom Events Home</span>
@@ -82,21 +83,21 @@ const Navbar = () => {
             <Link
               to="venue-creation"
               reloadDocument
-              className="btn btn-primary nav-item navbar-brand"
+              className="btn btn-success nav-item navbar-brand"
             >
               <span>Add Venue</span>
             </Link>
             <Link
               to="venue-search"
               reloadDocument
-              className="btn btn-primary nav-item navbar-brand"
+              className="btn btn-success nav-item navbar-brand"
             >
               <span>Manage Venue</span>
             </Link>
             <Link
               to="/calendar"
               reloadDocument
-              className="btn btn-primary nav-item navbar-brand"
+              className="btn btn-success nav-item navbar-brand"
             >
               <span>View Bookings</span>
             </Link>
@@ -106,21 +107,21 @@ const Navbar = () => {
             <Link
               to="venue-search"
               reloadDocument
-              className="btn btn-primary btn btn-primary nav-item navbar-brand"
+              className="btn btn-success btn btn-success nav-item navbar-brand"
             >
               <span>Venue Search</span>
             </Link>
             <Link
               to="activity-search"
               reloadDocument
-              className="btn btn-primary nav-item navbar-brand"
+              className="btn btn-success nav-item navbar-brand"
             >
               <span>Activity Search</span>
             </Link>
             <Link
               to="participant-search"
               reloadDocument
-              className="btn btn-primary nav-item navbar-brand"
+              className="btn btn-success nav-item navbar-brand"
             >
               <span>Participant Search</span>
             </Link>
@@ -132,7 +133,7 @@ const Navbar = () => {
             <Link
               to="login"
               reloadDocument
-              className="btn btn-primary nav-item navbar-brand"
+              className="btn btn-success nav-item navbar-brand"
             >
               Login
             </Link>
@@ -143,7 +144,7 @@ const Navbar = () => {
               <Link
                 to="../calendar"
                 reloadDocument
-                className="btn btn-primary nav-item navbar-brand"
+                className="btn btn-success nav-item navbar-brand"
               >
                 Calendar
               </Link>
@@ -151,7 +152,7 @@ const Navbar = () => {
             <Link
               to="../bookmarks"
               reloadDocument
-              className="btn btn-primary nav-item navbar-brand"
+              className="btn btn-success nav-item navbar-brand"
             >
               Bookmarks
             </Link>
@@ -182,11 +183,14 @@ const Navbar = () => {
           </React.Fragment>
         )}
         <span className="nav-item">
-          <label htmlFor="theme-toggle">Dark Mode</label>
           <Toggle
             id="theme-toggle"
             onChange={() => {
               handleThemeChange();
+            }}
+            icons={{
+              checked: <faSun />,
+              unchecked: <faSun />,
             }}
             defaultChecked={themeFromStore.value == "light" ? false : true}
           />
