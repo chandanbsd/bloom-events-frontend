@@ -12,19 +12,17 @@ import "./index.css";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
-  <React.StrictMode>
-    <Provider store={store}>
-      <Auth0Provider
-        domain="dev--fppkdna.us.auth0.com"
-        clientId="mYyC6nZzWW74Bx6IjPMbCnJsYHY0JWdt"
-        redirectUri={"http://localhost:3000/login"}
-      >
-        <BrowserRouter>
-          <PersistGate loading={null} persistor={persistor}>
-            <App />
-          </PersistGate>
-        </BrowserRouter>
-      </Auth0Provider>
-    </Provider>
-  </React.StrictMode>
+  <Provider store={store}>
+    <Auth0Provider
+      domain="dev--fppkdna.us.auth0.com"
+      clientId="mYyC6nZzWW74Bx6IjPMbCnJsYHY0JWdt"
+      redirectUri={"http://localhost:3000/login"}
+    >
+      <BrowserRouter>
+        <PersistGate loading={null} persistor={persistor}>
+          <App />
+        </PersistGate>
+      </BrowserRouter>
+    </Auth0Provider>
+  </Provider>
 );
