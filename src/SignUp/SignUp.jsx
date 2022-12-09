@@ -73,6 +73,8 @@ const SignUp = () => {
       alert("Choose your age");
     } else if (signUpDetails.state === null) {
       alert("Choose your state");
+    } else if (signUpDetails.password.length < 6) {
+      alert("Password needs to be at least 6 characters");
     } else if (mfa == null) {
       alert("Scan QA Code for MFA");
       setMFA(true);
