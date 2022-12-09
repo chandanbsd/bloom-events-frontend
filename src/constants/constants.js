@@ -1,3 +1,3 @@
-const baseURL = "https://team34-bloomevents.herokuapp.com/";
+const baseURL = "https://team34-bloomevents.herokuapp.com";
 
 export default baseURL;
