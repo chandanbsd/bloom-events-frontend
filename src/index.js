@@ -16,7 +16,7 @@ root.render(
     <Auth0Provider
       domain="dev--fppkdna.us.auth0.com"
       clientId="mYyC6nZzWW74Bx6IjPMbCnJsYHY0JWdt"
-      redirectUri={"http://localhost:3000/login"}
+      redirectUri={"https://bloom-events.vercel.app/"}
     >
       <BrowserRouter>
         <PersistGate loading={null} persistor={persistor}>
