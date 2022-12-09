@@ -7,7 +7,11 @@ import { useAuth0 } from "@auth0/auth0-react";
 import baseURL from "../constants/constants";
 import themeStyles from "../themeStyles";
 import { firebaseAuthObj } from "../constants/firebase";
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
+import MFASignIn from "../MFA/MFASignIn";
 
 const Login = () => {
   const userFromStore = useSelector((state) => state.user);
@@ -25,6 +29,7 @@ const Login = () => {
   const [passwordResetEmail, setPasswordResetEmail] = useState(null);
 
   const themeFromStore = useSelector((state) => state.theme);
+  const [mfa, setMFA] = useState(null);
 
   useEffect(() => {
     if (
@@ -49,18 +54,25 @@ const Login = () => {
             alert("Please Signup First");
             localStorage.removeItem("loginWithOAuth");
           } else {
-            signInWithEmailAndPassword(firebaseAuthObj, res.body.email, "test123")
+            console.log("hi");
+            signInWithEmailAndPassword(
+              firebaseAuthObj,
+              res.body.email,
+              "test123"
+            )
               .then((userCredential) => {
-                alert("Welcome to Bloom Events")
-              }).then(()=> {            dispatch(setProfile({ ...res.body }));
-              localStorage.removeItem("loginWithOAuth");})
+                alert("Welcome to Bloom Events");
+              })
+              .then(() => {
+                dispatch(setProfile({ ...res.body }));
+                localStorage.removeItem("loginWithOAuth");
+              })
               .catch((error) => {
-                alert("Failed To Login User to Bloom Chat")
+                alert("Failed To Login User to Bloom Chat");
               });
-
           }
         });
-    } else {
+    } else if (localStorage.getItem("specialLoginDetails") !== null) {
       if (
         userFromStore.firstName === null &&
         user !== undefined &&
@@ -88,10 +100,6 @@ const Login = () => {
           }),
         };
 
-
-
-
-
         fetch(url, requestOptions)
           .then((res) => {
             return res.json();
@@ -118,26 +126,27 @@ const Login = () => {
               );
               localStorage.removeItem("specialLoginDetails");
               logout({ returnTo: window.location.origin });
-            }
-            else {
-              
-
+            } else {
             }
             return res;
           })
           .then((res) => {
-            createUserWithEmailAndPassword(firebaseAuthObj, res.body.email, "test123")
+            createUserWithEmailAndPassword(
+              firebaseAuthObj,
+              res.body.email,
+              "test123"
+            )
               .then((userCredential) => {
-                alert("Welcome to Bloom Events")
-              }).then(()=> { 
-              dispatch(setProfile({ ...res.body }));
-              localStorage.removeItem("specialLoginDetails");
-              navigate("/");})
+                alert("Welcome to Bloom Events");
+              })
+              .then(() => {
+                dispatch(setProfile({ ...res.body }));
+                localStorage.removeItem("specialLoginDetails");
+                navigate("/");
+              })
               .catch((error) => {
-                alert("Failed To Signup User to Bloom Chat")
+                alert("Failed To Signup User to Bloom Chat");
               });
-
-           
           })
           .catch((error) => console.log("Form submit error", error));
       }
@@ -153,6 +162,9 @@ const Login = () => {
       alert("Incorrect Password");
     } else if (captchaStatus === false) {
       alert("Captcha Failed, Please try again");
+    } else if (mfa == null) {
+      alert("Enter OTP");
+      setMFA(true);
     } else {
       const url = `${baseURL}/login`;
       const requestOptions = {
@@ -167,15 +179,18 @@ const Login = () => {
             alert("Login Failed: Check Username and Password");
           else {
             dispatch(setProfile({ ...res.body }));
-            signInWithEmailAndPassword(firebaseAuthObj, res.body.email, loginDetails.password)
-            .then((userCredential) => {
-              alert("Welcome to Bloom Events")
-            }).then(()=> navigate("/"))
-            .catch((error) => {
-              alert("Failed To Login User to Bloom Chat")
-            });
-            
-
+            signInWithEmailAndPassword(
+              firebaseAuthObj,
+              res.body.email,
+              loginDetails.password
+            )
+              .then((userCredential) => {
+                alert("Welcome to Bloom Events");
+              })
+              .then(() => navigate("/"))
+              .catch((error) => {
+                alert("Failed To Login User to Bloom Chat");
+              });
           }
         })
         .catch((error) => console.log("Form submit error", error));
@@ -221,44 +236,63 @@ const Login = () => {
           <h1 className="text-center">Login Page</h1>
           <br />
           <br />
-          <div className="form-group">
-            <label>Username: </label>
-            <input
-              type="text"
-              className="form-control"
-              onChange={(e) =>
-                setloginDetails({ ...loginDetails, userName: e.target.value })
-              }
+          {mfa == null && (
+            <div>
+              <div className="form-group">
+                <label>Username: </label>
+                <input
+                  type="text"
+                  className="form-control"
+                  onChange={(e) =>
+                    setloginDetails({
+                      ...loginDetails,
+                      userName: e.target.value,
+                    })
+                  }
+                />
+                <br />
+              </div>
+              <div className="form-group">
+                <label>Password: </label>
+                <input
+                  type="password"
+                  className="form-control"
+                  onChange={(e) =>
+                    setloginDetails({
+                      ...loginDetails,
+                      password: e.target.value,
+                    })
+                  }
+                />
+                <br />
+              </div>
+              <div className="d-flex justify-content-around">
+                <ReCAPTCHA
+                  ref={recaptchaRef}
+                  sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
+                  onChange={onCaptchaChange}
+                />
+              </div>
+              <div
+                style={{ width: "500px" }}
+                className="form-group d-flex justify-content-around"
+              >
+                <button onClick={handleLogin} className="btn btn-success">
+                  Login with Email
+                </button>
+              </div>
+            </div>
+          )}
+          {mfa == true && (
+            <MFASignIn
+              username={loginDetails.userName}
+              loginDetails={loginDetails}
+              dispatch={dispatch}
+              navigate={navigate}
             />
-            <br />
-          </div>
-          <div className="form-group">
-            <label>Password: </label>
-            <input
-              type="password"
-              className="form-control"
-              onChange={(e) =>
-                setloginDetails({ ...loginDetails, password: e.target.value })
-              }
-            />
-            <br />
-          </div>
-          <div className="d-flex justify-content-around">
-            <ReCAPTCHA
-              ref={recaptchaRef}
-              sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
-              onChange={onCaptchaChange}
-            />
-          </div>
+          )}
           <br />
-          <div
-            style={{ width: "500px" }}
-            className="form-group d-flex justify-content-around"
-          >
-            <button onClick={handleLogin} className="btn btn-success">
-              Login with Email
-            </button>
-          </div>
+
           <hr
             style={{
               size: "20px",
@@ -301,7 +335,11 @@ const Login = () => {
             <Link to="signup" reloadDocument className="btn btn-primary">
               Signup with Email
             </Link>{" "}
-            <Link to="special-signup" reloadDocument className="btn btn-primary">
+            <Link
+              to="special-signup"
+              reloadDocument
+              className="btn btn-primary"
+            >
               Signup with OAuth
             </Link>{" "}
           </div>
