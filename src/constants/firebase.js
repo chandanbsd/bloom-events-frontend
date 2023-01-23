@@ -4,9 +4,9 @@ import { getDatabase } from "firebase/database";
 import { onAuthStateChanged } from "firebase/auth";
 
 const firebaseConfig = {
-  apiKey: "***REMOVED***",
-  authDomain: "***REMOVED***",
-  databaseURL: "***REMOVED***",
+  apiKey: "",
+  authDomain: "",
+  databaseURL: "",
 };
 
 const firebaseApp = initializeApp(firebaseConfig);

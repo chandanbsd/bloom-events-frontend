@@ -14,8 +14,8 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <Provider store={store}>
     <Auth0Provider
-      domain="***REMOVED***"
-      clientId="***REMOVED***"
+      domain=""
+      clientId=""
       redirectUri={"http://localhost:3000/login"}
     >
       <BrowserRouter>
